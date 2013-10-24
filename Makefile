@@ -2,11 +2,11 @@
 #Compiler to use
 CC=g++
 
-#Compiler flags
-CFLAGS=-O2 -Lglm
-
 SRCDIR = src
 BINDIR = bin
+
+#Compiler flags
+CFLAGS=-O2 -Ilib
 
 
 # SRC=Main.cpp Scene.cpp Sphere.cpp Intersection.cpp
