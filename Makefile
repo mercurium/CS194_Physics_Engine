@@ -1,4 +1,3 @@
-
 #Compiler to use
 CC=g++
 
@@ -6,10 +5,8 @@ SRCDIR = src
 BINDIR = bin
 
 #Compiler flags
-CFLAGS=-O2 -Ilib
+CFLAGS=-O2 -Ilib -lGL -lGLU -lglut
 
-
-# SRC=Main.cpp Scene.cpp Sphere.cpp Intersection.cpp
 _OBJ = Main.o Scene.o Sphere.o Intersection.o
 OBJS = $(patsubst %,$(BINDIR)/%,$(_OBJ))
 
@@ -24,3 +21,8 @@ run:
 
 clean:
 	rm $(BINDIR)/*
+
+install_stuff:
+	sudo apt-get install libglu1-mesa-dev
+	sudo apt-get install libgl1-mesa-dev
+	sudo apt-get install freeglut3
