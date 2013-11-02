@@ -63,3 +63,21 @@ void updateScene(vector <Sphere *> balls) {
 
 
 }
+
+
+void distanceCheck(){
+	updateBallPositions();
+	bool done = false;
+
+	while(!done){
+		for (int i = 0; i < balls.size(); i++){
+			for (int j = 0; j < balls.size(); j++)
+			{
+				Sphere s1* = balls.at(i);
+				Sphere s2* = balls.at(j);
+
+				if()
+			}
+		}
+	}
+}
