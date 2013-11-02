@@ -3,7 +3,12 @@
 #include <glm/glm.hpp>
 #include "Scene.h"
 #include "Sphere.h"
+#include "Transform.h"
 
+/**
+ * Class to manage drawing a Scene. 
+ * 
+ */
 class Render {
     public:
         Render ();
@@ -19,5 +24,9 @@ class Render {
         glm::vec3 camCenter;
         glm::vec3 camView;
         glm::vec3 camUp;
+        double zN;
+        double zF;
+        double aspect;
+        double fov;
 
 };
