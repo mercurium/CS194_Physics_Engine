@@ -71,12 +71,27 @@ void distanceCheck(){
 
 	while(!done){
 		for (int i = 0; i < balls.size(); i++){
-			for (int j = 0; j < balls.size(); j++)
-			{
+			for (int j = 0; j < balls.size(); j++){
 				Sphere s1* = balls.at(i);
 				Sphere s2* = balls.at(j);
 
-				if()
+				if(s1 == s2){
+					continue;
+				}
+				else{
+					glm::vec3 pos1 = s1.getPos();
+					glm::vec3 pos2 = s2.getPos();
+
+					dist = (pos1 - pos2).mag();
+
+					if (dist >= 1)
+					{
+						handle_collision_physics(s1, s2);
+						
+						i = 0;
+						j = 0;
+					}
+				}
 			}
 		}
 	}
