@@ -11,9 +11,11 @@ _OBJ = Main.o Scene.o Sphere.o Intersection.o
 OBJS = $(patsubst %,$(BINDIR)/%,$(_OBJ))
 
 all: $(OBJS)
+	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cpp
+	mkdir -p $(BINDIR)
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run:
