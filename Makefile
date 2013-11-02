@@ -7,15 +7,16 @@ BINDIR = bin
 #Compiler flags
 CFLAGS=-O2 -Ilib -lGL -lGLU -lglut
 
-_OBJ = Main.o Scene.o Sphere.o Intersection.o
-OBJS = $(patsubst %,$(BINDIR)/%,$(_OBJ))
+SOURCES = $(shell find $(SRCDIR) -name '*.cpp')
+_OBJS = $(patsubst %.cpp,%.o,$(SOURCES))
+OBJS = $(patsubst $(SRCDIR)/%,$(BINDIR)/%,$(_OBJS))
 
 all: $(OBJS)
-	mkdir -p $(BINDIR)
+	mkdir -p bin
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cpp
-	mkdir -p $(BINDIR)
+	mkdir -p bin
 	$(CC) $(CFLAGS) -c $< -o $@
 
 run:
