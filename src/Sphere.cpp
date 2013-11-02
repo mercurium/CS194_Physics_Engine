@@ -26,7 +26,6 @@ Sphere::~Sphere (){
 	delete velocity;
 	delete acceleration;
     */
-
 }
 
 void Sphere::setPos(glm::vec3 pos){
@@ -59,4 +58,8 @@ double Sphere::getRadius(){
 
 double Sphere::getMass(){
 	return mass;
+}
+
+bool operator == (const Sphere& s) const {
+	return position == s.position;
 }

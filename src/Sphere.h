@@ -23,4 +23,6 @@ class Sphere{
 		glm::vec3 getAcceleration();
 		double getRadius();
 		double getMass();
+
+		bool operator == (const Sphere& s) const;
 };
