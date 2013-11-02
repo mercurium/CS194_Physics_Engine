@@ -19,11 +19,13 @@ Sphere::Sphere(double x, double y, double z, double r, double m){
 }
 
 Sphere::~Sphere (){
+    /*
 	delete position;
 	delete radius;
 	delete mass;
 	delete velocity;
 	delete acceleration;
+    */
 
 }
 

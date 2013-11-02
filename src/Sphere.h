@@ -14,8 +14,9 @@ class Sphere{
 		Sphere(double x, double y, double z, double r, double m);
 		virtual ~Sphere(); 
 		
-		void setPos(double x, double y, double z);
-		void setVelocity(double v_x, double v_y, double v_z);
+		void setPos(glm::vec3 pos);
+		void setVelocity(glm::vec3 vel);
+		void setAcceleration(glm::vec3 acc);
 		
 		glm::vec3 getPos();
 		glm::vec3 getVelocity();
