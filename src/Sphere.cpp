@@ -60,6 +60,6 @@ double Sphere::getMass(){
 	return mass;
 }
 
-bool operator == (const Sphere& s) const {
+bool Sphere::operator == (const Sphere& s) const {
 	return position == s.position;
 }
