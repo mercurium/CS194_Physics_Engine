@@ -1,5 +1,7 @@
 #pragma once
+#include <GL/glut.h>
 #include <glm/glm.hpp>
+#include <glm/gtc/matrix_transform.hpp>
 
 /**
  * Push a glm matrix onto the OpenGL matrix stack.
@@ -14,5 +16,4 @@ glm::mat4 translate(glm::vec3& v);
 /*
  * Returns the Model+View+Projection matrix
  */
-glm::mat4 getCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView,
-                       double zNear, double zFar, double aspect, double fov);
+void loadCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView);

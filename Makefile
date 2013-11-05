@@ -7,7 +7,7 @@ BINDIR = bin
 #Compiler flags
 CFLAGS=-O2 
 IFLAGS=-Ilib
-LDFLAGS=-lglut -lGLU -lGL 
+LDFLAGS=-lglut -lGLU -lGL -lX11
 
 SOURCES = $(shell find $(SRCDIR) -name '*.cpp')
 _OBJS = $(patsubst %.cpp,%.o,$(SOURCES))
