@@ -26,7 +26,7 @@ void Render::draw(Scene& scene){
         draw( sph)
     */
 
-    //glPopMatrix();
+    glPopMatrix();
 }
 
 void Render::draw(Sphere& sph){
@@ -37,10 +37,10 @@ void Render::draw(Sphere& sph){
     push_glm_matrix( translate(center));
 
     //Draw sphere
-    //glutSolidSphere( rad,50,50); 
+    glutSolidSphere( rad,50,50); 
 
     //Pop translation matrix
-    //glPopMatrix();
+    glPopMatrix();
 }
 
 void Render::rotateCamUD(double deg){
