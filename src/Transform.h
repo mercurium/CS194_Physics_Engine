@@ -8,7 +8,7 @@
 void push_glm_matrix(glm::mat4 mat);
 
 glm::vec3 applyTransform(glm::vec3& v, glm::mat4& m);
-glm::mat4 rotate(glm::vec3& v, double deg);
+glm::mat4 rotate(glm::vec3& v, float deg);
 glm::mat4 translate(glm::vec3& v);
 
 /*
