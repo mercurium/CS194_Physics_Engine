@@ -1,13 +1,27 @@
 #include "Transform.h"
 
-//TODO: Implement this
+//Push a glm matrix (accouting for differences in row-vs-column major
 void push_glm_matrix(glm::mat4 mat){
-    return;
+    glPushMatrix();
+    glm::mat4 m = glm::transpose(mat);
+    glLoadMatrixf(&m[0][0]);
+}
+
+glm::vec3 applyTransform(glm::vec3& v, glm::mat4& m){
+    glm::vec4 v4(v[0],v[1],v[2],1);
+    glm::vec4 newv = m*v4;
+    glm::vec3 homogenized( newv[0]/newv[3],newv[1]/newv[3],newv[2]/newv[3]);
+    return homogenized;
 }
 
 //TODO: Implement this
-glm::vec3 applyTransform(glm::vec3& v, glm::mat4& m){
-    return v;
+void loadCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView){
+
+    glm::vec3 viewCenter = camCenter+camView; 
+    glm::mat4 mv = glm::lookAt( viewCenter, camCenter, camUp);
+    glMatrixMode(GL_MODELVIEW);
+    glLoadIdentity();
+    glLoadMatrixf(&mv[0][0]);
 }
 
 glm::mat4 rotate(glm::vec3& axis, float degrees){
@@ -63,9 +77,3 @@ glm::mat4 perspective(float fovy, float aspect, float zNear, float zFar)
 	return ret;
 }
 
-//TODO: Implement this
-glm::mat4 getCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView,
-                       double zNear, double zFar, double aspect, double fov){
-
-    return glm::mat4(1);
-}

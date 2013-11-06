@@ -7,13 +7,18 @@ BINDIR = bin
 #Compiler flags
 CFLAGS=-O2 
 IFLAGS=-Ilib
-LDFLAGS=-lglut -lGLU -lGL 
+LDFLAGS=-lglut -lGLU -lGL -lX11
 
-SOURCES = $(shell find $(SRCDIR) -name '*.cpp')
+#SOURCES = $(shell find $(SRCDIR) -name '*.cpp') #Old find that returns everything in src directory
+SOURCES = $(shell find $(SRCDIR) -type f \( -iname '*.cpp' ! -iname 'Main.cpp' ! -iname 'Test.cpp' \)  )
 _OBJS = $(patsubst %.cpp,%.o,$(SOURCES))
 OBJS = $(patsubst $(SRCDIR)/%,$(BINDIR)/%,$(_OBJS))
 
-all: $(OBJS)
+all: $(OBJS) $(BINDIR)/Main.o
+	mkdir -p bin
+	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng $(IFLAGS) $(LDFLAGS)
+
+test: $(OBJS) $(BINDIR)/Test.o
 	mkdir -p bin
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng $(IFLAGS) $(LDFLAGS)
 
