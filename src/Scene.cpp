@@ -63,3 +63,39 @@ void updateScene(vector <Sphere *> balls) {
 
 
 }
+
+
+void distanceCheck(){
+	updateBallPositions();
+
+  /* 
+  Naive algorithm via iterative refinement that loops until no
+  collisions found.
+  */
+  for (int i = 0; i < balls.size(); i++){
+    for (int j = 0; j < balls.size(); j++){
+      Sphere s1* = balls.at(i);
+      Sphere s2* = balls.at(j);
+
+      if(s1 == s2){
+        continue;
+      }
+      else{
+        glm::vec3 pos1 = s1.getPos();
+        glm::vec3 pos2 = s2.getPos();
+
+        double rad1 = s1.getRadius();
+        double rad2= s2.getRadius();
+
+        dist = glm::distance(pos1, pos2);
+
+        if (dist >= (rad1 + rad2){
+          //handle_collision_physics(s1, s2);
+          
+          i = 0;
+          j = 0;
+        }
+      }
+    }
+  }
+}
