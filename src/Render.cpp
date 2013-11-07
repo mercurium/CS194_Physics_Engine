@@ -72,6 +72,12 @@ void Render::drawtest(){
     glColor3f(1,0,0);
     Sphere sph(1,0,0);
     draw(sph);
+
+    Sphere sph1(5,0,0);
+    draw(sph1);
+
+    Sphere sph2(0,2,0);
+    draw(sph2);
     /*
     glPushMatrix();
     glTranslatef(1,0,0);
@@ -107,7 +113,7 @@ void Render::rotateCamUD(double deg){
 
 void Render::rotateCamLR(double deg){
     //Rotate view around Up
-    glm::mat4 mat = rotate(camUp, deg);    
+    glm::mat4 mat = rotate(camUp, -deg);    
     camView = applyTransform(camView, mat);
 }
 

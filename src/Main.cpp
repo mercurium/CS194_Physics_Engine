@@ -1,22 +1,28 @@
 #include <stdio.h>
 #include <glm/glm.hpp>
 #include "Render.h"
-#include "Scene.h"
 
 void mainloop();
 void idlefunc();
 void reshape(int w, int h);
-Scene* initScene();
+void key(unsigned char c, int x, int y);
+void mouse( int button, int state, int x, int y);
 Render initRender();
 void initGLUT(char**, int);
-Scene* s;
 Render r;
-
+int mouse_left_down_x;
+int mouse_left_down_y;
+int mouse_right_down_x;
+int mouse_right_down_y;
 
 int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
-    s = initScene();
+
+    mouse_left_down_x=0;
+    mouse_left_down_y=0;
+    mouse_right_down_x=0;
+    mouse_right_down_y=0;
     r = initRender();
 
 
@@ -25,13 +31,7 @@ int main(int argc, char *argv[])
 
 
 
-    delete s;
     return 0;
-}
-
-
-Scene* initScene(){
-    return NULL;
 }
 
 Render initRender(){
@@ -45,6 +45,8 @@ void initGLUT(char *argv[], int argc){
     glutCreateWindow("CS194 Physics");
     glutDisplayFunc(&mainloop);
     glutReshapeFunc(&reshape);
+    glutKeyboardFunc(&key);
+    glutMouseFunc(&mouse);
 
     //glutIdleFunc(&idlefunc);
 }
@@ -63,6 +65,68 @@ void mainloop(){
     //User Input
     //blah
     glutSwapBuffers();
+}
+
+void key(unsigned char c, int x, int y){
+    const double SNSTVTY = 0.5;
+    switch(c){
+        case 'w':
+            r.translCamFB(SNSTVTY);
+            break;
+        case 's':
+            r.translCamFB(-SNSTVTY);
+            break;
+        case 'a':
+            r.translCamLR(SNSTVTY);
+            break;
+        case 'd':
+            r.translCamLR(-SNSTVTY);
+            break;
+
+        case 'i':
+            r.rotateCamUD(10*SNSTVTY);
+            break;
+        case 'k':
+            r.rotateCamUD(-10*SNSTVTY);
+            break;
+        case 'j':
+            r.rotateCamLR(10*SNSTVTY);
+            break;
+        case 'l':
+            r.rotateCamLR(-10*SNSTVTY);
+            break;
+
+        default:
+            //nothing
+            break;
+    }
+    glutPostRedisplay();
+}
+
+void mouse( int button, int state, int x, int y){
+    /*
+    mouse_left_down_x=0;
+    mouse_left_down_y=0;
+    mouse_right_down_x=0;
+    mouse_right_down_y=0;
+    */
+    if(button == GLUT_LEFT_BUTTON){
+        if(state==GLUT_UP){
+            int distx = x-mouse_left_down_x;
+            int disty = y-mouse_left_down_y;
+        }else if (state==GLUT_DOWN){
+            mouse_left_down_x=x;
+            mouse_left_down_y=y;
+        }
+    }else if (button ==GLUT_RIGHT_BUTTON){
+        if(state==GLUT_UP){
+            int distx = x-mouse_right_down_x;
+            int disty = y-mouse_right_down_y;
+        }else if (state==GLUT_DOWN){
+            mouse_right_down_x=x;
+            mouse_right_down_y=y;
+        }
+    }
 }
 
 void idlefunc(){
