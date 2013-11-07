@@ -20,6 +20,9 @@ class Render {
         void rotateCamLR(double deg);
         void rotateCamRoll(double deg);
         void translCam(glm::vec3& dist);
+        void translCamFB(double dist);
+        void translCamUD(double dist);
+        void translCamLR(double dist);
         glm::mat4 getPerspective(float fovy);
 
     private:

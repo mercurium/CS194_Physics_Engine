@@ -117,8 +117,17 @@ void Render::rotateCamRoll(double deg){
     camUp = applyTransform(camUp, mat);
 }
 
-void Render::translCam(glm::vec3& dist){
-    Render::camCenter += dist;
+void Render::translCamFB(double dist){
+    camCenter += ((float)dist)*camView;
+}
+
+void Render::translCamUD(double dist){
+    camCenter += ((float)dist)*camUp;
+}
+
+void Render::translCamLR(double dist){
+    glm::vec3 right = glm::cross( camUp, camView);
+    camCenter += ((float)dist)*right;
 }
 
 glm::mat4 Render::getPerspective(float aspect){
