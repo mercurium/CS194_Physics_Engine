@@ -5,6 +5,7 @@
 #include "Sphere.h"
 #include "Transform.h"
 
+void pr(glm::vec3& v);
 /**
  * Class to manage drawing a Scene. 
  * 
@@ -13,7 +14,7 @@ class Render {
     public:
         Render ();
         virtual ~Render ();
-        void draw(Scene& scene);
+        void draw(std::vector<Sphere*> spheres);
         void drawtest();
         void rotateCamUD(double deg);
         void rotateCamLR(double deg);

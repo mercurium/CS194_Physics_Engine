@@ -1,8 +1,7 @@
 #include "Transform.h"
 
 //Push a glm matrix (accouting for differences in row-vs-column major
-void push_glm_matrix(glm::mat4 mat){
-    glPushMatrix();
+void load_glm_matrix(glm::mat4 mat){
     glm::mat4 m = glm::transpose(mat);
     glLoadMatrixf(&m[0][0]);
 }
@@ -14,11 +13,10 @@ glm::vec3 applyTransform(glm::vec3& v, glm::mat4& m){
     return homogenized;
 }
 
-//TODO: Implement this
 void loadCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView){
 
     glm::vec3 viewCenter = camCenter+camView; 
-    glm::mat4 mv = glm::lookAt( viewCenter, camCenter, camUp);
+    glm::mat4 mv = glm::lookAt( camCenter, viewCenter, camUp);
     glMatrixMode(GL_MODELVIEW);
     glLoadIdentity();
     glLoadMatrixf(&mv[0][0]);

@@ -5,8 +5,8 @@ Sphere::Sphere(double x, double y, double z){
 	velocity = glm::vec3(0.0, 0.0, 0.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
-	double radius = 1;
-	double mass = 1;
+	radius = 1;
+	mass = 1;
 }
 
 Sphere::Sphere(double x, double y, double z, double r, double m){
@@ -14,8 +14,8 @@ Sphere::Sphere(double x, double y, double z, double r, double m){
 	velocity = glm::vec3(0.0, 0.0, 0.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
-	double radius = r;
-	double mass = m;
+	radius = r;
+	mass = m;
 }
 
 Sphere::~Sphere (){
