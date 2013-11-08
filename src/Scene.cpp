@@ -4,15 +4,17 @@
 
 namespace  Scene{
 
-void updateBallPositions(std::vector<Sphere *> balls){
+void updateBallPositions(std::vector<Sphere *> &balls){
     /*  Update each ball to the new location  */
     for (int i = 0; i < balls.size(); i++){
-       Sphere ball = *balls.at(i);
+       Sphere ball = (*balls.at(i));
        glm::vec3 oldPos = ball.getPos();
 	   ball.setOldPos(oldPos);
        glm::vec3 oldVl = ball.getVelocity();
        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x, oldPos.y + oldVl.y, oldPos.z + oldVl.z);
        ball.setPos(newPos);
+	   ball.setOldPos(oldPos);
+	   printf("%f %f %f, %f %f %f \n", newPos.x, newPos.y, newPos.z, oldPos.x, oldPos.y, oldPos.z);
     }
 
 }
@@ -20,7 +22,7 @@ void updateBallPositions(std::vector<Sphere *> balls){
 std::vector <Sphere *> makeTestScene(){
 	std::vector <Sphere *> balls;
 	double x,y,z;
-	for (int i = 0; i < 20; i++){
+	for (int i = 0; i < 3; i++){
 		x = (i*i + 3*i+504)%100 + i/20.;
 		y = (2*i*i - i + 1017)%100 + i/20.;
 		z = (5*i*i - 13 *i + 100014) % 100 + i/20.;
@@ -31,7 +33,7 @@ std::vector <Sphere *> makeTestScene(){
 
 }
 
-std::vector<Intersection *> getCollisions(std::vector <Sphere *> balls){
+std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
     for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
         for(int j = 0; j < i; j++){
@@ -73,22 +75,23 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 	}
 }
 
-void UpdateScene(std::vector <Sphere *> balls) {
-	updateBallPositions(balls);
-
+void UpdateScene(std::vector <Sphere *> &balls) {
+	updateBallPositions(*(&balls));
+	printf("We were called! Update scene~\n");
 	std::vector <Intersection *> intersections = getCollisions(balls);
 
 	while (intersections.size()  != 0){
+		printf("There was a conflict!");
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
 	}
-
+/*
 	for (int i = 0; i < balls.size(); i++){
 		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
 		glm::vec3 newPos = (*balls.at(i)).getPos();
 		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
 		(*balls.at(i)).setVelocity(velocity);
-	}
+	} */
 }
 
 }

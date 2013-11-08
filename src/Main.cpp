@@ -57,8 +57,7 @@ void mainloop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Render Scene
-
-	Scene::UpdateScene(balls);
+	Scene::UpdateScene(*(&balls));
     r.draw(balls);
 	printf("We're updating!\n");
     //r.drawtest();
