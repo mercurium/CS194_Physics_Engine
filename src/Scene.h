@@ -4,17 +4,11 @@
 #include "Sphere.h"
 #include "DistConstr.h"
 
-class Scene{
-    std::vector<Sphere *> balls;
-    std::vector<DistConstr *> distContraints;
-    public:
-        Scene(void);
-        ~Scene(void);
-        std::vector<Intersection> getIntersections(Sphere &obj);
-        void UpdateBallPositions();
-        void UpdateScene();
+namespace Scene{
+        std::vector<Intersection *> getCollisions(std::vector <Sphere *> balls);
+        void resolveCollisions(std::vector <Sphere *> balls);
+        void UpdateBallPositions(std::vector <Sphere *> balls);
+        void UpdateScene(std::vector <Sphere *> balls);
 		std::vector<Sphere *>  makeTestScene();
-
-    private:
 
 };

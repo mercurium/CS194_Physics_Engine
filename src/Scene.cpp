@@ -1,22 +1,10 @@
 
 #include "Scene.h"
-using namespace std;
-//Constructor
-Scene::Scene(){ 
-
-}
-
-//Deconstructor
-Scene::~Scene(){ 
 
 
-}
+namespace  Scene{
 
-std::vector<Intersection> Scene::getIntersections(Sphere &obj){
-    //Geometry intersection routine
-}
-
-void updateBallPositions(vector<Sphere *> balls){
+void updateBallPositions(std::vector<Sphere *> balls){
     /*  Update each ball to the new location  */
     for (int i = 0; i < balls.size(); i++){
        Sphere ball = *balls.at(i);
@@ -29,21 +17,22 @@ void updateBallPositions(vector<Sphere *> balls){
 
 }
 
-vector <Sphere *> makeTestScene(){
-	vector <Sphere *> balls;
-	int x,y,z;
+std::vector <Sphere *> makeTestScene(){
+	std::vector <Sphere *> balls;
+	double x,y,z;
 	for (int i = 0; i < 20; i++){
-		x = (i*i + 3*i+504)%100;
-		y = (2*i*i - i + 1017)%100;
-		z = (5*i*i - 13 *i + 100014) % 100;
+		x = (i*i + 3*i+504)%100 + i/20.;
+		y = (2*i*i - i + 1017)%100 + i/20.;
+		z = (5*i*i - 13 *i + 100014) % 100 + i/20.;
 		balls.push_back(new Sphere(x,y,z));
 
 	}
+	return balls;
 
 }
 
-vector<Intersection *> getCollisions(vector <Sphere *> balls){
-	vector<Intersection *> intersects;
+std::vector<Intersection *> getCollisions(std::vector <Sphere *> balls){
+	std::vector<Intersection *> intersects;
     for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
         for(int j = 0; j < i; j++){
             Sphere s1 = *balls.at(i);
@@ -59,7 +48,7 @@ vector<Intersection *> getCollisions(vector <Sphere *> balls){
 	return intersects;
 }
 
-void resolveCollisions(vector<Intersection *> intersections){
+void resolveCollisions(std::vector<Intersection *> intersections){
 	double dist, radiiDist;
 	while(intersections.size() != 0)
 	{
@@ -84,10 +73,10 @@ void resolveCollisions(vector<Intersection *> intersections){
 	}
 }
 
-void updateScene(vector <Sphere *> balls) {
+void UpdateScene(std::vector <Sphere *> balls) {
 	updateBallPositions(balls);
 
-	vector <Intersection *> intersections = getCollisions(balls);
+	std::vector <Intersection *> intersections = getCollisions(balls);
 
 	while (intersections.size()  != 0){
 		resolveCollisions(intersections);
@@ -98,6 +87,8 @@ void updateScene(vector <Sphere *> balls) {
 		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
 		glm::vec3 newPos = (*balls.at(i)).getPos();
 		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
+		(*balls.at(i)).setVelocity(velocity);
 	}
 }
 
+}
