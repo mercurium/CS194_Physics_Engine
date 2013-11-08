@@ -2,7 +2,8 @@
 
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
-	velocity = glm::vec3(0.0, 0.0, 0.0);
+	oldPos = glm::vec3(x, y, z);
+	velocity = glm::vec3(1.0, 1.0, 1.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	radius = 1;
@@ -11,7 +12,8 @@ Sphere::Sphere(double x, double y, double z){
 
 Sphere::Sphere(double x, double y, double z, double r, double m){
 	position = glm::vec3(x, y, z);
-	velocity = glm::vec3(0.0, 0.0, 0.0);
+	oldPos = glm::vec3(x, y, z);
+	velocity = glm::vec3(1.0, 1.0, 1.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	radius = r;
@@ -40,6 +42,10 @@ void Sphere::setAcceleration(glm::vec3 acc){
 	acceleration = acc;
 }
 
+void Sphere::setOldPos(glm::vec3 oldPosition){
+	oldPos = oldPosition;
+}
+
 glm::vec3 Sphere::getPos(){
 	return position;
 }
@@ -59,6 +65,11 @@ double Sphere::getRadius(){
 double Sphere::getMass(){
 	return mass;
 }
+
+glm::vec3 Sphere::getOldPos(){
+	return oldPos;
+}
+
 
 bool Sphere::operator == (const Sphere& s) const {
 	return position == s.position;

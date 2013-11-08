@@ -3,6 +3,7 @@
 
 class Sphere{
 	glm::vec3 position;
+	glm::vec3 oldPos;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
 
@@ -15,6 +16,7 @@ class Sphere{
 		virtual ~Sphere(); 
 		
 		void setPos(glm::vec3 pos);
+		void setOldPos(glm::vec3 oldPosition);
 		void setVelocity(glm::vec3 vel);
 		void setAcceleration(glm::vec3 acc);
 		
@@ -23,6 +25,7 @@ class Sphere{
 		glm::vec3 getAcceleration();
 		double getRadius();
 		double getMass();
+		glm::vec3 getOldPos();
 
 		bool operator == (const Sphere& s) const;
 };
