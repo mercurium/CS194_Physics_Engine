@@ -1,7 +1,8 @@
 
+
 #include "Scene.h"
 
-
+int LIMIT = 100;
 namespace  Scene{
 
 void updateBallPositions(std::vector<Sphere *> &balls){
@@ -12,9 +13,26 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 	   ball.setOldPos(oldPos);
        glm::vec3 oldVl = ball.getVelocity();
        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x, oldPos.y + oldVl.y, oldPos.z + oldVl.z);
+
+
+	   /*Checking for Walls */
+	   if (newPos.x > LIMIT)
+			newPos.x = 2* LIMIT - newPos.x;
+	   if (newPos.y > LIMIT)
+			newPos.y = 2* LIMIT - newPos.y;
+	   if (newPos.z > LIMIT)
+			newPos.z = 2* LIMIT - newPos.z;
+	   if (newPos.x < 0)
+			newPos.x = -newPos.x;
+	   if (newPos.y < 0)
+			newPos.y = -newPos.y;
+	   if (newPos.z < 0)
+			newPos.z = -newPos.z;
+
+
        ball.setPos(newPos);
 	   ball.setOldPos(oldPos);
-	   printf("%f %f %f, %f %f %f \n", newPos.x, newPos.y, newPos.z, oldPos.x, oldPos.y, oldPos.z);
+	   //printf("%f %f %f, %f %f %f \n", newPos.x, newPos.y, newPos.z, oldPos.x, oldPos.y, oldPos.z);
     }
 
 }
@@ -77,15 +95,14 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 
 void UpdateScene(std::vector <Sphere *> &balls) {
 	updateBallPositions(*(&balls));
-	printf("We were called! Update scene~\n");
+//	printf("We were called! Update scene~\n");
 	std::vector <Intersection *> intersections = getCollisions(balls);
-
+/*
 	while (intersections.size()  != 0){
-		printf("There was a conflict!");
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
 	}
-
+*/
 	for (int i = 0; i < balls.size(); i++){
 		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
 		glm::vec3 newPos = (*balls.at(i)).getPos();

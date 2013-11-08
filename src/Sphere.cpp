@@ -3,7 +3,7 @@
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
-	velocity = glm::vec3(1.0, 1.0, 5.0);
+	velocity = glm::vec3(1.0, 4.0, 5.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	radius = 1;
