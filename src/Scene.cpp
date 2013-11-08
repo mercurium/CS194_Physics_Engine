@@ -7,7 +7,7 @@ namespace  Scene{
 void updateBallPositions(std::vector<Sphere *> &balls){
     /*  Update each ball to the new location  */
     for (int i = 0; i < balls.size(); i++){
-       Sphere ball = (*balls.at(i));
+       Sphere &ball = (*balls.at(i));
        glm::vec3 oldPos = ball.getPos();
 	   ball.setOldPos(oldPos);
        glm::vec3 oldVl = ball.getVelocity();
@@ -22,7 +22,7 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 std::vector <Sphere *> makeTestScene(){
 	std::vector <Sphere *> balls;
 	double x,y,z;
-	for (int i = 0; i < 3; i++){
+	for (int i = 0; i < 20; i++){
 		x = (i*i + 3*i+504)%100 + i/20.;
 		y = (2*i*i - i + 1017)%100 + i/20.;
 		z = (5*i*i - 13 *i + 100014) % 100 + i/20.;
@@ -85,13 +85,13 @@ void UpdateScene(std::vector <Sphere *> &balls) {
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
 	}
-/*
+
 	for (int i = 0; i < balls.size(); i++){
 		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
 		glm::vec3 newPos = (*balls.at(i)).getPos();
 		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
 		(*balls.at(i)).setVelocity(velocity);
-	} */
+	}
 }
 
 }
