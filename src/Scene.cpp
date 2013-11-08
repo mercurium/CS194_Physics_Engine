@@ -29,6 +29,19 @@ void updateBallPositions(vector<Sphere *> balls){
 
 }
 
+vector <Sphere *> makeTestScene(){
+	vector <Sphere *> balls;
+	int x,y,z;
+	for (int i = 0; i < 20; i++){
+		x = (i*i + 3*i+504)%100;
+		y = (2*i*i - i + 1017)%100;
+		z = (5*i*i - 13 *i + 100014) % 100;
+		balls.push_back(new Sphere(x,y,z));
+
+	}
+
+}
+
 vector<Intersection *> getCollisions(vector <Sphere *> balls){
 	vector<Intersection *> intersects;
     for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
@@ -88,38 +101,3 @@ void updateScene(vector <Sphere *> balls) {
 	}
 }
 
-
-void distanceCheck(vector <Sphere *> balls){
-	updateBallPositions(balls);
-
-  /* 
-  Naive algorithm via iterative refinement that loops until no
-  collisions found.
-  */
-  for (int i = 0; i < balls.size(); i++){
-    for (int j = 0; j < balls.size(); j++){
-      Sphere s1 = *balls.at(i);
-      Sphere s2 = *balls.at(j);
-
-      if(s1 == s2){
-        continue;
-      }
-      else{
-        glm::vec3 pos1 = s1.getPos();
-        glm::vec3 pos2 = s2.getPos();
-
-        double rad1 = s1.getRadius();
-        double rad2= s2.getRadius();
-
-        double dist = glm::distance(pos1, pos2);
-
-        if (dist >= (rad1 + rad2)){
-          //handle_collision_physics(s1, s2);
-          
-          i = 0;
-          j = 0;
-        }
-      }
-    }
-  }
-}

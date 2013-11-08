@@ -14,6 +14,8 @@ int mouse_left_down_x;
 int mouse_left_down_y;
 int mouse_right_down_x;
 int mouse_right_down_y;
+std::vector<Sphere *> balls;
+Scene scene = *(new Scene());
 
 int main(int argc, char *argv[])
 {
@@ -25,8 +27,9 @@ int main(int argc, char *argv[])
     mouse_right_down_y=0;
     r = initRender();
 
-
     initGLUT(argv, argc);
+	
+	balls = scene.makeTestScene();
     glutMainLoop();
 
 

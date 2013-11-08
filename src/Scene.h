@@ -13,6 +13,7 @@ class Scene{
         std::vector<Intersection> getIntersections(Sphere &obj);
         void UpdateBallPositions();
         void UpdateScene();
+		std::vector<Sphere *>  makeTestScene();
 
     private:
 
