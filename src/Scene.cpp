@@ -18,9 +18,10 @@ std::vector<Intersection> Scene::getIntersections(Sphere &obj){
 
 void updateBallPositions(vector<Sphere *> balls){
     /*  Update each ball to the new location  */
-    for (int i = 00; i < balls.size(); i++){
+    for (int i = 0; i < balls.size(); i++){
        Sphere ball = *balls.at(i);
        glm::vec3 oldPos = ball.getPos();
+	   ball.setOldPos(oldPos);
        glm::vec3 oldVl = ball.getVelocity();
        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x, oldPos.y + oldVl.y, oldPos.z + oldVl.z);
        ball.setPos(newPos);
@@ -78,6 +79,12 @@ void updateScene(vector <Sphere *> balls) {
 	while (intersections.size()  != 0){
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
+	}
+
+	for (int i = 0; i < balls.size(); i++){
+		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
+		glm::vec3 newPos = (*balls.at(i)).getPos();
+		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
 	}
 }
 
