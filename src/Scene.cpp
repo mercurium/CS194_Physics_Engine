@@ -28,6 +28,23 @@ void updateBallPositions(vector<Sphere *> balls){
 
 }
 
+vector<Intersection *> getCollisions(vector <Sphere *> balls){
+	vector<Intersection *> intersects;
+    for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
+        for(int j = 0; j < i; j++){
+            Sphere s1 = *balls.at(i);
+            Sphere s2 = *balls.at(j);
+            double dist = glm::distance(s1.getPos(), s2.getPos());
+            double radiiDist = s1.getRadius() + s2.getRadius();
+            if (dist < radiiDist){
+				intersects.push_back(new Intersection(s1,s2, radiiDist-dist));
+			}
+
+		}
+	}
+	return intersects;
+}
+
 void resolveCollisions(vector <Sphere *> balls){
     bool notDone = true, almostDone = true;
     while (notDone){
