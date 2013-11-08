@@ -94,10 +94,10 @@ void Render::draw(Sphere& sph){
 
     //Push translation by center
     glPushMatrix();
-    glTranslatef(center[0],center[1],center[2]);
+    glTranslatef(center[0]/25. - 1,center[1]/25. - 1,center[2]/25. -1);
 
     //Draw sphere
-    glutSolidSphere( rad,50,50); 
+    glutSolidSphere( rad/10.,50,50); 
 
     //Pop translation matrix
     glPopMatrix();

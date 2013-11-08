@@ -15,7 +15,6 @@ int mouse_left_down_y;
 int mouse_right_down_x;
 int mouse_right_down_y;
 std::vector<Sphere *> balls;
-Scene scene = *(new Scene());
 
 int main(int argc, char *argv[])
 {
@@ -28,8 +27,7 @@ int main(int argc, char *argv[])
     r = initRender();
 
     initGLUT(argv, argc);
-	
-	balls = scene.makeTestScene();
+	balls = Scene::makeTestScene();
     glutMainLoop();
 
 
@@ -44,7 +42,7 @@ Render initRender(){
 void initGLUT(char *argv[], int argc){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutInitWindowSize(400, 300);
+    glutInitWindowSize(800, 600);
     glutCreateWindow("CS194 Physics");
     glutDisplayFunc(&mainloop);
     glutReshapeFunc(&reshape);
@@ -59,8 +57,11 @@ void mainloop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Render Scene
-    //Render.draw(Scene)
-    r.drawtest();
+
+	Scene::UpdateScene(balls);
+    r.draw(balls);
+	printf("We're updating!\n");
+    //r.drawtest();
     
     //Physics Update
     //Physics.update(Scene)
