@@ -1,3 +1,5 @@
+#include <GL/glew.h>
+#include <GL/glut.h>
 #include "Render.h"
 #include "Transform.h"
 #include <stdio.h>
@@ -27,11 +29,11 @@ Render::Render (){
     zN = 0.1;
     zF = 100.0;
     fov = 60;
-    
+    shader = new Shader();    
 }
 
 Render::~Render (){
-
+    delete shader;
 }
 
 void Render::draw(std::vector<Sphere*> spheres){
@@ -45,7 +47,6 @@ void Render::draw(std::vector<Sphere*> spheres){
 }
 
 void Render::drawtest(){
-    printf("drawing!\n");
     //printf("cent: ");pr(camCenter);printf(" up:");pr(camUp);printf(" view:");pr(camView);printf("\n");
     /*
     glm::vec3 viewCenter = camCenter+camView; 
@@ -58,18 +59,21 @@ void Render::drawtest(){
     */
 
     loadCamMatrix( camCenter, camUp, camView);
+    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+
+    GLfloat x = 0.5;
+    glUniform1i(shader->numused, 1);
+    //glm::vec4 selfpos( camCenter[0],camCenter[1],camCenter[2],1);
+    glm::vec4 selfpos( 1,0,0,0);
+    glUniform4fv(shader->lightpos, 1, &selfpos[0]);
+    glUniform4fv(shader->lightcol, 1, &glm::vec4(1,1,1,0)[0]);
+    glUniform4fv(shader->ambientcol, 1, &glm::vec4(.1,.1,.1,1)[0]);
+    glUniform4fv(shader->diffusecol, 1, &glm::vec4(1,0,0,1)[0]);
+    glUniform4fv(shader->specularcol, 1, &glm::vec4(0,0,0,1)[0]);
+    glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
+    glUniform1fv(shader->shininesscol, 1, &x);
     
-    //glTranslatef(0.0f,0.0f,-3.0f);
-    /*
-    glBegin(GL_TRIANGLES);
-        glColor3f(1,0,0);
-        glVertex3f(1.0f,0.0f,0.0f);
-        glVertex3f(0.0f,1.0f,0.0f);
-        glColor3f(0,0,1);
-        glVertex3f(0.0f,0.0f,0.0f);
-    glEnd();
-    */
-    glColor3f(1,0,0);
+    //glColor3f(1,0,0);
     Sphere sph(1,0,0);
     draw(sph);
 

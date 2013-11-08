@@ -4,6 +4,7 @@
 #include "Scene.h"
 #include "Sphere.h"
 #include "Transform.h"
+#include "shaders.h"
 
 void pr(glm::vec3& v);
 /**
@@ -25,6 +26,8 @@ class Render {
         void translCamLR(double dist);
         glm::mat4 getPerspective(float fovy);
 
+        Shader * shader;
+
     private:
         void draw(Sphere& sph);
         glm::vec3 camCenter;
@@ -33,5 +36,4 @@ class Render {
         double zN;
         double zF;
         double fov;
-
 };

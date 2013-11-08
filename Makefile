@@ -7,7 +7,7 @@ BINDIR = bin
 #Compiler flags
 CFLAGS=-O2 
 IFLAGS=-Ilib
-LDFLAGS=-lglut -lGLU -lGL -lX11
+LDFLAGS=-lGLEW -lglut -lGLU -lGL -lX11
 
 #SOURCES = $(shell find $(SRCDIR) -name '*.cpp') #Old find that returns everything in src directory
 SOURCES = $(shell find $(SRCDIR) -type f \( -iname '*.cpp' ! -iname 'Main.cpp' ! -iname 'Test.cpp' \)  )
@@ -33,6 +33,6 @@ clean:
 	rm $(BINDIR)/*
 
 install_stuff:
-	sudo apt-get install libglu1-mesa-dev
+	sudo apt-get install libglu1-mesa-dev libglew-dev
 	sudo apt-get install libgl1-mesa-dev
 	sudo apt-get install freeglut3
