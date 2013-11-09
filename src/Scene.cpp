@@ -3,19 +3,20 @@
 #include "Scene.h"
 
 int LIMIT = 100;
-int numBalls = 100;
+int numBalls = 200;
 bool twoD = false;
 
 namespace  Scene{
 
 void updateBallPositions(std::vector<Sphere *> &balls){
-    /*  Update each ball to the new location  */
-    for (int i = 0; i < balls.size(); i++){
-       Sphere &ball = (*balls.at(i));
-       glm::vec3 oldPos = ball.getPos();
-	   ball.setOldPos(oldPos);
-       glm::vec3 oldVl = ball.getVelocity();
-       glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x, oldPos.y + oldVl.y, oldPos.z + oldVl.z);
+	/*  Update each ball to the new location  */
+	for (int i = 0; i < balls.size(); i++){
+		Sphere &ball = (*balls.at(i));
+		glm::vec3 oldPos = ball.getPos();
+		ball.setOldPos(oldPos);
+		glm::vec3 oldVl = ball.getVelocity();
+		glm::vec3 accel = ball.getAcceleration();
+		glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x, oldPos.y + oldVl.y, oldPos.z + oldVl.z);
 
 
 	   /*Checking for Walls */
@@ -37,18 +38,23 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 		}
 		if (newPos.y < 0){
 			newPos.y = -newPos.y;
-			oldVl.y = -oldVl.y;
+			oldVl.y = -oldVl.y/2;
+			oldVl.x = oldVl.x * .8;
+			oldVl.z = oldVl.z * .8;
 		}
 		if (newPos.z < 0){
 			newPos.z = -newPos.z;
 			oldVl.z = -oldVl.z;
 		}
+	oldVl.x += accel.x;
+	oldVl.y += accel.y;
+	oldVl.z += accel.z;
+	
+	ball.setPos(newPos);
+	ball.setOldPos(oldPos);
+	ball.setVelocity(oldVl);
 
-       ball.setPos(newPos);
-	   ball.setOldPos(oldPos);
-	   ball.setVelocity(oldVl);
-
-    }
+	}
 
 }
 
@@ -71,11 +77,11 @@ std::vector <Sphere *> makeTestScene(){
 
 std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
-    for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
-        for(int j = 0; j < i; j++){
-            double dist = glm::distance((*balls.at(i)).getPos(), (*balls.at(j)).getPos());
-            double radiiDist = (*balls.at(i)).getRadius() + (*balls.at(j)).getRadius();
-            if (dist < radiiDist-.001){ // .001 to avoid rounding error
+	for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
+		for(int j = 0; j < i; j++){
+			double dist = glm::distance((*balls.at(i)).getPos(), (*balls.at(j)).getPos());
+			double radiiDist = (*balls.at(i)).getRadius() + (*balls.at(j)).getRadius();
+			if (dist < radiiDist-.001){ // .001 to avoid rounding error
 				intersects.push_back(new Intersection(balls.at(i),balls.at(j), dist, radiiDist));
 			}
 
@@ -95,12 +101,12 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		radiiDist = i.getRadiiDist();
 
 		glm::vec3 s1Pos = s1.getPos();
-	    glm::vec3 s2Pos = s2.getPos();
-	    glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
+		glm::vec3 s2Pos = s2.getPos();
+		glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
 		   s1Pos.x + (s1Pos.x - s2Pos.x) * (radiiDist - dist)/ (2*dist+.0000001), 
 	 	   s1Pos.y + (s1Pos.y - s2Pos.y) * (radiiDist - dist)/ (2*dist+.0000001),
 		   s1Pos.z + (s1Pos.z - s2Pos.z) * (radiiDist - dist)/ (2*dist+.0000001));
-	    glm::vec3 s2NewPos = glm::vec3(
+		glm::vec3 s2NewPos = glm::vec3(
 		   s2Pos.x + (s2Pos.x - s1Pos.x) * (radiiDist - dist)/ (2*dist+.0000001),
 		   s2Pos.y + (s2Pos.y - s1Pos.y) * (radiiDist - dist)/ (2*dist+.0000001),
 		   s2Pos.z + (s2Pos.z - s1Pos.z) * (radiiDist - dist)/ (2*dist+.0000001));
