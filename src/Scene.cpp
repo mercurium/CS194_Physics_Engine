@@ -71,11 +71,11 @@ std::vector <Sphere *> makeTestScene(){
 
 std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
-    for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
+    for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
         for(int j = 0; j < i; j++){
             double dist = glm::distance((*balls.at(i)).getPos(), (*balls.at(j)).getPos());
             double radiiDist = (*balls.at(i)).getRadius() + (*balls.at(j)).getRadius();
-            if (dist < radiiDist-.001){
+            if (dist < radiiDist-.001){ // .001 to avoid rounding error
 				intersects.push_back(new Intersection(balls.at(i),balls.at(j), dist, radiiDist));
 			}
 

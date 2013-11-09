@@ -6,7 +6,7 @@
 
 namespace Scene{
         std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);
-        void resolveCollisions(std::vector <Sphere *> &balls);
+        void resolveCollisions(std::vector <Intersection *> intersections);
         void UpdateBallPositions(std::vector <Sphere *> &balls);
         void UpdateScene(std::vector <Sphere *> &balls);
 		std::vector<Sphere *>  makeTestScene();
