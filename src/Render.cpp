@@ -27,7 +27,7 @@ Render::Render (){
     camView = glm::vec3(0,0,1);;
     camUp = glm::vec3(0,1,0);;
     zN = 0.1;
-    zF = 100.0;
+    zF = 200.0;
     fov = 60;
     shader = new Shader();    
 }
@@ -39,6 +39,17 @@ Render::~Render (){
 void Render::draw(std::vector<Sphere*> spheres){
 
     loadCamMatrix( camCenter, camUp, camView);
+
+    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+    GLfloat x = 100;
+    glUniform1i(shader->numused, 1);
+    glm::vec4 selfpos( 0,0,-10,1);
+    glUniform4fv(shader->lightpos, 1, &selfpos[0]);
+    glUniform4fv(shader->lightcol, 1, &glm::vec4(1,1,1,0)[0]);
+    glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
+    glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
+    glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
+    glUniform1fv(shader->shininesscol, 1, &x);
     
     for(int i=0; i< spheres.size() ;i++){
         Sphere* sph = spheres[i];
@@ -114,7 +125,10 @@ void Render::draw(Sphere& sph){
     glTranslatef(center[0],center[1],center[2]);
 
     //load color
-    glUniform4fv(shader->diffusecol, 1, &sph.getColor()[0]);
+    glm::vec4 color = sph.getColor();
+    //glm::vec4 color(1,0,0,1);
+    glColor3f(color[0],color[1],color[2]);
+    glUniform4fv(shader->diffusecol, 1, &color[0]);
 
     //Draw sphere
     glutSolidSphere( rad,50,50); 
