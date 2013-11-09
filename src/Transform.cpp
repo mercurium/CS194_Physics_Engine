@@ -22,6 +22,13 @@ void loadCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView){
     glLoadMatrixf(&mv[0][0]);
 }
 
+glm::mat4 getCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView){
+
+    glm::vec3 viewCenter = camCenter+camView; 
+    glm::mat4 mv = lookAt( camCenter, viewCenter, camUp);
+    return mv;
+}
+
 glm::mat4 rotate(glm::vec3& axis, float degrees){
   float costheta = glm::cos((degrees)*.0174532825f);
   float sintheta = glm::sin((degrees)*.0174532825f);

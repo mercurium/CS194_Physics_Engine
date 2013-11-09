@@ -46,9 +46,6 @@ vec4 CalculateLight (const in vec3 direction, const in vec4 lightcolor, const in
 void main (void) 
 {       
     if (enablelighting) {       
-        
-        // YOUR CODE FOR HW 2 HERE
-        // A key part is implementation of the fragment shader
 
         vec4 finalcolor ; 
         int i ;

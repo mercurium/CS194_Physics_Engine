@@ -1,4 +1,6 @@
 #include "Sphere.h"
+#include <cstdlib>
+#include <ctime>
 
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
@@ -8,6 +10,11 @@ Sphere::Sphere(double x, double y, double z){
 
 	radius = 3;
 	mass = 1;
+
+    float red = (std::rand()%255)/255.0f;
+    float g = (std::rand()%255)/255.0f;
+    float b = (std::rand()%255)/255.0f;
+    color = glm::vec4(red,g,b,1);
 }
 
 
@@ -22,6 +29,11 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
 
 	radius = 3;
 	mass = 1;
+
+    float red = (std::rand()%255)/255.0f;
+    float g = (std::rand()%255)/255.0f;
+    float b = (std::rand()%255)/255.0f;
+    color = glm::vec4(red,g,b,1);
 }
 
 
@@ -33,6 +45,11 @@ Sphere::Sphere(double x, double y, double z, double r, double m){
 
 	radius = r;
 	mass = m;
+
+    float red = (std::rand()%255)/255.0f;
+    float g = (std::rand()%255)/255.0f;
+    float b = (std::rand()%255)/255.0f;
+    color = glm::vec4(red,g,b,1);
 }
 
 Sphere::~Sphere (){
@@ -67,6 +84,10 @@ glm::vec3 Sphere::getPos(){
 
 glm::vec3 Sphere::getVelocity(){
 	return velocity;
+}
+
+glm::vec4 Sphere::getColor(){
+	return color;
 }
 
 glm::vec3 Sphere::getAcceleration(){
