@@ -5,6 +5,7 @@
 #include "shaders.h"
 #include <cstdlib>
 #include <ctime>
+#include "Util.h"
 
 
 void mainloop();
@@ -20,6 +21,7 @@ int mouse_left_down_x;
 int mouse_left_down_y;
 int mouse_right_down_x;
 int mouse_right_down_y;
+double prev_time;
 char* keydict;
 std::vector<Sphere *> balls;
 
@@ -42,6 +44,7 @@ void init(){
     mouse_left_down_y=0;
     mouse_right_down_x=0;
     mouse_right_down_y=0;
+    prev_time = timestamp();
     std::srand(std::time(0));
 
     keydict = new char[256];
@@ -90,6 +93,10 @@ void initGLUT(char *argv[], int argc){
 }
 
 void mainloop(){
+    double current_time = timestamp();
+    double elapsed = current_time-prev_time;
+    prev_time = current_time;
+
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
