@@ -12,6 +12,7 @@ class Sphere{
 	
 	public:
 		Sphere(double x, double y, double z);
+		Sphere(double x, double y, double z, bool twoD);
 		Sphere(double x, double y, double z, double r, double m);
 		virtual ~Sphere(); 
 		

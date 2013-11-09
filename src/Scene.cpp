@@ -3,6 +3,9 @@
 #include "Scene.h"
 
 int LIMIT = 100;
+int numBalls = 100;
+bool twoD = false;
+
 namespace  Scene{
 
 void updateBallPositions(std::vector<Sphere *> &balls){
@@ -52,11 +55,14 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 std::vector <Sphere *> makeTestScene(){
 	std::vector <Sphere *> balls;
 	double x,y,z;
-	for (int i = 0; i < 300; i++){
+	for (int i = 0; i < numBalls; i++){
 		x = (i*i + 3*i+504)%211 + i/200.;
 		y = (2*i*i - i + 1017)%211 + i/200.;
-		z = (5*i*i - 13 *i + 1014) % 211 + i/200.;
-		balls.push_back(new Sphere(x,y,z));
+		if (!twoD)
+			z = (5*i*i - 13 *i + 1014) % 211 + i/200.;
+		else
+			z = 0;
+		balls.push_back(new Sphere(x,y,z,twoD));
 
 	}
 	return balls;
