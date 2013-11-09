@@ -1,10 +1,5 @@
 # version 120 
 
-/* This is the fragment shader for reading in a scene description, including 
-   lighting.  Uniform lights are specified from the main program, and used in 
-   the shader.  As well as the material parameters of the object.  */
-
-// Mine is an old machine.  For version 130 or higher, do 
 // in vec4 color ;  
 // in vec4 mynormal ; 
 // in vec4 myvertex ;
@@ -20,11 +15,6 @@ uniform vec4 lightposn[numLights] ; // positions of lights
 uniform vec4 lightcolor[numLights] ; // colors of lights
 uniform int numused ;               // number of lights used
 
-// Now, set the material parameters.  These could be varying and/or bound to 
-// a buffer.  But for now, I'll just make them uniform.  
-// I use ambient, diffuse, specular, shininess as in OpenGL.  
-// But, the ambient is just additive and doesn't multiply the lights.  
-
 uniform vec4 ambient ; 
 uniform vec4 diffuse ; 
 uniform vec4 specular ; 
@@ -33,9 +23,11 @@ uniform float shininess ;
 
 vec4 CalculateLight (const in vec3 direction, const in vec4 lightcolor, const in vec3 normal, const in vec3 halfvec, const in vec4 mydiffuse, const in vec4 myspecular, const in float myshininess) {
 
+        //Diffuse
         float nDotL = dot(normal, direction)  ;         
         vec4 lambert = mydiffuse * lightcolor * max (nDotL, 0.0) ;  
 
+        //Specular
         float nDotH = dot(normal, halfvec) ; 
         vec4 phong = myspecular * lightcolor * pow (max(nDotH, 0.0), myshininess) ; 
 

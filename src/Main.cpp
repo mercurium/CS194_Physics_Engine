@@ -58,11 +58,7 @@ void init(){
 
     r = new Render();
 
-    printf("hi2\n");
-    printf("hi3\n");
     r->shader->vertexshader = initshaders(GL_VERTEX_SHADER, "shaders/light.vert.glsl") ;
-    printf("hi4\n");
-
     GLuint shaderprogram;
     r->shader->fragmentshader = initshaders(GL_FRAGMENT_SHADER, "shaders/light.frag.glsl") ;
     r->shader->shaderprogram = initprogram(r->shader->vertexshader, r->shader->fragmentshader) ; 
@@ -90,7 +86,7 @@ void initGLUT(char *argv[], int argc){
     glutKeyboardUpFunc(&keyup);
     glutMouseFunc(&mouse);
 
-    //glutIdleFunc(&idlefunc);
+    glutIdleFunc(&idlefunc);
 }
 
 void mainloop(){
@@ -112,12 +108,12 @@ void mainloop(){
 
 
 void keyup(unsigned char c, int x, int y){
-    printf("keyup: %c\n", c);
+    //printf("keyup: %c\n", c);
     keydict[c]=0;
 }
 
 void keydown(unsigned char c, int x, int y){
-    printf("keydown: %c\n", c);
+    //printf("keydown: %c\n", c);
     keydict[c]=1;
     const double SNSTVTY = 0.5;
     switch(c){
@@ -181,7 +177,7 @@ void mouse( int button, int state, int x, int y){
 }
 
 void idlefunc(){
-    
+     glutPostRedisplay();   
 }
 
 void reshape(int w, int h){

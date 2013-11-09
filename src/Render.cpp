@@ -23,17 +23,25 @@ void prmat(glm::mat4& m){
 }
 
 Render::Render (){
-    camCenter = glm::vec3(0,0,0);
-    camView = glm::vec3(0,0,1);;
-    camUp = glm::vec3(0,1,0);;
-    zN = 0.1;
-    zF = 200.0;
-    fov = 60;
-    shader = new Shader();    
+    init(glm::vec3(0,0,0), glm::vec3(0,0,1), glm::vec3(0,1,0));
+}
+
+Render::Render (glm::vec3 center, glm::vec3 view, glm::vec3 up){
+    init(center,view,up);
 }
 
 Render::~Render (){
     delete shader;
+}
+
+void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
+    camCenter = center;
+    camView = view;
+    camUp = up;
+    zN = 0.1;
+    zF = 200.0;
+    fov = 60;
+    shader = new Shader();    
 }
 
 void Render::draw(std::vector<Sphere*> spheres){
@@ -41,11 +49,14 @@ void Render::draw(std::vector<Sphere*> spheres){
     loadCamMatrix( camCenter, camUp, camView);
 
     glUniform1i(shader->enablelighting, true); //enable lighting in shader
-    GLfloat x = 100;
-    glUniform1i(shader->numused, 1);
+    GLfloat x = 300;
+    int numlights = 2;
+    glUniform1i(shader->numused, numlights);
     glm::vec4 selfpos( 0,0,-10,1);
-    glUniform4fv(shader->lightpos, 1, &selfpos[0]);
-    glUniform4fv(shader->lightcol, 1, &glm::vec4(1,1,1,0)[0]);
+    float lightPos[] = {0,40,-10,1,0,0,0,1};
+    float lightColor[] = {1,1,1,1,0,0,0,1};
+    glUniform4fv(shader->lightpos, numlights, lightPos);
+    glUniform4fv(shader->lightcol, numlights, lightColor);
     glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
     glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
     glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
@@ -113,21 +124,13 @@ void Render::draw(Sphere& sph){
     glm::vec3 center = sph.getPos();
     double rad = sph.getRadius();
 
-    //glLoadIdentity();
-    //glm::mat4 mv= getCamMatrix( camCenter, camUp, camView);
-    //load_glm_matrix(mv);
     //Push translation by center
     glPushMatrix();
-    //glLoadIdentity();
-    //glm::mat4 trans = translate(center);
-    //load_glm_matrix(trans*mv);
-    
     glTranslatef(center[0],center[1],center[2]);
 
     //load color
     glm::vec4 color = sph.getColor();
-    //glm::vec4 color(1,0,0,1);
-    glColor3f(color[0],color[1],color[2]);
+    //glColor3f(color[0],color[1],color[2]);
     glUniform4fv(shader->diffusecol, 1, &color[0]);
 
     //Draw sphere
