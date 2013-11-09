@@ -59,7 +59,6 @@ void mainloop(){
     //Render Scene
 	Scene::UpdateScene(*(&balls));
     r.draw(balls);
-	printf("We're updating!\n");
     //r.drawtest();
     
     //Physics Update

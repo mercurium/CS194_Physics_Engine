@@ -41,12 +41,10 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 			oldVl.z = -oldVl.z;
 		}
 
-
        ball.setPos(newPos);
 	   ball.setOldPos(oldPos);
 	   ball.setVelocity(oldVl);
 
-	   //printf("%f %f %f, %f %f %f \n", newPos.x, newPos.y, newPos.z, oldPos.x, oldPos.y, oldPos.z);
     }
 
 }
@@ -54,7 +52,7 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 std::vector <Sphere *> makeTestScene(){
 	std::vector <Sphere *> balls;
 	double x,y,z;
-	for (int i = 0; i < 200; i++){
+	for (int i = 0; i < 300; i++){
 		x = (i*i + 3*i+504)%211 + i/200.;
 		y = (2*i*i - i + 1017)%211 + i/200.;
 		z = (5*i*i - 13 *i + 1014) % 211 + i/200.;
@@ -69,11 +67,9 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
     for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
         for(int j = 0; j < i; j++){
-            Sphere &s1 = *balls.at(i);
-            Sphere &s2 = *balls.at(j);
-            double dist = glm::distance(s1.getPos(), s2.getPos());
-            double radiiDist = s1.getRadius() + s2.getRadius();
-            if (dist < radiiDist){
+            double dist = glm::distance((*balls.at(i)).getPos(), (*balls.at(j)).getPos());
+            double radiiDist = (*balls.at(i)).getRadius() + (*balls.at(j)).getRadius();
+            if (dist < radiiDist-.001){
 				intersects.push_back(new Intersection(balls.at(i),balls.at(j), dist, radiiDist));
 			}
 
@@ -104,33 +100,21 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		   s2Pos.z + (s2Pos.z - s1Pos.z) * (radiiDist - dist)/ (2*dist+.0000001));
 		s1.setPos(s1NewPos);
 		s2.setPos(s2NewPos);
+		glm::vec3 s1Vel = s1.getVelocity();
+		s1.setVelocity(s2.getVelocity());
+		s2.setVelocity(s1Vel);
 	}
 }
 
 void UpdateScene(std::vector <Sphere *> &balls) {
 	updateBallPositions(*(&balls));
-//	printf("We were called! Update scene~\n");
-
-
 	std::vector <Intersection *> intersections = getCollisions(balls);
 
-	if (intersections.size()  != 0){
-		for(int i = 0; i < intersections.size(); i++){
-			Intersection inter = *intersections.at(i);
-			inter.print();
-
-		}
+	while (intersections.size()  != 0){
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
-		
 	}
 
-/*	for (int i = 0; i < balls.size(); i++){
-		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
-		glm::vec3 newPos = (*balls.at(i)).getPos();
-		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
-		(*balls.at(i)).setVelocity(velocity);
-	} */
 }
 
 }
