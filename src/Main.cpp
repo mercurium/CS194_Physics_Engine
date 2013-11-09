@@ -98,9 +98,6 @@ void key(unsigned char c, int x, int y){
         case 'l':
             r.rotateCamLR(-10*SNSTVTY);
             break;
-        case 'm':
-            r.rotateCamLR(0);
-            break;
 
         default:
             //nothing

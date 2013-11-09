@@ -16,22 +16,36 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 
 
 	   /*Checking for Walls */
-	   if (newPos.x > LIMIT)
+		if (newPos.x > LIMIT){
 			newPos.x = 2* LIMIT - newPos.x;
-	   if (newPos.y > LIMIT)
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y > LIMIT){
 			newPos.y = 2* LIMIT - newPos.y;
-	   if (newPos.z > LIMIT)
+			oldVl.y = -oldVl.y;
+		}
+		if (newPos.z > LIMIT){
 			newPos.z = 2* LIMIT - newPos.z;
-	   if (newPos.x < 0)
+			oldVl.z = -oldVl.z;
+		}
+		if (newPos.x < 0){
 			newPos.x = -newPos.x;
-	   if (newPos.y < 0)
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y < 0){
 			newPos.y = -newPos.y;
-	   if (newPos.z < 0)
+			oldVl.y = -oldVl.y;
+		}
+		if (newPos.z < 0){
 			newPos.z = -newPos.z;
+			oldVl.z = -oldVl.z;
+		}
 
 
        ball.setPos(newPos);
 	   ball.setOldPos(oldPos);
+	   ball.setVelocity(oldVl);
+
 	   //printf("%f %f %f, %f %f %f \n", newPos.x, newPos.y, newPos.z, oldPos.x, oldPos.y, oldPos.z);
     }
 
@@ -40,10 +54,10 @@ void updateBallPositions(std::vector<Sphere *> &balls){
 std::vector <Sphere *> makeTestScene(){
 	std::vector <Sphere *> balls;
 	double x,y,z;
-	for (int i = 0; i < 20; i++){
-		x = (i*i + 3*i+504)%100 + i/20.;
-		y = (2*i*i - i + 1017)%100 + i/20.;
-		z = (5*i*i - 13 *i + 100014) % 100 + i/20.;
+	for (int i = 0; i < 200; i++){
+		x = (i*i + 3*i+504)%211 + i/200.;
+		y = (2*i*i - i + 1017)%211 + i/200.;
+		z = (5*i*i - 13 *i + 1014) % 211 + i/200.;
 		balls.push_back(new Sphere(x,y,z));
 
 	}
@@ -55,8 +69,8 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
     for(int i = 1; i < balls.size(); i++){ //First computer all the intersections that happen
         for(int j = 0; j < i; j++){
-            Sphere s1 = *balls.at(i);
-            Sphere s2 = *balls.at(j);
+            Sphere &s1 = *balls.at(i);
+            Sphere &s2 = *balls.at(j);
             double dist = glm::distance(s1.getPos(), s2.getPos());
             double radiiDist = s1.getRadius() + s2.getRadius();
             if (dist < radiiDist){
@@ -72,9 +86,9 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 	double dist, radiiDist;
 	while(intersections.size() != 0)
 	{
-		Intersection i = *intersections.back();
+		Intersection &i = *intersections.back();
 		intersections.pop_back();
-		Sphere s1 = *i.getS1(), s2 = *i.getS2();
+		Sphere &s1 = *i.getS1(), &s2 = *i.getS2();
 		dist = i.getDist();
 		radiiDist = i.getRadiiDist();
 
@@ -96,19 +110,27 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 void UpdateScene(std::vector <Sphere *> &balls) {
 	updateBallPositions(*(&balls));
 //	printf("We were called! Update scene~\n");
+
+
 	std::vector <Intersection *> intersections = getCollisions(balls);
-/*
-	while (intersections.size()  != 0){
+
+	if (intersections.size()  != 0){
+		for(int i = 0; i < intersections.size(); i++){
+			Intersection inter = *intersections.at(i);
+			inter.print();
+
+		}
 		resolveCollisions(intersections);
 		intersections = getCollisions(balls);
+		
 	}
-*/
-	for (int i = 0; i < balls.size(); i++){
+
+/*	for (int i = 0; i < balls.size(); i++){
 		glm::vec3 oldPos = (*balls.at(i)).getOldPos();
 		glm::vec3 newPos = (*balls.at(i)).getPos();
 		glm::vec3 velocity = glm::vec3( newPos.x - oldPos.x, newPos.y- oldPos.y, newPos.z - oldPos.z);
 		(*balls.at(i)).setVelocity(velocity);
-	}
+	} */
 }
 
 }

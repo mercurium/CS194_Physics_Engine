@@ -23,7 +23,14 @@ double Intersection::getDist(){
 	return dist;
 }
 
-
 double Intersection::getRadiiDist(){
 	return radiiDist;
+}
+
+void Intersection::print(){
+	Sphere S1 = *s1, S2 = *s2;
+	S1.print();
+	S2.print();
+	printf("The two spheres are %f apart \n", dist);
+
 }

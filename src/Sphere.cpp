@@ -3,7 +3,7 @@
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
-	velocity = glm::vec3(1.0, 4.0, 5.0);
+	velocity = glm::vec3(.1+x/150., .4+y/130., .3+ z/110.);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	radius = 1;
@@ -68,6 +68,10 @@ double Sphere::getMass(){
 
 glm::vec3 Sphere::getOldPos(){
 	return oldPos;
+}
+
+void Sphere::print(){
+	printf("The coordinates are (%f,%f,%f) of radius %f\n",position.x,position.y,position.z,radius); 
 }
 
 

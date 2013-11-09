@@ -26,6 +26,7 @@ class Sphere{
 		double getRadius();
 		double getMass();
 		glm::vec3 getOldPos();
+		void print();
 
 		bool operator == (const Sphere& s) const;
 };

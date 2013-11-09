@@ -13,6 +13,7 @@ class Intersection {
 		Sphere * getS2();
 		double getDist();
 		double getRadiiDist();
+		void print();
     private:
         /* data */
 };
