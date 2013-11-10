@@ -3,12 +3,14 @@
 #include "Sphere.h"
 
 class DistConstr{
+	Sphere* s1;
+	Sphere* s2;
+
+	double distance;
+
     public:
-        DistConstr(void);
-        ~DistConstr(void);
-
-    private:
-        Sphere *sphere1, *sphere2;
-        double dist;
-
+        DistConstr(Sphere* a, Sphere* b, double d);
+        virtual ~DistConstr();
+        double DistConstr::getDist();
+        bool DistConstr::contains(Sphere* a, Sphere* b);
 };
