@@ -17,4 +17,5 @@ glm::mat4 translate(glm::vec3& v);
  * Returns the Model+View+Projection matrix
  */
 void loadCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView);
+glm::mat4 getCamMatrix(glm::vec3& camCenter, glm::vec3& camUp, glm::vec3& camView);
 glm::mat4 lookAt(const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up);

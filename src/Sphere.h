@@ -6,6 +6,7 @@ class Sphere{
 	glm::vec3 oldPos;
 	glm::vec3 velocity;
 	glm::vec3 acceleration;
+    glm::vec4 color;
 
 	double radius;
 	double mass;
@@ -22,6 +23,7 @@ class Sphere{
 		void setAcceleration(glm::vec3 acc);
 		
 		glm::vec3 getPos();
+		glm::vec4 getColor();
 		glm::vec3 getVelocity();
 		glm::vec3 getAcceleration();
 		double getRadius();

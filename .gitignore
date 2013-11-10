@@ -2,3 +2,5 @@ bin/*
 *.swp
 *.o
 src/Test.cpp
+*.pyc
+config.txt

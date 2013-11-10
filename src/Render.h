@@ -14,6 +14,7 @@ void pr(glm::vec3& v);
 class Render {
     public:
         Render ();
+        Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
         virtual ~Render ();
         void draw(std::vector<Sphere*> spheres);
         void drawtest();
@@ -29,6 +30,7 @@ class Render {
         Shader * shader;
 
     private:
+        void init (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
         void draw(Sphere& sph);
         glm::vec3 camCenter;
         glm::vec3 camView;

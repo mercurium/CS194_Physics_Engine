@@ -2,43 +2,48 @@
 #include <GL/glut.h>
 #include "Render.h"
 #include "Transform.h"
-#include <stdio.h>
-#include <string>
-#include <cstring>
-#include <vector>
+#include "Util.h"
 
-void pr(glm::vec3& v){
-   printf("<%.3f %.3f %.3f>",v[0],v[1],v[2]); 
-}
-
-void prmat(glm::mat4& m){
-    std::string s("%.2f\t"); 
-    std::string format = s+s+s+s+"\n"+s+s+s+s+"\n"+s+s+s+s+"\n"+s+s+s+s+"\n";
-    char* cstr = new char[format.length()+1];
-    std::strcpy(cstr, format.c_str());
-   printf( cstr, m[0][0],m[0][1],m[0][2],m[0][3],
-                  m[1][0],m[1][1],m[1][2],m[1][3],
-                  m[2][0],m[2][1],m[2][2],m[2][3],
-                  m[3][0],m[3][1],m[3][2],m[3][3]);
-}
 
 Render::Render (){
-    camCenter = glm::vec3(0,0,4);
-    camView = glm::vec3(0,0,-1);;
-    camUp = glm::vec3(0,1,0);;
-    zN = 0.1;
-    zF = 100.0;
-    fov = 60;
-    shader = new Shader();    
+    init(glm::vec3(0,0,0), glm::vec3(0,0,1), glm::vec3(0,1,0));
+}
+
+Render::Render (glm::vec3 center, glm::vec3 view, glm::vec3 up){
+    init(center,view,up);
 }
 
 Render::~Render (){
     delete shader;
 }
 
+void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
+    camCenter = center;
+    camView = view;
+    camUp = up;
+    zN = 0.1;
+    zF = 200.0;
+    fov = 60;
+    shader = new Shader();    
+}
+
 void Render::draw(std::vector<Sphere*> spheres){
 
     loadCamMatrix( camCenter, camUp, camView);
+
+    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+    GLfloat x = 300;
+    int numlights = 2;
+    glUniform1i(shader->numused, numlights);
+    glm::vec4 selfpos( 0,0,-10,1);
+    float lightPos[] = {0,40,-10,1,0,0,0,1};
+    float lightColor[] = {1,1,1,1,0,0,0,1};
+    glUniform4fv(shader->lightpos, numlights, lightPos);
+    glUniform4fv(shader->lightcol, numlights, lightColor);
+    glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
+    glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
+    glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
+    glUniform1fv(shader->shininesscol, 1, &x);
     
     for(int i=0; i< spheres.size() ;i++){
         Sphere* sph = spheres[i];
@@ -47,6 +52,7 @@ void Render::draw(std::vector<Sphere*> spheres){
 }
 
 void Render::drawtest(){
+    printf("Drawing\n");
     //printf("cent: ");pr(camCenter);printf(" up:");pr(camUp);printf(" view:");pr(camView);printf("\n");
     /*
     glm::vec3 viewCenter = camCenter+camView; 
@@ -59,29 +65,34 @@ void Render::drawtest(){
     */
 
     loadCamMatrix( camCenter, camUp, camView);
-    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+    //glm::mat4 mv= getCamMatrix( camCenter, camUp, camView);
 
-    GLfloat x = 0.5;
+    printf("Drawing 2\n");
+    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+    GLfloat x = 100;
     glUniform1i(shader->numused, 1);
     //glm::vec4 selfpos( camCenter[0],camCenter[1],camCenter[2],1);
-    glm::vec4 selfpos( 1,0,0,0);
+    glm::vec4 selfpos( 6,0,0,1);
     glUniform4fv(shader->lightpos, 1, &selfpos[0]);
     glUniform4fv(shader->lightcol, 1, &glm::vec4(1,1,1,0)[0]);
-    glUniform4fv(shader->ambientcol, 1, &glm::vec4(.1,.1,.1,1)[0]);
-    glUniform4fv(shader->diffusecol, 1, &glm::vec4(1,0,0,1)[0]);
-    glUniform4fv(shader->specularcol, 1, &glm::vec4(0,0,0,1)[0]);
+    glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
+    glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
     glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
     glUniform1fv(shader->shininesscol, 1, &x);
     
-    //glColor3f(1,0,0);
-    Sphere sph(1,0,0);
+    glColor3f(1,0,0);
+    Sphere sph(0,0,1);
     draw(sph);
 
-    Sphere sph1(5,0,0);
+    glColor3f(0,1,0);
+    Sphere sph1(0,0,7);
     draw(sph1);
 
-    Sphere sph2(0,2,0);
+    glColor3f(0,0,1);
+    Sphere sph2(0,0,13);
     draw(sph2);
+    printf("Drawing 5\n");
+
     /*
     glPushMatrix();
     glTranslatef(1,0,0);
@@ -98,10 +109,15 @@ void Render::draw(Sphere& sph){
 
     //Push translation by center
     glPushMatrix();
-    glTranslatef(center[0]/30. - 1,center[1]/30. - 1,center[2]/30. -1);
+    glTranslatef(center[0],center[1],center[2]);
+
+    //load color
+    glm::vec4 color = sph.getColor();
+    //glColor3f(color[0],color[1],color[2]);
+    glUniform4fv(shader->diffusecol, 1, &color[0]);
 
     //Draw sphere
-    glutSolidSphere( rad/30.,50,50); 
+    glutSolidSphere( rad,50,50); 
 
     //Pop translation matrix
     glPopMatrix();
