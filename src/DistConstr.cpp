@@ -12,8 +12,8 @@ DistConstr::~DistConstr(){
 
 }
 
-Sphere getBall(int i){
-	if (i == 1){
+Sphere* DistConstr::getBall(int i){
+	if(i == 1){
 		return s1;
 	} else if(i == 2){
 		return s2;

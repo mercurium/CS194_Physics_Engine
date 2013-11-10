@@ -144,16 +144,16 @@ std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
     }
   }
 
-  return contraints;
+  return constraints;
 }
 
 void handleDistanceConstr(std::vector<Sphere*> &balls, std::vector<DistConstr*> &constraints){
-  for (int i = 0; i < contraints.size(); i++)
+  for (int i = 0; i < constraints.size(); i++)
   {
     DistConstr* constr = constraints.at(i);
 
-    Sphere s1 = (constr).getBall(1);
-    Sphere s2 = (constr).getBall(2);
+    Sphere *s1 = (*constr).getBall(1);
+    Sphere *s2 = (*constr).getBall(2);
 
     double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
     double constr_dist = (*constr).getDist();
