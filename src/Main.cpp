@@ -150,6 +150,13 @@ void keydown(unsigned char c, int x, int y){
             r->rotateCamLR(-10*SNSTVTY);
             break;
 
+        case 'r':
+            balls = Scene::makeTestScene();
+            break;
+        case 'q':
+            exit(0);
+            break;
+
         default:
             //nothing
             break;
