@@ -53,52 +53,12 @@ namespace Init{
           } else if(cmd == "distcon"){
             validinput = readvals(s, 3, values);
             if(validinput){
-              //create light object and add to vector
+              (*constraints).push_back(new DistConstr(a, b, values[2]))
             }
-          }
-
-          // Material Commands 
-          // Ambient, diffuse, specular, shininess
-          // Filling this in is pretty straightforward, so I've left it in 
-          // the skeleton, also as a hint of how to do the more complex ones.
-          // Note that no transforms/stacks are applied to the colors. 
-
-          else if (cmd == "ambient") {
-            validinput = readvals(s, 4, values) ; // colors 
-            if (validinput) 
-              for (i = 0 ; i < 4 ; i++) ambient[i] = values[i] ; 
-          }
-          else if (cmd == "diffuse") {
-            validinput = readvals(s, 4, values) ; 
-            if (validinput) 
-              for (i = 0 ; i < 4 ; i++) diffuse[i] = values[i] ; 
-          }
-          else if (cmd == "specular") {
-            validinput = readvals(s, 4, values) ; 
-            if (validinput) 
-              for (i = 0 ; i < 4 ; i++) specular[i] = values[i] ; 
-          }
-          else if (cmd == "emission") {
-            validinput = readvals(s, 4, values) ; 
-            if (validinput) 
-              for (i = 0 ; i < 4 ; i++) emission[i] = values[i] ; 
-          }
-          else if (cmd == "shininess") {
-            validinput = readvals(s, 1, values) ; 
-            if (validinput) shininess = values[0] ; 
-          }
-          else if (cmd == "size") {
-            validinput = readvals(s,2,values) ; 
-            if (validinput) { w = (int) values[0] ; h = (int) values[1] ; } 
-          }
-          else if (cmd == "camera") {
-            validinput = readvals(s,10,values) ; // 10 values eye cen up fov
-            if (validinput) {
-              // YOUR CODE FOR HW 2 HERE
-              // Use all of values[0...9]
-              // You may need to use the upvector fn in Transform.cpp
-              // to set up correctly. 
-              // Set eyeinit upinit center fovy in variables.h 
+          } else{
+            validinput = readvals(s, 1, values);
+            if(validinput){
+              (*constraints).push_back(new DistConstr(a, b, values[2]))
             }
           }
 
@@ -126,45 +86,6 @@ namespace Init{
               }
               ++numobjects ; 
             }
-          }
-
-          else if (cmd == "translate") {
-            validinput = readvals(s,3,values) ; 
-            if (validinput) {
-              // YOUR CODE FOR HW 2 HERE.  
-              // Think about how the transformation stack is affected
-              // You might want to use helper functions on top of file.  
-            }
-          }
-          else if (cmd == "scale") {
-            validinput = readvals(s,3,values) ; 
-            if (validinput) {
-              // YOUR CODE FOR HW 2 HERE.  
-              // Think about how the transformation stack is affected
-              // You might want to use helper functions on top of file.  
-            }
-          }
-          else if (cmd == "rotate") {
-            validinput = readvals(s,4,values) ; 
-            if (validinput) {
-              // YOUR CODE FOR HW 2 HERE. 
-              // values[0..2] are the axis, values[3] is the angle.  
-              // You may want to normalize the axis (or in Transform::rotate)
-              // See how the stack is affected, as above.  
-            }
-          }
-          
-          // I include the basic push/pop code for matrix stacks
-          else if (cmd == "pushTransform") 
-            transfstack.push(transfstack.top()) ; 
-          else if (cmd == "popTransform") {
-            if (transfstack.size() <= 1) 
-              cerr << "Stack has no elements.  Cannot Pop\n" ; 
-            else transfstack.pop() ; 
-          }
-          
-          else {
-            cerr << "Unknown Command: " << cmd << " Skipping \n" ; 
           }
         }
         getline (in, str) ; 
