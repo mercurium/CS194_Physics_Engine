@@ -16,10 +16,12 @@ OBJS = $(patsubst $(SRCDIR)/%,$(BINDIR)/%,$(_OBJS))
 
 all: $(OBJS) $(BINDIR)/Main.o
 	mkdir -p bin
+	python config.py
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng $(IFLAGS) $(LDFLAGS)
 
 test: $(OBJS) $(BINDIR)/Test.o
 	mkdir -p bin
+	python config.py
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng $(IFLAGS) $(LDFLAGS)
 
 $(BINDIR)/%.o: $(SRCDIR)/%.cpp

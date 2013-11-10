@@ -2,25 +2,8 @@
 #include <GL/glut.h>
 #include "Render.h"
 #include "Transform.h"
-#include <stdio.h>
-#include <string>
-#include <cstring>
-#include <vector>
+#include "Util.h"
 
-void pr(glm::vec3& v){
-   printf("<%.3f %.3f %.3f>",v[0],v[1],v[2]); 
-}
-
-void prmat(glm::mat4& m){
-    std::string s("%.2f\t"); 
-    std::string format = s+s+s+s+"\n"+s+s+s+s+"\n"+s+s+s+s+"\n"+s+s+s+s+"\n";
-    char* cstr = new char[format.length()+1];
-    std::strcpy(cstr, format.c_str());
-   printf( cstr, m[0][0],m[0][1],m[0][2],m[0][3],
-                  m[1][0],m[1][1],m[1][2],m[1][3],
-                  m[2][0],m[2][1],m[2][2],m[2][3],
-                  m[3][0],m[3][1],m[3][2],m[3][3]);
-}
 
 Render::Render (){
     init(glm::vec3(0,0,0), glm::vec3(0,0,1), glm::vec3(0,1,0));
