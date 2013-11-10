@@ -46,6 +46,7 @@ def sensitivity(x):
 def ball(x,y,z,vx,vy,vz):
     i = len(_balls)
     _balls.append( [x,y,z,vx,vy,vz] )
+    return i
 
 def distcon(b1,b2,d):
     _distcons.append( [b1,b2,d])
