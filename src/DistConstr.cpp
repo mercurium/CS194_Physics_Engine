@@ -1,6 +1,6 @@
 #include "DistConstr.h"
 //Constructor
-DistConstr::DistConstr(Sphere* a, Sphere* b, distance d){ 
+DistConstr::DistConstr(Sphere* a, Sphere* b, double d){ 
     s1 = a;
     s2 = b;
 

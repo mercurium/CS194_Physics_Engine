@@ -138,7 +138,7 @@ std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
 
       double dist = glm::distance((*s1).getPos(), (*s2).getPos());
 
-      if(dist == (*s1).getRadius() + (*s2).getRadius()){
+      if(dist - (*s1).getRadius() - (*s2).getRadius() < .01){
         constraints.push_back(new DistConstr(s1, s2, dist));
       }
     }
