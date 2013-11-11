@@ -61,32 +61,6 @@ namespace Init{
               (*constraints).push_back(new DistConstr(a, b, values[2]))
             }
           }
-
-          // I've left the code for loading objects in the skeleton, so 
-          // you can get a sense of how this works.  
-          else if (cmd == "sphere" || cmd == "cube" || cmd == "teapot") {
-            if (numobjects == maxobjects) // No more objects 
-              cerr << "Reached Maximum Number of Objects " << numobjects << " Will ignore further objects\n" ; 
-            else {
-              validinput = readvals(s, 1, values) ; 
-              if (validinput) {
-                object * obj = &(objects[numobjects]) ; 
-                obj -> size = values[0] ; 
-                for (i = 0 ; i < 4 ; i++) {
-                  (obj -> ambient)[i] = ambient[i] ; 
-                  (obj -> diffuse)[i] = diffuse[i] ; 
-                  (obj -> specular)[i] = specular[i] ; 
-                  (obj -> emission)[i] = emission[i] ;
-                }
-                obj -> shininess = shininess ; 
-                obj -> transform = transfstack.top() ; 
-                if (cmd == "sphere") obj -> type = sphere ; 
-                else if (cmd == "cube") obj -> type = cube ; 
-                else if (cmd == "teapot") obj -> type = teapot ; 
-              }
-              ++numobjects ; 
-            }
-          }
         }
         getline (in, str) ; 
       }
