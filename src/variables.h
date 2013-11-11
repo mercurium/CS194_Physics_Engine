@@ -1,9 +1,9 @@
-#include <DistConstr.h>
-#include <Sphere.h>
+#include "DistConstr.h"
+#include "Sphere.h"
+
 // This is the basic include file for the global variables in the program.  
 // Since all files need access to it, we define EXTERN as either blank or 
 // extern, depending on if included in the main program or not.  
-
 #ifdef MAINPROGRAM 
 #define EXTERN 
 #else 
@@ -18,9 +18,9 @@ EXTERN double sensitivity;
 EXTERN bool is2D;
 EXTERN bool shading;
 
-EXTERN double[3] accel;
-EXTERN double[9] camera;
-EXTERN double[3] maxbounds; 
+EXTERN double accel[3];
+EXTERN double camera[9];
+EXTERN double maxbounds[3]; 
 
 EXTERN std::vector<Sphere*> balls;
 EXTERN std::vector<DistConstr*> constraints;
