@@ -1,0 +1,24 @@
+numballs 12
+numlights 2
+sensitivity 0.5
+accel 0 -9.8 0
+2d false
+camera 0 0 0 0 0 1 0 1 0
+minbounds -100 -100 -100
+shading true
+maxbounds 100 100 100
+ball 0 0 0 1 1 1
+ball 1 1 1 1 1 1
+ball 0 45 2 0 0 0
+ball 94 34 65 0 0 0
+ball 29 26 43 0 0 0
+ball 65 54 85 0 0 0
+ball 41 2 6 0 0 0
+ball 94 73 63 0 0 0
+ball 87 66 48 0 0 0
+ball 31 33 59 0 0 0
+ball 3 95 97 0 0 0
+ball 47 37 17 0 0 0
+distcon 0 1 20
+light 0 0 -10 1 1 1
+light 0 10 -10 1 1 1
