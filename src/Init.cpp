@@ -1,10 +1,9 @@
 #include "Init.h"
+#include "variables.h"
+
+using namespace std;
 
 namespace Init{
-  void initialize(const char * filename){
-    readfile(filename);
-  }
-
   bool readDoubles(stringstream &s, const int numvals, double * valuesDouble) {
     for (int i = 0 ; i < numvals ; i++) {
       s >> valuesDouble[i] ; 
@@ -32,8 +31,8 @@ namespace Init{
       string boolean;
       s >> boolean; 
 
-      if(string == 'true') valuesBool[i] = true;
-      else if(string == 'false') valuesBool[i] = false;
+      if(boolean.compare("true") != 0) valuesBool[i] = true;
+      else if(boolean.compare("false") != 0) valuesBool[i] = false;
       else cout << "Unknown parameter. Neither true/false given\n";
       if (s.fail()) {
         cout << "Failed reading value " << i << " will skip\n" ; 
@@ -43,10 +42,10 @@ namespace Init{
     return true ; 
   }
 
-  void readfile(const char * filename) {
-    string str, cmd ; 
-    ifstream in ;
-    in.open(filename) ; 
+  void initialize(const char * filename) {
+    string str, cmd; 
+    ifstream in;
+    in.open(filename); 
     if (in.is_open()) {
       getline (in, str) ; 
       while (in) {
@@ -65,8 +64,8 @@ namespace Init{
           if (cmd == "ball") { 
             validinput = readDoubles(s, 6, valuesDouble);
             if(validinput){
-              Sphere s = new Sphere(glm::vec3(valuesDouble[0], valuesDouble[1], valuesDouble[2]), glm::vec3(valuesDouble[3], valuesDouble[4], valuesDouble[5]));
-              (balls).push_back(*s);
+              Sphere *s = new Sphere(glm::vec3(valuesDouble[0], valuesDouble[1], valuesDouble[2]), glm::vec3(valuesDouble[3], valuesDouble[4], valuesDouble[5]));
+              (balls).push_back(s);
             }
           } else if(cmd == "light"){
             validinput = readDoubles(s, 6, valuesDouble);
@@ -77,8 +76,8 @@ namespace Init{
             //config text file must parse all balls first!
             validinput = readDoubles(s, 3, valuesDouble);
             if(validinput){
-              DistConstr c = new DistConstr((balls).at(valuesDouble[0]), (balls).at(valuesDouble[1]), valuesDouble[2]);
-              (constraints).push_back(*c));
+              DistConstr *c = new DistConstr(balls.at(valuesDouble[0]), balls.at(valuesDouble[1]), valuesDouble[2]);
+              constraints.push_back(c);
             }
           } else if(cmd == "numballs"){
             validinput = readInt(s, 1, valuesInt);
