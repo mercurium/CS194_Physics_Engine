@@ -1,5 +1,3 @@
-
-
 #include "Scene.h"
 
 int LIMIT = 100;
@@ -129,4 +127,55 @@ void UpdateScene(std::vector <Sphere *> &balls) {
 
 }
 
+std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
+  std::vector<DistConstr*> constraints;
+
+  //naive O(n^2) comparisons
+  for(int i = 0; i < balls.size(); i++){
+    for (int j = i+1; j < balls.size(); j++){
+      Sphere* s1 = balls.at(i);
+      Sphere* s2 = balls.at(j);
+
+      double dist = glm::distance((*s1).getPos(), (*s2).getPos());
+
+      if(dist == (*s1).getRadius() + (*s2).getRadius()){
+        constraints.push_back(new DistConstr(s1, s2, dist));
+      }
+    }
+  }
+
+  return constraints;
+}
+
+void handleDistanceConstr(std::vector<Sphere*> &balls, std::vector<DistConstr*> &constraints){
+  for (int i = 0; i < constraints.size(); i++)
+  {
+    DistConstr* constr = constraints.at(i);
+
+    Sphere *s1 = (*constr).getBall(1);
+    Sphere *s2 = (*constr).getBall(2);
+
+    double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
+    double constr_dist = (*constr).getDist();
+
+    double diff = actual_dist - constr_dist;
+
+    glm::vec3 s1Pos = (*s1).getPos();
+    glm::vec3 s2Pos = (*s2).getPos();
+
+    glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
+     s1Pos.x + (s1Pos.x - s2Pos.x) * (diff)/(2*actual_dist+.0000001), 
+     s1Pos.y + (s1Pos.y - s2Pos.y) * (diff)/(2*actual_dist+.0000001),
+     s1Pos.z + (s1Pos.z - s2Pos.z) * (diff)/(2*actual_dist+.0000001));
+    glm::vec3 s2NewPos = glm::vec3(
+     s2Pos.x + (s2Pos.x - s1Pos.x) * (diff)/(2*actual_dist+.0000001),
+     s2Pos.y + (s2Pos.y - s1Pos.y) * (diff)/(2*actual_dist+.0000001),
+     s2Pos.z + (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist+.0000001));
+    
+    (*s1).setPos(s1NewPos);
+    (*s2).setPos(s2NewPos);
+  }
+
+}
+  
 }
