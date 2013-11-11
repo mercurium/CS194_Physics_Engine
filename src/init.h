@@ -5,22 +5,20 @@
 #include <map>
 #include <vector>
 
+#include <variables.h>
+
 #include "Sphere.h"
 #include "DistConstr.h"
 
-
 #include <glm/glm.hpp>
 
-class Init{
-	std::vector<Sphere*> *balls;
-	std::vector<Lights*> *lights
-	std::vector<DistConstr*> *constraints;
-	std::map<string, int> *dict;
-
+namespace Init{
 	public:
-		void initialize(std::vector<Sphere*> *balls, std::vector<Lights*> *lights, std::map<string, int> dict);
+		void initialize(const char * filename);
 
 	private:
-		bool readvals(stringstream &s, const int numvals, double * values);
+		bool readDoubles(stringstream &s, const int numvals, double * valuesDouble);
+		bool readInt(stringstream &s, const int numvals, int * valuesInt);
+		 bool readBool(stringstream &s, const int numvals, bool * valuesBool)
 		void readfile(const char * filename);
 }

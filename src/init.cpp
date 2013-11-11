@@ -1,18 +1,40 @@
 #include "Init.h"
 
 namespace Init{
-  void initialize(std::vector<Sphere*> *balls, std::vector<Lights*> *lights, std::vector<DistConstr*> *constraints; std::map<string, int> dict, const char * filename){
-    balls = balls;
-    lights = lights;
-    constraints = constraints;
-    dict = dict;
-
+  void initialize(const char * filename){
     readfile(filename);
   }
 
-  bool readvals(stringstream &s, const int numvals, double * values) {
+  bool readDoubles(stringstream &s, const int numvals, double * valuesDouble) {
     for (int i = 0 ; i < numvals ; i++) {
-      s >> values[i] ; 
+      s >> valuesDouble[i] ; 
+      if (s.fail()) {
+        cout << "Failed reading value " << i << " will skip\n" ; 
+        return false ;
+      }
+    }
+    return true ; 
+  }
+
+  bool readInt(stringstream &s, const int numvals, int * valuesInt) {
+    for (int i = 0 ; i < numvals ; i++) {
+      s >> valuesInt[i] ; 
+      if (s.fail()) {
+        cout << "Failed reading value " << i << " will skip\n" ; 
+        return false ;
+      }
+    }
+    return true ; 
+  }
+
+  bool readBool(stringstream &s, const int numvals, bool * valuesBool) {
+    for (int i = 0 ; i < numvals ; i++) {
+      string boolean;
+      s >> boolean; 
+
+      if(string == 'true') valuesBool[i] = true;
+      else if(string == 'false') valuesBool[i] = false;
+      else cout << "Unknown parameter. Neither true/false given\n";
       if (s.fail()) {
         cout << "Failed reading value " << i << " will skip\n" ; 
         return false ;
@@ -34,55 +56,68 @@ namespace Init{
           stringstream s(str) ;
           s >> cmd ; 
           int i ; 
-          double values[10] ; // position and color for light, colors for others
-                               // Up to 10 params for cameras.  
+          double valuesDouble[10] ;
+          int valuesInt[10];
+          bool valuesBool[10];
+          
           bool validinput ; // validity of input 
 
-          // Process the light, add it to database.
-          // Lighting Command
           if (cmd == "ball") { 
-            validinput = readvals(s, 6, values);
+            validinput = readDoubles(s, 6, valuesDouble);
             if(validinput){
-              (*balls).push_back(new Sphere(glm::vec3(values[0], values[1], values[2]), glm::vec3(values[3], values[4], values[5])));
+              Sphere s = new Sphere(glm::vec3(valuesDouble[0], valuesDouble[1], valuesDouble[2]), glm::vec3(valuesDouble[3], valuesDouble[4], valuesDouble[5]));
+              (balls).push_back(*s);
             }
           } else if(cmd == "light"){
-            validinput = readvals(s, 6, values);
+            validinput = readDoubles(s, 6, valuesDouble);
             if(validinput){
               //create light object and add to vector
             }
           } else if(cmd == "distcon"){
-            validinput = readvals(s, 3, values);
+            //config text file must parse all balls first!
+            validinput = readDoubles(s, 3, valuesDouble);
             if(validinput){
-              (*constraints).push_back(new DistConstr(a, b, values[2]))
+              DistConstr c = new DistConstr((balls).at(valuesDouble[0]), (balls).at(valuesDouble[1]), valuesDouble[2]);
+              (constraints).push_back(*c));
             }
-          } else{
-            validinput = readvals(s, 1, values);
+          } else if(cmd == "numballs"){
+            validinput = readInt(s, 1, valuesInt);
+            if(validinput) numballs = valuesInt[0];
+          } else if(cmd == "numlights"){
+            validinput = readInt(s, 1, valuesInt);
+            if(validinput) numlights = valuesInt[0];
+          } else if(cmd == "sensitivity"){
+            validinput = readDoubles(s, 1, valuesDouble);
+            if(validinput) sensitivity = valuesDouble[0];
+          } else if(cmd == "2d"){
+            validinput = readBool(s, 1, valuesBool);
+            if(validinput) is2D = valuesBool[0];
+          } else if(cmd == "shading"){
+            validinput = readBool(s, 1, valuesBool);
+            if(validinput) shading = valuesBool[0];
+          } else if(cmd == "accel"){
+            validinput = readDoubles(s, 3, valuesDouble);
             if(validinput){
-              (*constraints).push_back(new DistConstr(a, b, values[2]))
+              for(int i = 0; i < 3; i++) accel[i] = valuesDouble[i];
+            }
+          } else if(cmd == "camera"){
+            validinput = readDoubles(s, 9, valuesDouble);
+            if(validinput){
+              for(int i = 0; i < 9; i++) camera[i] = valuesDouble[i];
+            }
+          } else if(cmd == "maxbounds"){
+            validinput = readDoubles(s, 3, valuesDouble);
+            if(validinput){
+              for(int i = 0; i < 3; i++) maxbounds[i] = valuesDouble[i];
             }
           }
         }
         getline (in, str) ; 
       }
-
-    // Set up initial position for eye, up and amount
-    // As well as booleans 
-
-          eye = eyeinit ; 
-    up = upinit ; 
-    amount = 5;
-          sx = sy = 1.0 ; // scales in x and y 
-          tx = ty = 0.0 ; // translation in x and y  
-    useGlu = false; // don't use the glu perspective/lookat fns
-
-    glEnable(GL_DEPTH_TEST);
-
     }
     else {
       cerr << "Unable to Open Input Data File " << filename << "\n" ; 
       throw 2 ; 
-    }
-    
+    } 
   }
-
 }

@@ -127,6 +127,9 @@ void UpdateScene(std::vector <Sphere *> &balls) {
 
 }
 
+
+//handled by Init.cpp. Prep for removal
+/*
 std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
   std::vector<DistConstr*> constraints;
 
@@ -146,8 +149,9 @@ std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
 
   return constraints;
 }
+*/
 
-void handleDistanceConstr(std::vector<Sphere*> &balls, std::vector<DistConstr*> &constraints){
+void handleDistanceConstr(std::vector<DistConstr*> &constraints){
   for (int i = 0; i < constraints.size(); i++)
   {
     DistConstr* constr = constraints.at(i);

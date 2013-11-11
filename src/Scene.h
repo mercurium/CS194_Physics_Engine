@@ -10,5 +10,6 @@ namespace Scene{
         void UpdateBallPositions(std::vector <Sphere *> &balls);
         void UpdateScene(std::vector <Sphere *> &balls);
 		std::vector<Sphere *>  makeTestScene();
+		void handleDistanceConstr(std::vector<DistConstr*> &constraints);
 
 };
