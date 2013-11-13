@@ -1,6 +1,7 @@
 numballs 12
 numlights 2
 sensitivity 0.5
+windowsize 800 600
 accel 0 -9.8 0
 2d false
 camera 0 0 0 0 0 1 0 1 0
@@ -9,16 +10,16 @@ shading true
 maxbounds 100 100 100
 ball 0 0 0 1 1 1
 ball 1 1 1 1 1 1
-ball 88 4 31 0 0 0
-ball 95 21 8 0 0 0
-ball 23 87 31 0 0 0
-ball 4 90 34 0 0 0
-ball 89 47 3 0 0 0
-ball 88 23 88 0 0 0
-ball 69 61 94 0 0 0
-ball 75 23 22 0 0 0
-ball 72 46 30 0 0 0
-ball 99 6 42 0 0 0
+ball 84 82 4 0 0 0
+ball 42 18 20 0 0 0
+ball 24 30 76 0 0 0
+ball 50 90 38 0 0 0
+ball 0 75 27 0 0 0
+ball 79 96 15 0 0 0
+ball 21 8 83 0 0 0
+ball 30 47 58 0 0 0
+ball 83 19 68 0 0 0
+ball 63 76 6 0 0 0
 distcon 0 1 20
 light 0 0 -10 1 1 1
 light 0 10 -10 1 1 1

@@ -20,6 +20,7 @@ void keydown(unsigned char c, int x, int y);
 void keyup(unsigned char c, int x, int y);
 void mouse( int button, int state, int x, int y);
 void init();
+void outputText();
 void initGLUT(char**, int);
 
 Render* r;
@@ -34,11 +35,16 @@ char* keydict;
 int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
+    bool outputGL = true;
 
-    initGLUT(argv, argc);
-    init();
-	balls = Scene::makeTestScene();
-    glutMainLoop();
+    if(outputGL){
+        initGLUT(argv, argc);
+        init();
+        balls = Scene::makeTestScene();
+        glutMainLoop();
+    }else{
+        outputText();
+    }
 
 
 
@@ -118,6 +124,24 @@ void mainloop(){
     //blah
     glutSwapBuffers();
 }
+
+void outputText(){
+    balls = Scene::makeTestScene();
+    double step_size = 0.1; //settings.get("stepsize")
+    double total_duration = 10; //settings.get("totalsimduration")
+
+    for(double d = 0; d<total_duration; d+= step_size){
+        printf("t=%.3f :", d);
+        for( int i=0; i<balls.size(); i++){
+            Sphere * s = balls[i];
+            glm::vec3 pos = s->getPos();
+            printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
+        }
+        Scene::UpdateScene(*(&balls), step_size);        
+    }
+
+}
+
 
 
 void keyup(unsigned char c, int x, int y){
