@@ -6,7 +6,7 @@ Sphere::Sphere(glm::vec3 pos, glm::vec3 vel){
 	position = pos;
 	oldPos = glm::vec3(pos.x, pos.y, pos.z);
 	velocity = vel;
-	acceleration = glm::vec3(0.0, -.1, 0.0);
+	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
 	mass = 1;
@@ -20,8 +20,8 @@ Sphere::Sphere(glm::vec3 pos, glm::vec3 vel){
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
-	velocity = glm::vec3(.1+x/150., .4+y/130.,.3+z/110.);
-	acceleration = glm::vec3(0.0, -.1, 0.0);
+	velocity = glm::vec3(1+x/150., .4+y/130.,.3+z/110.);
+	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
 	mass = 1;
@@ -37,10 +37,10 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
 	if (!twoD)
-		velocity = glm::vec3(.1+x/150., .4+y/130.,.3+z/110.);
+		velocity = glm::vec3(1+x/15., 4+y/13.,3+z/11.);
 	else
-		velocity = glm::vec3(.1+x/150., .4+y/130., 0);
-	acceleration = glm::vec3(0.0, -.1, 0.0);
+		velocity = glm::vec3(1+x/15., 4+y/13., 0);
+	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
 	mass = 1;

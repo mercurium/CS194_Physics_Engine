@@ -107,7 +107,7 @@ void mainloop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Render Scene
-	Scene::UpdateScene(*(&balls));
+	Scene::UpdateScene(*(&balls), elapsed);
     r->draw(balls);
     //r.drawtest();
     
@@ -142,6 +142,12 @@ void keydown(unsigned char c, int x, int y){
         case 'd':
             r->translCamLR(-SNSTVTY);
             break;
+        case 'q':
+            r->translCamUD(SNSTVTY);
+            break;
+        case 'e':
+            r->translCamUD(-SNSTVTY);
+            break;
 
         case 'i':
             r->rotateCamUD(10*SNSTVTY);
@@ -155,11 +161,17 @@ void keydown(unsigned char c, int x, int y){
         case 'l':
             r->rotateCamLR(-10*SNSTVTY);
             break;
+        case 'u':
+            r->rotateCamRoll(10*SNSTVTY);
+            break;
+        case 'o':
+            r->rotateCamRoll(-10*SNSTVTY);
+            break;
 
         case 'r':
             balls = Scene::makeTestScene();
             break;
-        case 'q':
+        case 'x':
             exit(0);
             break;
 
