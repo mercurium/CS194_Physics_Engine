@@ -12,6 +12,7 @@ class Sphere{
 	double mass;
 	
 	public:
+		Sphere(glm::vec3 pos, glm::vec3 vel);
 		Sphere(double x, double y, double z);
 		Sphere(double x, double y, double z, bool twoD);
 		Sphere(double x, double y, double z, double r, double m);

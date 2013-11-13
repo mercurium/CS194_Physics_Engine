@@ -1,12 +1,17 @@
 #include <stdio.h>
-#include <glm/glm.hpp>
-#include <GL/glew.h>
-#include "Render.h"
-#include "shaders.h"
 #include <cstdlib>
 #include <ctime>
-#include "Util.h"
 
+#include <glm/glm.hpp>
+#include <GL/glew.h>
+
+#include "Render.h"
+#include "Util.h"
+#include "shaders.h"
+
+#define MAINPROGRAM
+#include "variables.h"
+#include "Init.h"
 
 void mainloop();
 void idlefunc();
@@ -16,14 +21,15 @@ void keyup(unsigned char c, int x, int y);
 void mouse( int button, int state, int x, int y);
 void init();
 void initGLUT(char**, int);
+
 Render* r;
+
 int mouse_left_down_x;
 int mouse_left_down_y;
 int mouse_right_down_x;
 int mouse_right_down_y;
 double prev_time;
 char* keydict;
-std::vector<Sphere *> balls;
 
 int main(int argc, char *argv[])
 {

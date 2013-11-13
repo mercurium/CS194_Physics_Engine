@@ -2,6 +2,21 @@
 #include <cstdlib>
 #include <ctime>
 
+Sphere::Sphere(glm::vec3 pos, glm::vec3 vel){
+	position = pos;
+	oldPos = glm::vec3(pos.x, pos.y, pos.z);
+	velocity = vel;
+	acceleration = glm::vec3(0.0, -.1, 0.0);
+
+	radius = 3;
+	mass = 1;
+
+    float r = (std::rand()%255)/255.0f;
+    float g = (std::rand()%255)/255.0f;
+    float b = (std::rand()%255)/255.0f;
+    color = glm::vec4(r, g, b, 1);
+}
+
 Sphere::Sphere(double x, double y, double z){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
