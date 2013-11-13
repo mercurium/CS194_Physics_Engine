@@ -3,6 +3,7 @@
 #include "Render.h"
 #include "Transform.h"
 #include "Util.h"
+#include <stdlib.h>
 
 
 Render::Render (){
@@ -15,6 +16,14 @@ Render::Render (glm::vec3 center, glm::vec3 view, glm::vec3 up){
 
 Render::~Render (){
     delete shader;
+    for( int i=0; i<lightpos->size(); i++){
+        free((void *)((*lightpos)[i]));
+    }
+    delete lightpos;
+    for( int i=0; i<lightcol->size(); i++){
+        free((void *)((*lightcol)[i]));
+    }
+    delete lightcol;
 }
 
 void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
@@ -25,6 +34,8 @@ void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
     zF = 200.0;
     fov = 60;
     shader = new Shader();    
+    lightpos = new std::vector<double *>;//Array of size 6-vectors (x,y,z,r,g,b)
+    lightcol = new std::vector<double *>;//Array of size 6-vectors (x,y,z,r,g,b)
 }
 
 void Render::draw(std::vector<Sphere*> spheres){
@@ -49,6 +60,19 @@ void Render::draw(std::vector<Sphere*> spheres){
         Sphere* sph = spheres[i];
         draw(*sph);
     }
+}
+
+void Render::addLight(glm::vec3 pos, glm::vec3 color){
+    //double* position = new double[3];
+    double * position = (double *)malloc(3*sizeof(double));
+    position[0] =pos[0];position[1]=pos[1];position[2]=pos[2]; 
+    lightpos->push_back(position);
+
+    //double* col = new double[3];
+    double * col = (double *)malloc(3*sizeof(double));
+    col[0] =color[0];col[1]=color[1];col[2]=color[2]; 
+    lightcol->push_back(col);
+
 }
 
 void Render::drawtest(){

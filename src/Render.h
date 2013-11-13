@@ -9,12 +9,13 @@
 void pr(glm::vec3& v);
 /**
  * Class to manage drawing a Scene. 
- * 
+ * Represents a camera and list of light
  */
 class Render {
     public:
         Render ();
         Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
+        void addLight(glm::vec3 pos, glm::vec3 color);
         virtual ~Render ();
         void draw(std::vector<Sphere*> spheres);
         void drawtest();
@@ -38,4 +39,7 @@ class Render {
         double zN;
         double zF;
         double fov;
+        std::vector<double *> *lightpos;//Array of size 3-vectors (x,y,z)
+        std::vector<double *> *lightcol;//Array of size 3-vectors (r,g,b)
+        
 };

@@ -10,16 +10,16 @@ shading true
 maxbounds 100 100 100
 ball 0 0 0 1 1 1
 ball 1 1 1 1 1 1
-ball 84 82 4 0 0 0
-ball 42 18 20 0 0 0
-ball 24 30 76 0 0 0
-ball 50 90 38 0 0 0
-ball 0 75 27 0 0 0
-ball 79 96 15 0 0 0
-ball 21 8 83 0 0 0
-ball 30 47 58 0 0 0
-ball 83 19 68 0 0 0
-ball 63 76 6 0 0 0
+ball 14 54 0 0 0 0
+ball 93 30 32 0 0 0
+ball 64 49 29 0 0 0
+ball 30 92 80 0 0 0
+ball 56 78 9 0 0 0
+ball 96 66 96 0 0 0
+ball 42 26 67 0 0 0
+ball 91 72 27 0 0 0
+ball 76 12 69 0 0 0
+ball 96 48 74 0 0 0
 distcon 0 1 20
 light 0 0 -10 1 1 1
 light 0 10 -10 1 1 1
