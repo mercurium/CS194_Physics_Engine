@@ -2,7 +2,6 @@
 
 int LIMIT = 50;
 int GRID_SIZE = 50;
-double m = 1;
 glm::vec3 acceli = glm::vec3(0,-9.8,0);
 
 namespace  Physics{
@@ -189,8 +188,10 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		s2.setPos(s2NewPos);
 		glm::vec3 s1Vel = s1.getVelocity();
 		glm::vec3 s2Vel = s2.getVelocity();
-		s1.setVelocity(glm::vec3(s2Vel.x *m, s2Vel.y *.9, s2Vel.z * m));
-		s2.setVelocity(glm::vec3(s1Vel.x *m, s1Vel.y *.9, s1Vel.z * m));
+		s1Vel.y *= .9;
+		s2Vel.y *= .9;
+		s1.setVelocity(s2Vel);
+		s2.setVelocity(s1Vel);
 		delete iptr;
 	}
 }
