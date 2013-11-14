@@ -12,6 +12,7 @@
 #define MAINPROGRAM
 #include "variables.h"
 #include "Init.h"
+#include "Scene.h"
 
 void mainloop();
 void idlefunc();
@@ -31,6 +32,7 @@ int mouse_right_down_x;
 int mouse_right_down_y;
 double prev_time;
 char* keydict;
+Scene scene;
 
 int main(int argc, char *argv[])
 {
@@ -40,7 +42,7 @@ int main(int argc, char *argv[])
     if(outputGL){
         initGLUT(argv, argc);
         init();
-        balls = Scene::makeTestScene();
+		scene = Scene();
         glutMainLoop();
     }else{
         outputText();
@@ -113,8 +115,9 @@ void mainloop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Render Scene
-	Scene::UpdateScene(*(&balls), elapsed);
-    r->draw(balls);
+	//Scene::UpdateScene(*(&balls), elapsed);
+	scene.UpdateScene(elapsed);
+    r->draw(scene.getBalls());
     //r.drawtest();
     
     //Physics Update
@@ -126,18 +129,19 @@ void mainloop(){
 }
 
 void outputText(){
-    balls = Scene::makeTestScene();
+	scene = Scene();
     double step_size = 0.1; //settings.get("stepsize")
     double total_duration = 10; //settings.get("totalsimduration")
 
     for(double d = 0; d<total_duration; d+= step_size){
+		balls = scene.getBalls();
         printf("t=%.3f :", d);
         for( int i=0; i<balls.size(); i++){
             Sphere * s = balls[i];
             glm::vec3 pos = s->getPos();
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }
-        Scene::UpdateScene(*(&balls), step_size);        
+        scene.UpdateScene(step_size);        
     }
 
 }
@@ -193,7 +197,7 @@ void keydown(unsigned char c, int x, int y){
             break;
 
         case 'r':
-            balls = Scene::makeTestScene();
+            scene = Scene();
             break;
         case 'x':
             exit(0);

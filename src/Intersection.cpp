@@ -1,10 +1,8 @@
 #include "Intersection.h"
 
-Intersection::Intersection(Sphere *b1, Sphere *b2, double distance, double radiiDistance){
+Intersection::Intersection(Sphere *b1, Sphere *b2){
 	s1 = b1;
 	s2 = b2;
-	dist = distance;
-	radiiDist = radiiDistance;
 }
 
 Intersection::~Intersection (){
@@ -19,18 +17,11 @@ Sphere * Intersection::getS2(){
 	return s2;
 }
 
-double Intersection::getDist(){
-	return dist;
-}
-
-double Intersection::getRadiiDist(){
-	return radiiDist;
-}
 
 void Intersection::print(){
 	Sphere S1 = *s1, S2 = *s2;
 	S1.print();
 	S2.print();
-	printf("The two spheres are %f apart \n", dist);
+	printf("The two spheres are %f apart \n", glm::distance(S1.getPos(), S2.getPos()));
 
 }

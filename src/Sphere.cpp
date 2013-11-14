@@ -9,7 +9,6 @@ Sphere::Sphere(glm::vec3 pos, glm::vec3 vel){
 	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
-	mass = 1;
 
     float r = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -24,7 +23,6 @@ Sphere::Sphere(double x, double y, double z){
 	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
-	mass = 1;
 
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -43,7 +41,6 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
 	acceleration = glm::vec3(0.0, -9.8, 0.0);
 
 	radius = 3;
-	mass = 1;
 
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -52,14 +49,13 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
 }
 
 
-Sphere::Sphere(double x, double y, double z, double r, double m){
+Sphere::Sphere(double x, double y, double z, double r){
 	position = glm::vec3(x, y, z);
 	oldPos = glm::vec3(x, y, z);
 	velocity = glm::vec3(1.0, 1.0, 1.0);
 	acceleration = glm::vec3(0.0, 0.0, 0.0);
 
 	radius = r;
-	mass = m;
 
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -113,9 +109,6 @@ double Sphere::getRadius(){
 	return radius;
 }
 
-double Sphere::getMass(){
-	return mass;
-}
 
 glm::vec3 Sphere::getOldPos(){
 	return oldPos;

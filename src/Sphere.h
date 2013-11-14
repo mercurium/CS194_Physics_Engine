@@ -15,7 +15,7 @@ class Sphere{
 		Sphere(glm::vec3 pos, glm::vec3 vel);
 		Sphere(double x, double y, double z);
 		Sphere(double x, double y, double z, bool twoD);
-		Sphere(double x, double y, double z, double r, double m);
+		Sphere(double x, double y, double z, double r);
 		virtual ~Sphere(); 
 		
 		void setPos(glm::vec3 pos);
@@ -28,7 +28,6 @@ class Sphere{
 		glm::vec3 getVelocity();
 		glm::vec3 getAcceleration();
 		double getRadius();
-		double getMass();
 		glm::vec3 getOldPos();
 		void print();
 

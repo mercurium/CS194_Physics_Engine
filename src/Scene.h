@@ -3,13 +3,19 @@
 #include "Intersection.h"
 #include "Sphere.h"
 #include "DistConstr.h"
+#include "Physics.h"
 
-namespace Scene{
-        std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);
-        void resolveCollisions(std::vector <Intersection *> intersections);
-        void UpdateBallPositions(std::vector <Sphere *> &balls, double t);
-        void UpdateScene(std::vector <Sphere *> &balls, double t);
-		std::vector<Sphere *>  makeTestScene();
-		void handleDistanceConstr(std::vector<DistConstr*> &constraints);
+class Scene{
+		private:
+		int numBalls;
+			glm::vec3 accel;
+			bool twoD;
+			std::vector<Sphere *> balls;
+
+		public:
+			Scene();
+	        void UpdateScene(double time);
+			std::vector<Sphere *> makeTestScene();
+			std::vector<Sphere *> getBalls();
 
 };
