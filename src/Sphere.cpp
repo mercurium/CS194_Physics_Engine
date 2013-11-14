@@ -7,7 +7,7 @@ Sphere::Sphere(glm::vec3 pos, glm::vec3 vel){
 	oldPos = glm::vec3(pos.x, pos.y, pos.z);
 	velocity = vel;
 
-	radius = 3;
+	radius = 1;
 
     float r = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -20,7 +20,7 @@ Sphere::Sphere(double x, double y, double z){
 	oldPos = glm::vec3(x, y, z);
 	velocity = glm::vec3(1+x/150., .4+y/130.,.3+z/110.);
 
-	radius = 3;
+	radius = 1;
 
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
@@ -37,7 +37,7 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
 	else
 		velocity = glm::vec3(1+x/15., 4+y/13., 0);
 
-	radius = 3;
+	radius = 1;
 
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
