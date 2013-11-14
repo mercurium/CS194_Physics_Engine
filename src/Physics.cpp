@@ -1,7 +1,8 @@
 #include "Physics.h"
 
-int LIMIT = 100;
-int GRID_SIZE = 100;
+int LIMIT = 50;
+int GRID_SIZE = 50;
+double m = .599;
 glm::vec3 acceli = glm::vec3(0,-9.8,0);
 
 namespace  Physics{
@@ -13,7 +14,59 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-		glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
+		glm::vec3 newPos;
+		if (oldPos.y < .001){
+			newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y, oldPos.z + oldVl.z*t);
+		}
+		else{
+			newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
+		}
+
+	   /*Checking for Walls */
+		if (newPos.x > LIMIT){
+			newPos.x = 2* LIMIT - newPos.x;
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y > LIMIT){
+			newPos.y = 2* LIMIT - newPos.y;
+			oldVl.y = -oldVl.y;
+		}
+		if (newPos.z > LIMIT){
+			newPos.z = 2* LIMIT - newPos.z;
+			oldVl.z = -oldVl.z;
+		}
+		if (newPos.x < 0){
+			newPos.x = -newPos.x;
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y < 0){
+			newPos.y = oldPos.y;
+			oldVl.y = -oldVl.y/2;
+			oldVl.x = oldVl.x * .8;
+			oldVl.z = oldVl.z * .8;
+		}
+		if (newPos.z < 0){
+			newPos.z = -newPos.z;
+			oldVl.z = -oldVl.z;
+		}
+	oldVl.x += t*acceli.x;
+	oldVl.y += t*acceli.y;
+	oldVl.z += t*acceli.z;
+	
+	ball.setPos(newPos);
+	ball.setVelocity(oldVl);
+
+	}
+
+}
+
+void UpdateBallBoundaries(std::vector<Sphere *> &balls){
+
+	/*  Update each ball to the new location  */
+	for (int i = 0; i < balls.size(); i++){
+		Sphere &ball = (*balls.at(i));
+		glm::vec3 oldVl = ball.getVelocity();
+		glm::vec3 newPos = ball.getPos();
 
 	   /*Checking for Walls */
 		if (newPos.x > LIMIT){
@@ -37,17 +90,17 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 			oldVl.y = -oldVl.y/2;
 			oldVl.x = oldVl.x * .8;
 			oldVl.z = oldVl.z * .8;
+			if (oldVl.y < .001){
+				newPos.y = 0;
+				oldVl.y = 0;
+			}
 		}
 		if (newPos.z < 0){
 			newPos.z = -newPos.z;
 			oldVl.z = -oldVl.z;
 		}
-	oldVl.x += t*acceli.x;
-	oldVl.y += t*acceli.y;
-	oldVl.z += t*acceli.z;
 	
 	ball.setPos(newPos);
-	ball.setOldPos(oldPos);
 	ball.setVelocity(oldVl);
 
 	}
@@ -135,8 +188,9 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		s1.setPos(s1NewPos);
 		s2.setPos(s2NewPos);
 		glm::vec3 s1Vel = s1.getVelocity();
-		s1.setVelocity(s2.getVelocity());
-		s2.setVelocity(s1Vel);
+		glm::vec3 s2Vel = s2.getVelocity();
+		s1.setVelocity(glm::vec3(s2Vel.x *m, s2Vel.y *m, s2Vel.z * m));
+		s2.setVelocity(glm::vec3(s1Vel.x *m, s1Vel.y *m, s1Vel.z * m));
 		delete iptr;
 	}
 }

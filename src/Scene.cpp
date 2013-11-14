@@ -32,6 +32,7 @@ void Scene::UpdateScene(double time){
 		Physics::resolveCollisions(*(&intersections));
 		intersections = Physics::getCollisions(this->balls);
 	}
+	Physics::UpdateBallBoundaries(this->balls);
 }
 
 std::vector <Sphere *> Scene::getBalls(){
