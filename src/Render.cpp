@@ -141,7 +141,7 @@ void Render::draw(Sphere& sph){
     glUniform4fv(shader->diffusecol, 1, &color[0]);
 
     //Draw sphere
-    glutSolidSphere( rad,50,50); 
+    glutSolidSphere( rad,10,10); 
 
     //Pop translation matrix
     glPopMatrix();

@@ -114,7 +114,8 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 	double dist, radiiDist;
 	while(intersections.size() != 0)
 	{
-		Intersection &i = *intersections.back();
+		Intersection * iptr = intersections.back();
+		Intersection i = *iptr;
 		intersections.pop_back();
 		Sphere &s1 = *i.getS1(), &s2 = *i.getS2();
 		glm::vec3 s1Pos = s1.getPos();
@@ -136,6 +137,7 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		glm::vec3 s1Vel = s1.getVelocity();
 		s1.setVelocity(s2.getVelocity());
 		s2.setVelocity(s1Vel);
+		delete iptr;
 	}
 }
 

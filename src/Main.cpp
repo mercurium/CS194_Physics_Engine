@@ -131,7 +131,7 @@ void mainloop(){
 void outputText(){
 	scene = Scene();
     double step_size = 0.1; //settings.get("stepsize")
-    double total_duration = 10; //settings.get("totalsimduration")
+    double total_duration = 100; //settings.get("totalsimduration")
 
     for(double d = 0; d<total_duration; d+= step_size){
 		balls = scene.getBalls();

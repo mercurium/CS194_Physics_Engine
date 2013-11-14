@@ -1,7 +1,7 @@
 #include "Scene.h"
 
 Scene::Scene(){
-	numBalls = 100;
+	numBalls = 3000;
 	twoD = false;
 	balls = makeTestScene();
 }
@@ -26,6 +26,7 @@ void Scene::UpdateScene(double time){
 	Physics::UpdateBallPositions(*(&this->balls), time);
 	
 	std::vector <Intersection *> intersections = Physics::getCollisions(*(&this->balls));
+	
 	
 	while (intersections.size()  != 0){
 		Physics::resolveCollisions(*(&intersections));
