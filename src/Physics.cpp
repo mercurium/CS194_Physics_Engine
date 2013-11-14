@@ -1,6 +1,7 @@
 #include "Physics.h"
 
 int LIMIT = 100;
+glm::vec3 acceli = glm::vec3(0,-9.8,0);
 
 namespace  Physics{
 
@@ -11,7 +12,6 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-		glm::vec3 accel = ball.getAcceleration();
 		glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
 
 	   /*Checking for Walls */
@@ -41,9 +41,9 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 			newPos.z = -newPos.z;
 			oldVl.z = -oldVl.z;
 		}
-	oldVl.x += t*accel.x;
-	oldVl.y += t*accel.y;
-	oldVl.z += t*accel.z;
+	oldVl.x += t*acceli.x;
+	oldVl.y += t*acceli.y;
+	oldVl.z += t*acceli.z;
 	
 	ball.setPos(newPos);
 	ball.setOldPos(oldPos);

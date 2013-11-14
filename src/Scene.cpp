@@ -2,7 +2,6 @@
 
 Scene::Scene(){
 	numBalls = 100;
-	accel = glm::vec3(0,-0.05,0);
 	twoD = false;
 	balls = makeTestScene();
 }

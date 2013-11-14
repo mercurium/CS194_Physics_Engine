@@ -8,7 +8,6 @@
 class Scene{
 		private:
 		int numBalls;
-			glm::vec3 accel;
 			bool twoD;
 			std::vector<Sphere *> balls;
 
