@@ -1,7 +1,7 @@
 #include "Physics.h"
 
-int LIMIT = 50;
-int GRID_SIZE = 50;
+int LIMIT = 100;
+int GRID_SIZE = 100;
 glm::vec3 acceli = glm::vec3(0,-9.8,0);
 
 namespace  Physics{
@@ -13,43 +13,14 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-		glm::vec3 newPos;
-		newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
+		glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
 
-	   /*Checking for Walls */
-		if (newPos.x > LIMIT){
-			newPos.x = 2* LIMIT - newPos.x;
-			oldVl.x = -oldVl.x;
-		}
-		if (newPos.y > LIMIT){
-			newPos.y = 2* LIMIT - newPos.y;
-			oldVl.y = -oldVl.y;
-		}
-		if (newPos.z > LIMIT){
-			newPos.z = 2* LIMIT - newPos.z;
-			oldVl.z = -oldVl.z;
-		}
-		if (newPos.x < 0){
-			newPos.x = -newPos.x;
-			oldVl.x = -oldVl.x;
-		}
-		if (newPos.y < 0){
-			newPos.y = oldPos.y;
-			oldVl.y = -oldVl.y/2;
-			oldVl.x = oldVl.x * .99;
-			oldVl.z = oldVl.z * .99;
-		}
-		if (newPos.z < 0){
-			newPos.z = -newPos.z;
-			oldVl.z = -oldVl.z;
-		}
-	oldVl.x += t*acceli.x;
-	oldVl.y += t*acceli.y;
-	oldVl.z += t*acceli.z;
+		oldVl.x += t*acceli.x;
+		oldVl.y += t*acceli.y;
+		oldVl.z += t*acceli.z;
 	
-	ball.setPos(newPos);
-	ball.setVelocity(oldVl);
-
+		ball.setPos(newPos);
+		ball.setVelocity(oldVl);
 	}
 
 }
