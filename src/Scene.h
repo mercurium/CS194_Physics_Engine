@@ -7,9 +7,11 @@
 
 class Scene{
 		private:
-		int numBalls;
+            int numBalls;
 			bool twoD;
 			std::vector<Sphere *> balls;
+            int GRID_SIZE;
+            virtual std::vector<Intersection *> getCollisions();
 
 		public:
 			Scene();
