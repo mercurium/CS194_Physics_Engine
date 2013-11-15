@@ -1,9 +1,10 @@
 #include "Scene.h"
 
 Scene::Scene(){
-	numBalls = 3000;
+	numBalls = 200;
 	twoD = false;
 	balls = makeTestScene();
+	distConstr = makeTestDistConstr(balls);
 }
 
 std::vector <Sphere *> Scene::makeTestScene(){
@@ -22,14 +23,28 @@ std::vector <Sphere *> Scene::makeTestScene(){
 	return ballList;
 }
 
+std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> balls){
+	std::vector <DistConstr *> distConstr;
+	for(int n = 0; n < balls.size() /4; n++){
+		for(int i = 1; i < 4; i++){
+			for (int j = 0; j < i; j++){
+				distConstr.push_back(new DistConstr(balls.at(4*n+i),balls.at(4*n+j),3));
+				Sphere &s1 = *balls.at(4*n+i), &s2 = *balls.at(4*n+j);
+				s2.setVelocity(s1.getVelocity());
+			}
+		}
+	}
+	return distConstr;
+
+}
+
 void Scene::UpdateScene(double time){
 	Physics::UpdateBallPositions(*(&this->balls), time);
-	
 	std::vector <Intersection *> intersections = Physics::getCollisions(*(&this->balls));
-	
-	
+	Physics::handleDistanceConstr(*(&this->distConstr));
 	while (intersections.size()  != 0){
 		Physics::resolveCollisions(*(&intersections));
+		Physics::handleDistanceConstr(this->distConstr);
 		intersections = Physics::getCollisions(this->balls);
 	}
 	Physics::UpdateBallBoundaries(this->balls);
