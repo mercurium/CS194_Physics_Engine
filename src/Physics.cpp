@@ -217,6 +217,11 @@ void handleDistanceConstr(std::vector<DistConstr*> &constraints){
      s2Pos.z - (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist));
     s1.setPos(s1NewPos);
     s2.setPos(s2NewPos);
+	glm::vec3 s1Vel = s1.getVelocity();
+	glm::vec3 s2Vel = s2.getVelocity();
+	glm::vec3 avgVel = glm::vec3(s1Vel.x/2 + s2Vel.x/2,s1Vel.y/2 + s2Vel.y/2, s1Vel.z/2 + s2Vel.z/2);
+	s1.setVelocity(avgVel);	
+	s2.setVelocity(avgVel);	
   }
 
 }

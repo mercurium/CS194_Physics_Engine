@@ -29,8 +29,6 @@ std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> ball
 		for(int i = 1; i < 4; i++){
 			for (int j = 0; j < i; j++){
 				distConstr.push_back(new DistConstr(balls.at(4*n+i),balls.at(4*n+j),3));
-				Sphere &s1 = *balls.at(4*n+i), &s2 = *balls.at(4*n+j);
-				s2.setVelocity(s1.getVelocity());
 			}
 		}
 	}
