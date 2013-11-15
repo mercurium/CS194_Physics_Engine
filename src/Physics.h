@@ -10,5 +10,6 @@ namespace Physics{
         void UpdateBallPositions(std::vector <Sphere *> &balls, double t);
         void UpdateBallBoundaries(std::vector <Sphere *> &balls);
 		void handleDistanceConstr(std::vector<DistConstr*> &constraints);
+		void setLimit(int n);
 
 }

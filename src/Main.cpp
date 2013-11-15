@@ -202,6 +202,12 @@ void keydown(unsigned char c, int x, int y){
         case 'x':
             exit(0);
             break;
+		case 'b':
+			Physics::setLimit(100);
+			break;
+		case 'n':
+			Physics::setLimit(30);
+			break;
 
         default:
             //nothing

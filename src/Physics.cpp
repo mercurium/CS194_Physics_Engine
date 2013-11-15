@@ -14,12 +14,7 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
 		glm::vec3 newPos;
-		if (oldPos.y < .001){
-			newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y, oldPos.z + oldVl.z*t);
-		}
-		else{
-			newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
-		}
+		newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
 
 	   /*Checking for Walls */
 		if (newPos.x > LIMIT){
@@ -41,8 +36,8 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		if (newPos.y < 0){
 			newPos.y = oldPos.y;
 			oldVl.y = -oldVl.y/2;
-			oldVl.x = oldVl.x * .8;
-			oldVl.z = oldVl.z * .8;
+			oldVl.x = oldVl.x * .99;
+			oldVl.z = oldVl.z * .99;
 		}
 		if (newPos.z < 0){
 			newPos.z = -newPos.z;
@@ -89,10 +84,6 @@ void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 			oldVl.y = -oldVl.y/2;
 			oldVl.x = oldVl.x * .8;
 			oldVl.z = oldVl.z * .8;
-			if (oldVl.y < .001){
-				newPos.y = 0;
-				oldVl.y = 0;
-			}
 		}
 		if (newPos.z < 0){
 			newPos.z = -newPos.z;
@@ -251,5 +242,9 @@ void handleDistanceConstr(std::vector<DistConstr*> &constraints){
   }
 
 }
-  
+
+void setLimit(int n){
+	LIMIT = n;
+}  
+
 }
