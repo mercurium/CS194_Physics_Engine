@@ -1,5 +1,6 @@
 #include "Init.h"
 #include "variables.h"
+#include "Globals.h"
 
 using namespace std;
 

@@ -16,13 +16,7 @@ Render::Render (glm::vec3 center, glm::vec3 view, glm::vec3 up){
 
 Render::~Render (){
     delete shader;
-    for( int i=0; i<lightpos->size(); i++){
-        free((void *)((*lightpos)[i]));
-    }
     delete lightpos;
-    for( int i=0; i<lightcol->size(); i++){
-        free((void *)((*lightcol)[i]));
-    }
     delete lightcol;
 }
 
@@ -34,8 +28,7 @@ void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
     zF = 200.0;
     fov = 60;
     shader = new Shader();    
-    lightpos = new std::vector<double *>;//Array of size 6-vectors (x,y,z,r,g,b)
-    lightcol = new std::vector<double *>;//Array of size 6-vectors (x,y,z,r,g,b)
+    numlights = 0;
 }
 
 void Render::draw(std::vector<Sphere*> spheres){
@@ -43,17 +36,22 @@ void Render::draw(std::vector<Sphere*> spheres){
     loadCamMatrix( camCenter, camUp, camView);
 
     glUniform1i(shader->enablelighting, true); //enable lighting in shader
-    GLfloat x = 300;
-    int numlights = 2;
-    glUniform1i(shader->numused, numlights);
-    glm::vec4 selfpos( 0,0,-10,1);
-    float lightPos[] = {0,40,-10,1,0,0,0,1};
-    float lightColor[] = {1,1,1,1,0,0,0,1};
-    glUniform4fv(shader->lightpos, numlights, lightPos);
-    glUniform4fv(shader->lightcol, numlights, lightColor);
+    if( numlights>0){
+        glUniform1i(shader->numused, numlights);
+        glUniform4fv(shader->lightpos, numlights, lightpos);
+        glUniform4fv(shader->lightcol, numlights, lightcol);
+    }else{
+        int rnumlights = 1;
+        float rlightPos[] = {0,40,-10,1};
+        float rlightColor[] = {1,1,1,1,};
+        glUniform1i(shader->numused, rnumlights);
+        glUniform4fv(shader->lightpos, numlights, rlightPos);
+        glUniform4fv(shader->lightcol, numlights, rlightColor);
+    }
     glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
     glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
     glUniform4fv(shader->emissioncol, 1, &glm::vec4(0,0,0,1)[0]);
+    GLfloat x = 300;
     glUniform1fv(shader->shininesscol, 1, &x);
     
     for(int i=0; i< spheres.size() ;i++){
@@ -62,32 +60,14 @@ void Render::draw(std::vector<Sphere*> spheres){
     }
 }
 
-void Render::addLight(glm::vec3 pos, glm::vec3 color){
-    //double* position = new double[3];
-    double * position = (double *)malloc(3*sizeof(double));
-    position[0] =pos[0];position[1]=pos[1];position[2]=pos[2]; 
-    lightpos->push_back(position);
-
-    //double* col = new double[3];
-    double * col = (double *)malloc(3*sizeof(double));
-    col[0] =color[0];col[1]=color[1];col[2]=color[2]; 
-    lightcol->push_back(col);
-
+void Render::setLights(int num, float * pos, float * col ){
+    numlights = num;
+    lightpos = pos;
+    lightcol = col;
 }
 
 void Render::drawtest(){
     printf("Drawing\n");
-    //printf("cent: ");pr(camCenter);printf(" up:");pr(camUp);printf(" view:");pr(camView);printf("\n");
-    /*
-    glm::vec3 viewCenter = camCenter+camView; 
-    //glm::mat4 lookAt(const glm::vec3 &eye, const glm::vec3 &center, const glm::vec3 &up) {
-    //glm::mat4 mv = glm::lookAt( viewCenter, camCenter, camUp);
-    glm::mat4 mv = lookAt( camCenter, viewCenter, camUp);
-    printf("LookAt:\n");
-    prmat(mv);
-    load_glm_matrix(mv);
-    */
-
     loadCamMatrix( camCenter, camUp, camView);
     //glm::mat4 mv= getCamMatrix( camCenter, camUp, camView);
 
@@ -117,14 +97,6 @@ void Render::drawtest(){
     draw(sph2);
     printf("Drawing 5\n");
 
-    /*
-    glPushMatrix();
-    glTranslatef(1,0,0);
-    glutSolidSphere( 1,50,50); 
-    glPopMatrix();
-    */
-
-    //glPopMatrix();
 }
 
 void Render::draw(Sphere& sph){

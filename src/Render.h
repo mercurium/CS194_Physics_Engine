@@ -15,7 +15,7 @@ class Render {
     public:
         Render ();
         Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
-        void addLight(glm::vec3 pos, glm::vec3 color);
+        void setLights(int num, float * pos, float * col );
         virtual ~Render ();
         void draw(std::vector<Sphere*> spheres);
         void drawtest();
@@ -39,7 +39,11 @@ class Render {
         double zN;
         double zF;
         double fov;
-        std::vector<double *> *lightpos;//Array of size 3-vectors (x,y,z)
-        std::vector<double *> *lightcol;//Array of size 3-vectors (r,g,b)
+        int numlights;
+        float * lightpos;
+        float * lightcol;
+
+        //std::vector<double *> *lightpos;//Array of size 3-vectors (x,y,z)
+        //std::vector<double *> *lightcol;//Array of size 3-vectors (r,g,b)
         
 };
