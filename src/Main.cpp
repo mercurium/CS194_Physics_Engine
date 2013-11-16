@@ -199,47 +199,7 @@ void keyup(unsigned char c, int x, int y){
 void keydown(unsigned char c, int x, int y){
     //printf("keydown: %c\n", c);
     keydict[c]=1;
-    const double SNSTVTY = 0.5;
-    /*
     switch(c){
-        case 'w':
-            r->translCamFB(SNSTVTY);
-            break;
-        case 's':
-            r->translCamFB(-SNSTVTY);
-            break;
-        case 'a':
-            r->translCamLR(SNSTVTY);
-            break;
-        case 'd':
-            r->translCamLR(-SNSTVTY);
-            break;
-        case 'q':
-            r->translCamUD(SNSTVTY);
-            break;
-        case 'e':
-            r->translCamUD(-SNSTVTY);
-            break;
-
-        case 'i':
-            r->rotateCamUD(10*SNSTVTY);
-            break;
-        case 'k':
-            r->rotateCamUD(-10*SNSTVTY);
-            break;
-        case 'j':
-            r->rotateCamLR(10*SNSTVTY);
-            break;
-        case 'l':
-            r->rotateCamLR(-10*SNSTVTY);
-            break;
-        case 'u':
-            r->rotateCamRoll(10*SNSTVTY);
-            break;
-        case 'o':
-            r->rotateCamRoll(-10*SNSTVTY);
-            break;
-
         case 'r':
             scene = Scene();
             break;
@@ -257,7 +217,6 @@ void keydown(unsigned char c, int x, int y){
             //nothing
             break;
     }
-    */
     glutPostRedisplay();
 }
 
