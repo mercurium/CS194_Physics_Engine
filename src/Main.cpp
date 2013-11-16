@@ -17,6 +17,7 @@
 void mainloop();
 void idlefunc();
 void reshape(int w, int h);
+void updateInputs(double elapsed);
 void keydown(unsigned char c, int x, int y);
 void keyup(unsigned char c, int x, int y);
 void mouse( int button, int state, int x, int y);
@@ -124,6 +125,7 @@ void mainloop(){
     //Physics.update(Scene)
 
     //User Input
+    updateInputs(elapsed);
     //blah
     glutSwapBuffers();
 }
@@ -146,7 +148,48 @@ void outputText(){
 
 }
 
+void updateInputs(double elapsed){
+    const double SNSTVTY = 10*elapsed;
+    if( keydict['w']){
+        r->translCamFB(SNSTVTY);
+    }
+    if( keydict['s']){
+        r->translCamFB(-SNSTVTY);
+    }
+    if( keydict['a']){
+        r->translCamLR(SNSTVTY);
+    }
+    if( keydict['d']){
+        r->translCamLR(-SNSTVTY);
+    }
+    if( keydict['q']){
+        r->translCamUD(SNSTVTY);
+    }
+    if( keydict['e']){
+        r->translCamUD(-SNSTVTY);
+    }
 
+    if( keydict['i']){
+        r->rotateCamUD(10*SNSTVTY);
+    }
+    if( keydict['k']){
+        r->rotateCamUD(-10*SNSTVTY);
+    }
+    if( keydict['j']){
+        r->rotateCamLR(10*SNSTVTY);
+    }
+    if( keydict['l']){
+        r->rotateCamLR(-10*SNSTVTY);
+    }
+    if( keydict['u']){
+        r->rotateCamRoll(10*SNSTVTY);
+    }
+    if( keydict['o']){
+        r->rotateCamRoll(-10*SNSTVTY);
+    }
+
+
+}
 
 void keyup(unsigned char c, int x, int y){
     //printf("keyup: %c\n", c);
@@ -157,6 +200,7 @@ void keydown(unsigned char c, int x, int y){
     //printf("keydown: %c\n", c);
     keydict[c]=1;
     const double SNSTVTY = 0.5;
+    /*
     switch(c){
         case 'w':
             r->translCamFB(SNSTVTY);
@@ -213,6 +257,7 @@ void keydown(unsigned char c, int x, int y){
             //nothing
             break;
     }
+    */
     glutPostRedisplay();
 }
 

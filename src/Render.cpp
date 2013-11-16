@@ -43,10 +43,10 @@ void Render::draw(std::vector<Sphere*> spheres){
     }else{
         int rnumlights = 1;
         float rlightPos[] = {0,40,-10,1};
-        float rlightColor[] = {1,1,1,1,};
+        float rlightColor[] = {1,1,1,1};
         glUniform1i(shader->numused, rnumlights);
-        glUniform4fv(shader->lightpos, numlights, rlightPos);
-        glUniform4fv(shader->lightcol, numlights, rlightColor);
+        glUniform4fv(shader->lightpos, rnumlights, rlightPos);
+        glUniform4fv(shader->lightcol, rnumlights, rlightColor);
     }
     glUniform4fv(shader->ambientcol, 1, &glm::vec4(.01,.01,.01,1)[0]);
     glUniform4fv(shader->specularcol, 1, &glm::vec4(1,1,1,1)[0]);
