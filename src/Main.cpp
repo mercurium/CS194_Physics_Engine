@@ -12,14 +12,17 @@
 #define MAINPROGRAM
 #include "variables.h"
 #include "Init.h"
+#include "Scene.h"
 
 void mainloop();
 void idlefunc();
 void reshape(int w, int h);
+void updateInputs(double elapsed);
 void keydown(unsigned char c, int x, int y);
 void keyup(unsigned char c, int x, int y);
 void mouse( int button, int state, int x, int y);
 void init();
+void outputText();
 void initGLUT(char**, int);
 
 Render* r;
@@ -30,15 +33,21 @@ int mouse_right_down_x;
 int mouse_right_down_y;
 double prev_time;
 char* keydict;
+Scene scene;
 
 int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
+    bool outputGL = true;
 
-    initGLUT(argv, argc);
-    init();
-	balls = Scene::makeTestScene();
-    glutMainLoop();
+    if(outputGL){
+        initGLUT(argv, argc);
+        init();
+		scene = Scene();
+        glutMainLoop();
+    }else{
+        outputText();
+    }
 
 
 
@@ -107,18 +116,80 @@ void mainloop(){
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
     //Render Scene
-	Scene::UpdateScene(*(&balls));
-    r->draw(balls);
+	//Scene::UpdateScene(*(&balls), elapsed);
+	scene.UpdateScene(elapsed);
+    r->draw(scene.getBalls());
     //r.drawtest();
     
     //Physics Update
     //Physics.update(Scene)
 
     //User Input
+    updateInputs(elapsed);
     //blah
     glutSwapBuffers();
 }
 
+void outputText(){
+	scene = Scene();
+    double step_size = 0.1; //settings.get("stepsize")
+    double total_duration = 100; //settings.get("totalsimduration")
+
+    for(double d = 0; d<total_duration; d+= step_size){
+		balls = scene.getBalls();
+        printf("t=%.3f :", d);
+        for( int i=0; i<balls.size(); i++){
+            Sphere * s = balls[i];
+            glm::vec3 pos = s->getPos();
+            printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
+        }
+        scene.UpdateScene(step_size);        
+    }
+
+}
+
+void updateInputs(double elapsed){
+    const double SNSTVTY = 10*elapsed;
+    if( keydict['w']){
+        r->translCamFB(SNSTVTY);
+    }
+    if( keydict['s']){
+        r->translCamFB(-SNSTVTY);
+    }
+    if( keydict['a']){
+        r->translCamLR(SNSTVTY);
+    }
+    if( keydict['d']){
+        r->translCamLR(-SNSTVTY);
+    }
+    if( keydict['q']){
+        r->translCamUD(SNSTVTY);
+    }
+    if( keydict['e']){
+        r->translCamUD(-SNSTVTY);
+    }
+
+    if( keydict['i']){
+        r->rotateCamUD(10*SNSTVTY);
+    }
+    if( keydict['k']){
+        r->rotateCamUD(-10*SNSTVTY);
+    }
+    if( keydict['j']){
+        r->rotateCamLR(10*SNSTVTY);
+    }
+    if( keydict['l']){
+        r->rotateCamLR(-10*SNSTVTY);
+    }
+    if( keydict['u']){
+        r->rotateCamRoll(10*SNSTVTY);
+    }
+    if( keydict['o']){
+        r->rotateCamRoll(-10*SNSTVTY);
+    }
+
+
+}
 
 void keyup(unsigned char c, int x, int y){
     //printf("keyup: %c\n", c);
@@ -128,40 +199,19 @@ void keyup(unsigned char c, int x, int y){
 void keydown(unsigned char c, int x, int y){
     //printf("keydown: %c\n", c);
     keydict[c]=1;
-    const double SNSTVTY = 0.5;
     switch(c){
-        case 'w':
-            r->translCamFB(SNSTVTY);
-            break;
-        case 's':
-            r->translCamFB(-SNSTVTY);
-            break;
-        case 'a':
-            r->translCamLR(SNSTVTY);
-            break;
-        case 'd':
-            r->translCamLR(-SNSTVTY);
-            break;
-
-        case 'i':
-            r->rotateCamUD(10*SNSTVTY);
-            break;
-        case 'k':
-            r->rotateCamUD(-10*SNSTVTY);
-            break;
-        case 'j':
-            r->rotateCamLR(10*SNSTVTY);
-            break;
-        case 'l':
-            r->rotateCamLR(-10*SNSTVTY);
-            break;
-
         case 'r':
-            balls = Scene::makeTestScene();
+            scene = Scene();
             break;
-        case 'q':
+        case 'x':
             exit(0);
             break;
+		case 'b':
+			Physics::setLimit(100);
+			break;
+		case 'n':
+			Physics::setLimit(30);
+			break;
 
         default:
             //nothing

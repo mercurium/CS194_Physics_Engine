@@ -3,16 +3,13 @@
 
 class Intersection {
 	Sphere *s1,*s2;
-	double dist, radiiDist;
 
     public:
-		Intersection(Sphere *s1, Sphere *s2, double dist, double radiiDistance);
+		Intersection(Sphere *s1, Sphere *s2);
         virtual ~Intersection ();
 	
 		Sphere * getS1();
 		Sphere * getS2();
-		double getDist();
-		double getRadiiDist();
 		void print();
     private:
         /* data */

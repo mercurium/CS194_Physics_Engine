@@ -36,6 +36,18 @@ def writeConfig(filename):
     f.close()
 
  
+def textmode(step_size, total_duration, outfilename):
+    _vardict["textmode"] = [step_size, total_duration]
+    #_vardict["outputfile"] = outfilename 
+
+def glmode():
+    if "textmode" in _vardict:
+        del _vardict["textmode"]
+    #if "outputfile" in _vardict:
+    #    del _vardict["outputfile"] 
+
+def windowsize(w, h):
+    _vardict["windowsize"] = [w,h]
 
 def accel(x,y,z):
     _vardict["accel"] = [x,y,z]
@@ -80,5 +92,9 @@ def __init_defaults():
     enableShading()
     camera( 0,0,0,0,0,1,0,1,0)
     sensitivity(0.5)
+    glmode()
+    maxbounds(50,50,50)
+    minbounds(-50,-50,-50)
+    windowsize(800,600)
 
 __init_defaults()
