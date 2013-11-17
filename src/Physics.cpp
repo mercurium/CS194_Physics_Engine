@@ -1,4 +1,5 @@
 #include "Physics.h"
+#include <stdio.h>
 
 int LIMIT = 100;
 int GRID_SIZE = 100;
@@ -13,11 +14,13 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-		glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
 
-		oldVl.x += t*acceli.x;
-		oldVl.y += t*acceli.y;
-		oldVl.z += t*acceli.z;
+        oldVl.x += t*acceli.x;
+        oldVl.y += t*acceli.y;
+        oldVl.z += t*acceli.z;
+
+        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
+
 	
 		ball.setPos(newPos);
 		ball.setVelocity(oldVl);
@@ -51,10 +54,11 @@ void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 			oldVl.x = -oldVl.x;
 		}
 		if (newPos.y < 0){
-			newPos.y = -newPos.y;
-			oldVl.y = -oldVl.y/2;
+			newPos.y = 0;
+			oldVl.y = -oldVl.y/2.0;
 			oldVl.x = oldVl.x * .8;
 			oldVl.z = oldVl.z * .8;
+
 		}
 		if (newPos.z < 0){
 			newPos.z = -newPos.z;

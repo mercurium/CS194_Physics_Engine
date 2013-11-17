@@ -30,7 +30,7 @@ void Scene::UpdateScene(double time){
     //std::vector <Intersection *> intersections = Physics::getCollisions(*(&this->balls));
     std::vector <Intersection *> intersections = getCollisions();
     while (intersections.size()  != 0){
-        Physics::resolveCollisions(*(&intersections));
+        Physics::resolveCollisions((intersections));
         intersections = getCollisions();
         //intersections = Physics::getCollisions(this->balls);
     }
