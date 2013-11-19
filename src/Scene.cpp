@@ -24,6 +24,12 @@ std::vector <Sphere *> Scene::makeTestScene(){
 	return ballList;
 }
 
+void Scene::addBalls(){
+	for (int i = 0; i < 100; i++){
+		this->balls.push_back(new Sphere(10 * (i/10), 100, 10* (i%10), this->twoD));
+	}
+}
+
 void Scene::UpdateScene(double time){
     Physics::UpdateBallPositions((this->balls), time);
     Physics::UpdateBallBoundaries(this->balls);
@@ -34,7 +40,7 @@ void Scene::UpdateScene(double time){
         intersections = getCollisions();
         //intersections = Physics::getCollisions(this->balls);
     }
-    Physics::UpdateBallBoundaries(this->balls);
+	Physics::UpdateBallBoundaries(this->balls);
 }
 
 std::vector <Sphere *> Scene::getBalls(){
@@ -72,7 +78,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 								
 								double dist = glm::distance((*list_of_balls[p1].at(b1)).getPos(), (*list_of_balls[p2].at(b2)).getPos());
 								double radiiDist = (*list_of_balls[p1].at(b1)).getRadius() + (*list_of_balls[p2].at(b2)).getRadius();
-								if (dist < radiiDist-.001){ // .001 to avoid rounding error
+								if (dist < radiiDist-.0001){ // .001 to avoid rounding error
 									intersects.push_back(new Intersection(list_of_balls[p1].at(b1), list_of_balls[p2].at(b2)));
 								}
 							}

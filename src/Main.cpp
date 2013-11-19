@@ -212,6 +212,9 @@ void keydown(unsigned char c, int x, int y){
 		case 'n':
 			Physics::setLimit(30);
 			break;
+		case 'm':
+			scene.addBalls();
+			break;
 
         default:
             //nothing

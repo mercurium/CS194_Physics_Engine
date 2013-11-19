@@ -18,5 +18,6 @@ class Scene{
 	        void UpdateScene(double time);
 			std::vector<Sphere *> makeTestScene();
 			std::vector<Sphere *> getBalls();
+			void addBalls();
 
 };
