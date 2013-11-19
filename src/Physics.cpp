@@ -21,46 +21,53 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		ball.setOldPos(currPos);
 		ball.setPos(newPos);
 	}
-
 }
 
+/* Elastic wall collisions approach */
 void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 	/*  Update each ball to the new location  */
 	for (int i = 0; i < balls.size(); i++){
 		Sphere &ball = (*balls.at(i));
-		glm::vec3 newPos = ball.getPos();
+		glm::vec3 oldPos = ball.oldPos();
+		glm::vec3 currPos = ball.getPos();
 
 	   /*Checking for Walls */
 		if (newPos.x > LIMIT){
-			newPos.x = 2* LIMIT - newPos.x;
-			oldVl.x = -oldVl.x;
+			oldPos.x = newPos.x;
+			newPos.x = 2 * LIMIT - newPos.x;
+			//oldVl.x = -oldVl.x;
 		}
 		if (newPos.y > LIMIT){
-			newPos.y = 2* LIMIT - newPos.y;
-			oldVl.y = -oldVl.y;
+			oldPos.y = newPos.y;
+			newPos.y = 2 * LIMIT - newPos.y;
+			//oldVl.y = -oldVl.y;
 		}
 		if (newPos.z > LIMIT){
-			newPos.z = 2* LIMIT - newPos.z;
-			oldVl.z = -oldVl.z;
+			oldPos.z = newPos.z;
+			newPos.z = 2 * LIMIT - newPos.z;
+			//oldVl.z = -oldVl.z;
 		}
 		if (newPos.x < 0){
+			oldPos.x = newPos.x - oldPos.x;
 			newPos.x = -newPos.x;
-			oldVl.x = -oldVl.x;
+			//oldVl.x = -oldVl.x;
 		}
 		if (newPos.y < 0){
-			newPos.y = 0;
-			oldVl.y = -oldVl.y/2.0;
-			oldVl.x = oldVl.x * .8;
-			oldVl.z = oldVl.z * .8;
+			oldPos.y = newPos.y - oldPos.y;
+			newPos.y = -newPos.y; //try 0 too for damping?
+			//oldVl.y = -oldVl.y/2.0;
+			//oldVl.x = oldVl.x * .8;
+			//oldVl.z = oldVl.z * .8;
 
 		}
 		if (newPos.z < 0){
+			oldPos.z = newPos.z - oldPos.z;
 			newPos.z = -newPos.z;
-			oldVl.z = -oldVl.z;
+			//oldVl.z = -oldVl.z;
 		}
 	
 	ball.setPos(newPos);
-	ball.setVelocity(oldVl);
+	//ball.setVelocity(oldVl);
 	}
 }
 
