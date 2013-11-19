@@ -2,7 +2,7 @@
 
 
 Scene::Scene(){
-	numBalls = 1000;
+	numBalls = 250;
 	twoD = false;
     GRID_SIZE = 100;
 	balls = makeTestScene();
@@ -28,12 +28,16 @@ void Scene::UpdateScene(double time){
     Physics::UpdateBallPositions((this->balls), time);
     Physics::UpdateBallBoundaries(this->balls);
     //std::vector <Intersection *> intersections = Physics::getCollisions(*(&this->balls));
-    std::vector <Intersection *> intersections = getCollisions();
-    while (intersections.size()  != 0){
-        Physics::resolveCollisions((intersections));
+    //std::vector <Intersection *> intersections = getCollisions();
+    //while (intersections.size()  != 0){
+    std::vector <Intersection *> intersections;
+    do{
+
         intersections = getCollisions();
+        Physics::resolveCollisions((intersections));
         //intersections = Physics::getCollisions(this->balls);
-    }
+    }while(intersections.size()!=0);
+
     Physics::UpdateBallBoundaries(this->balls);
 }
 
@@ -42,6 +46,7 @@ std::vector <Sphere *> Scene::getBalls(){
 }
 
 std::vector<Intersection *> Scene::getCollisions(){
+    /*
 	std::vector<Intersection *> intersects;
 
 	std::vector <Sphere *> list_of_balls[GRID_SIZE * GRID_SIZE];
@@ -81,7 +86,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 				}		
 			}
     }
-    /*
+    */
 	std::vector<Intersection *> intersects;
 	for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
 		for(int j = 0; j < i; j++){
@@ -92,7 +97,6 @@ std::vector<Intersection *> Scene::getCollisions(){
 			}
 		}
 	}
-    */
     return intersects;
 }
 

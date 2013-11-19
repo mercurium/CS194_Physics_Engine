@@ -210,7 +210,7 @@ void keydown(unsigned char c, int x, int y){
 			Physics::setLimit(100);
 			break;
 		case 'n':
-			Physics::setLimit(30);
+			Physics::setLimit(10);
 			break;
 
         default:

@@ -2,14 +2,13 @@
 #include <stdio.h>
 
 
-struct sameBucket{
-    bool operator()(const glm::vec3 p1, const glm::vec3 p2) const{
-        //glm::vec3 tmp1(((int)(p1.x*1)),((int)(p1.y*1)),((int)(p1.z*1)));
-        //glm::vec3 tmp2(((int)(p2.x*1)),((int)(p2.y*1)),((int)(p2.z*1)));
-        //return (tmp1.x==tmp2.x) && (tmp1.y==tmp2.y) && (tmp1.z==tmp2.z);
-        return (p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z);
-    }
-};
+std::size_t vec3Hash::operator()(const glm::vec3 p) const{
+    return (int)(p.x*1337+p.y*21337+p.z*57);
+}
+
+std::size_t vec3Equal::operator()(const glm::vec3 p1, const glm::vec3 p2) const{
+    return (p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z);
+}
 
 glm::vec3 getBucket(glm::vec3 p1){
     return glm::vec3((float)((int)(p1.x*1)),(float)((int)(p1.y*1)),(float)((int)(p1.z*1)));
@@ -42,7 +41,7 @@ void SceneOpt::addSphere(Sphere * sph){
         //printf("It: %d\n",it);
         //Spherelist* bkt = ((*map)[roundedPos]);
         Spherelist * bkt;
-        if( it == (map->end())){
+        if( it == (map->end())){ //if roundedPos not in map
             printf("Adding new bucket: %.2f,%.2f,%.2f\n",roundedPos[0],roundedPos[1],roundedPos[2]);
             bkt = new Spherelist;
             //map->insert( map->begin(), std::pair<glm::vec3, Spherelist*>(roundedPos,bkt));
@@ -65,14 +64,12 @@ std::vector<Intersection *> SceneOpt::getCollisions(){
     for( Spheremap::iterator iter = map->begin(); iter!=map->end();++iter){
         glm::vec3 key = iter->first;
         printf("At pos: %.2f,%.2f,%.2f\n",key[0],key[1],key[2]);
-        /*
         Spherelist* vals = iter->second;
         for(Spherelist::iterator it = vals->begin(); it!=vals->end(); ++it){
             Sphere * sph = *it;
             glm::vec3 pos = sph->getPos();
             printf("Sph: %.2f,%.2f,%.2f\n", pos[0],pos[1],pos[2]);
         }
-        */
     }
 
     return intersects;

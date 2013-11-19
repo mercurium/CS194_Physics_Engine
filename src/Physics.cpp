@@ -14,15 +14,20 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-
         oldVl.x += t*acceli.x;
         oldVl.y += t*acceli.y;
         oldVl.z += t*acceli.z;
 
-        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
 
-	
-		ball.setPos(newPos);
+        if( glm::dot(oldVl,oldVl)< t){
+            oldVl = glm::vec3(0,0,0);
+        }else{
+            glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
+            ball.setPos(newPos);
+        }
+
+
+
 		ball.setVelocity(oldVl);
 	}
 
@@ -135,12 +140,12 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		Intersection * iptr = intersections.back();
 		Intersection i = *iptr;
 		intersections.pop_back();
-		Sphere &s1 = *i.getS1(), &s2 = *i.getS2();
-		glm::vec3 s1Pos = s1.getPos();
-		glm::vec3 s2Pos = s2.getPos();
+		Sphere* s1 = i.getS1(), *s2 = i.getS2();
+		glm::vec3 s1Pos = s1->getPos();
+		glm::vec3 s2Pos = s2->getPos();
 		
 		dist = glm::distance(s1Pos,s2Pos);
-		radiiDist = s1.getRadius() + s2.getRadius();
+		radiiDist = s1->getRadius() + s2->getRadius();
 
 		glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
 		   s1Pos.x + (s1Pos.x - s2Pos.x) * (radiiDist - dist)/ (2*dist),
@@ -150,14 +155,14 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		   s2Pos.x + (s2Pos.x - s1Pos.x) * (radiiDist - dist)/ (2*dist),
 		   s2Pos.y + (s2Pos.y - s1Pos.y) * (radiiDist - dist)/ (2*dist),
 		   s2Pos.z + (s2Pos.z - s1Pos.z) * (radiiDist - dist)/ (2*dist));
-		s1.setPos(s1NewPos);
-		s2.setPos(s2NewPos);
-		glm::vec3 s1Vel = s1.getVelocity();
-		glm::vec3 s2Vel = s2.getVelocity();
+		s1->setPos(s1NewPos);
+		s2->setPos(s2NewPos);
+		glm::vec3 s1Vel = s1->getVelocity();
+		glm::vec3 s2Vel = s2->getVelocity();
 		s1Vel.y *= .9;
 		s2Vel.y *= .9;
-		s1.setVelocity(s2Vel);
-		s2.setVelocity(s1Vel);
+		s1->setVelocity(s2Vel);
+		s2->setVelocity(s1Vel);
 		delete iptr;
 	}
 }

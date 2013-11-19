@@ -1,10 +1,18 @@
 #pragma once
 #include "Scene.h"
-#include <map>
+#include <unordered_map>
 
 
-struct sameBucket;
-typedef std::map<glm::vec3 , std::vector<Sphere *>*, sameBucket> Spheremap;
+class vec3Hash{
+    public:
+        std::size_t operator()(const glm::vec3 p) const;
+};
+class vec3Equal{
+    public:
+        std::size_t operator()(const glm::vec3 p1, const glm::vec3 p2) const;
+};
+
+typedef std::unordered_map<glm::vec3 , std::vector<Sphere *>*, vec3Hash, vec3Equal> Spheremap;
 typedef std::vector<Sphere *> Spherelist;
 
 

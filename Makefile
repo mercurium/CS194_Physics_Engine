@@ -5,7 +5,7 @@ SRCDIR = src
 BINDIR = bin
 
 #Compiler flags
-CFLAGS=-O2 -fopenmp
+CFLAGS=-O2 -fopenmp -std=c++11
 IFLAGS=-Ilib
 LDFLAGS=-lGLEW -lglut -lGLU -lGL -lX11
 
