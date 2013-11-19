@@ -11,29 +11,23 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 	/*  Update each ball to the new location  */
 	for (int i = 0; i < balls.size(); i++){
 		Sphere &ball = (*balls.at(i));
-		glm::vec3 oldPos = ball.getPos();
-		ball.setOldPos(oldPos);
-		glm::vec3 oldVl = ball.getVelocity();
+		glm::vec3 currPos = ball.getPos();
+		glm::vec3 oldPos = ball.getOldPos();
 
-        oldVl.x += t*acceli.x;
-        oldVl.y += t*acceli.y;
-        oldVl.z += t*acceli.z;
+		glm::vec3 newPos = glm::vec3(currPos.x + (currPos.x - oldPos.x) + acceli.x * t * t,
+									 currPos.y + (currPos.y - oldPos.y) + acceli.y * t * t,
+									 currPos.z + (currPos.z - oldPos.z) + acceli.z * t * t);
 
-        glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
-
-	
+		ball.setOldPos(currPos);
 		ball.setPos(newPos);
-		ball.setVelocity(oldVl);
 	}
 
 }
 
 void UpdateBallBoundaries(std::vector<Sphere *> &balls){
-
 	/*  Update each ball to the new location  */
 	for (int i = 0; i < balls.size(); i++){
 		Sphere &ball = (*balls.at(i));
-		glm::vec3 oldVl = ball.getVelocity();
 		glm::vec3 newPos = ball.getPos();
 
 	   /*Checking for Walls */
@@ -67,9 +61,7 @@ void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 	
 	ball.setPos(newPos);
 	ball.setVelocity(oldVl);
-
 	}
-
 }
 
 
