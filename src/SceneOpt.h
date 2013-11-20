@@ -26,7 +26,8 @@ class SceneOpt : public Scene {
         void test();
         std::vector<Intersection *> getCollisions();
         void addSphere(Sphere * sph);
+        bool contains(glm::vec3 pos);
     private:
-        //std::map<glm::vec3 , std::vector<Sphere *>*, sameBucket>*  map;
         Spheremap * map; 
+        void addIntersects(std::vector<Intersection *> &intersects, Sphere *sph, glm::vec3 checkPos);
 };
