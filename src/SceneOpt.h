@@ -1,6 +1,7 @@
 #pragma once
 #include "Scene.h"
 #include <unordered_map>
+#include <tuple>
 
 
 class vec3Hash{
@@ -14,6 +15,7 @@ class vec3Equal{
 
 typedef std::unordered_map<glm::vec3 , std::vector<Sphere *>*, vec3Hash, vec3Equal> Spheremap;
 typedef std::vector<Sphere *> Spherelist;
+typedef std::tuple<Sphere *, Spherelist *, Spheremap::iterator, Spherelist::iterator> BadSphereTuple;
 
 
 glm::vec3 getBucket(glm::vec3 p1);

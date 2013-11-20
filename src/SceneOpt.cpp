@@ -2,6 +2,7 @@
 #include <stdio.h>
 #define flr(x) (float)( ((int)(x/HASHGRID_SIZE))*HASHGRID_SIZE)
 #define hashfun(p) (int)(p.x*1337+p.y*21337+p.z*57)
+#define vec3eq(p1,p2) ((p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z))
 
 float HASHGRID_SIZE = 3;
 
@@ -10,7 +11,7 @@ std::size_t vec3Hash::operator()(const glm::vec3 p) const{
 }
 
 std::size_t vec3Equal::operator()(const glm::vec3 p1, const glm::vec3 p2) const{
-    return (p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z);
+    return vec3eq(p1,p2);
 }
 
 glm::vec3 getBucket(glm::vec3 p1){
@@ -103,8 +104,36 @@ void SceneOpt::test(){
 }
 
 std::vector<Intersection *> SceneOpt::getCollisions(){
-    //TODO: rehash balls
+    //Rehash balls that have moved
+    std::vector< BadSphereTuple> badSpheres;
+    for( Spheremap::iterator iter = map->begin(); iter!=map->end();++iter){
+        glm::vec3 key = iter->first;
+        Spherelist* vals = iter->second;
+        for(Spherelist::iterator it = vals->begin(); it!=vals->end(); ++it){
+            Sphere * sph = *it;
+            glm::vec3 pos = sph->getPos();
+            if( !vec3eq(getBucket(pos), key)){
+                //gather all bad spheres into a list
+                badSpheres.push_back(std::make_tuple( sph, vals, iter, it));
+            }
+        }
+    }
+    //rehash bad spheres
+    for(std::vector< BadSphereTuple>::iterator it = badSpheres.begin(); it!=badSpheres.end(); ++it){
+        //rehash sph
+        BadSphereTuple pair = *it;
+        Sphere * sph = std::get<0>(pair);
+        Spherelist * sphlist = std::get<1>(pair);
+        sphlist->erase( std::get<3>(pair));
+        if( sphlist->size() == 0){
+            //delete list
+            delete sphlist;
+            map->erase( std::get<2>(pair));
+        }
+        addSphere(sph);
+    }
 
+    //Calculate intersections
     std::vector<Intersection *> intersects;
     printf("Getting spheres\n");
     for( Spheremap::iterator iter = map->begin(); iter!=map->end();++iter){
