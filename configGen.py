@@ -76,16 +76,16 @@ def minbounds(x,y,z):
     _vardict["minbounds"] = [x,y,z]
 
 def enable2d():
-    _vardict["2d"] = "true"
+    _vardict["2d"] = 1
 
 def disable2d():
-    _vardict["2d"] = "false"
+    _vardict["2d"] = 0
 
 def enableShading():
-    _vardict["shading"] = "true"
+    _vardict["shading"] = 1
 
 def disableShading():
-    _vardict["shading"] = "false"
+    _vardict["shading"] = 0
 
 def __init_defaults():
     disable2d()

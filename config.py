@@ -3,7 +3,7 @@ import random
 
 accel(0,-9.8,0)
 maxbounds(100,100,100)
-minbounds(-100,-100,-100)
+minbounds(0,0,0)
 
 b1 = ball(0,0,0,1,1,1)
 b2 = ball(1,1,1,1,1,1)

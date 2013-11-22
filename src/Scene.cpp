@@ -10,6 +10,14 @@ Scene::Scene(){
 	//distConstr = makeTestDistConstr(balls);
 }
 
+Scene::Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints){
+    GRID_SIZE = 100;
+	balls = ballList;
+	distConstr = constraints;
+	numBalls = balls.size();
+}
+
+
 std::vector <Sphere *> Scene::makeTestScene(){
 	std::vector <Sphere *> ballList;
 	double x,y,z;

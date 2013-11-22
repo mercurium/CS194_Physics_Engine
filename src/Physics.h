@@ -3,6 +3,7 @@
 #include "Intersection.h"
 #include "Sphere.h"
 #include "DistConstr.h"
+#include "variables.h"
 
 namespace Physics{
         std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);

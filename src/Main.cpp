@@ -10,9 +10,9 @@
 #include "shaders.h"
 
 #define MAINPROGRAM
-#include "variables.h"
 #include "Init.h"
 #include "Scene.h"
+#include "readfile.h"
 
 void mainloop();
 void idlefunc();
@@ -41,9 +41,12 @@ int main(int argc, char *argv[])
     bool outputGL = true;
 
     if(outputGL){
+		readfile("config.txt");
         initGLUT(argv, argc);
         init();
-		scene = Scene();
+		printf("read is starting!\n");
+		printf("read was successful!\n");
+		scene = Scene(balls, constraints);
         glutMainLoop();
     }else{
         outputText();
@@ -96,7 +99,7 @@ void init(){
 void initGLUT(char *argv[], int argc){
     glutInit(&argc, argv);
     glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE);
-    glutInitWindowSize(800, 600);
+    glutInitWindowSize(width, height);
     glutCreateWindow("CS194 Physics");
     glutDisplayFunc(&mainloop);
     glutReshapeFunc(&reshape);
@@ -201,7 +204,10 @@ void keydown(unsigned char c, int x, int y){
     keydict[c]=1;
     switch(c){
         case 'r':
-            scene = Scene();
+			balls = std::vector<Sphere *>();
+			constraints = std::vector<DistConstr *>();
+			readfile("config.txt");
+            scene = Scene(balls,constraints);
             break;
         case 'x':
             exit(0);

@@ -3,7 +3,6 @@
 
 int LIMIT = 100;
 int GRID_SIZE = 100;
-glm::vec3 acceli = glm::vec3(0,-9.8,0);
 
 namespace  Physics{
 
@@ -14,9 +13,9 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
-        oldVl.x += t*acceli.x;
-        oldVl.y += t*acceli.y;
-        oldVl.z += t*acceli.z;
+        oldVl.x += t*accel[0];
+        oldVl.y += t*accel[1];
+        oldVl.z += t*accel[2];
 
 
         if( glm::dot(oldVl,oldVl)< t){
@@ -40,31 +39,30 @@ void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 		glm::vec3 newPos = ball.getPos();
 
 	   /*Checking for Walls */
-		if (newPos.x > LIMIT){
-			newPos.x = 2* LIMIT - newPos.x;
+		if (newPos.x > maxbounds[0]){
+			newPos.x = 2 * maxbounds[0] - newPos.x;
 			oldVl.x = -oldVl.x;
 		}
-		if (newPos.y > LIMIT){
-			newPos.y = 2* LIMIT - newPos.y;
+		if (newPos.y > maxbounds[1]){
+			newPos.y = 2 * maxbounds[1] - newPos.y;
 			oldVl.y = -oldVl.y;
 		}
-		if (newPos.z > LIMIT){
-			newPos.z = 2* LIMIT - newPos.z;
+		if (newPos.z > maxbounds[2]){
+			newPos.z = 2 * maxbounds[2] - newPos.z;
 			oldVl.z = -oldVl.z;
 		}
-		if (newPos.x < 0){
-			newPos.x = -newPos.x;
+		if (newPos.x < minbounds[0]){
+			newPos.x = 2 * minbounds[0] - newPos.x;
 			oldVl.x = -oldVl.x;
 		}
-		if (newPos.y < 0){
-			newPos.y = 0;
+		if (newPos.y < minbounds[1]){
+			newPos.y = minbounds[1];
 			oldVl.y = -oldVl.y/2.0;
 			oldVl.x = oldVl.x * .8;
 			oldVl.z = oldVl.z * .8;
-
 		}
-		if (newPos.z < 0){
-			newPos.z = -newPos.z;
+		if (newPos.z < minbounds[2]){
+			newPos.z = 2 * minbounds[2] - newPos.z;
 			oldVl.z = -oldVl.z;
 		}
 	

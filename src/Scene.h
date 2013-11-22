@@ -16,6 +16,7 @@ class Scene{
 
 		public:
 			Scene();
+			Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints);
 	        void UpdateScene(double time);
 			std::vector<Sphere *> makeTestScene();
 			std::vector <DistConstr *> makeTestDistConstr(std::vector <Sphere *> balls);

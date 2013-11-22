@@ -4,6 +4,7 @@
 #include "Transform.h"
 #include "Util.h"
 #include <stdlib.h>
+#include "variables.h"
 
 
 Render::Render (){
@@ -35,7 +36,7 @@ void Render::draw(std::vector<Sphere*> spheres){
 
     loadCamMatrix( camCenter, camUp, camView);
 
-    glUniform1i(shader->enablelighting, true); //enable lighting in shader
+    glUniform1i(shader->enablelighting, shading); //enable lighting in shader
     if( numlights>0){
         glUniform1i(shader->numused, numlights);
         glUniform4fv(shader->lightpos, numlights, lightpos);

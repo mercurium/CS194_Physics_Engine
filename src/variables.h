@@ -12,6 +12,8 @@
 
 EXTERN int numballs;
 EXTERN int numlights;
+EXTERN int height;
+EXTERN int width;
 
 EXTERN double sensitivity;
 
@@ -21,6 +23,11 @@ EXTERN bool shading;
 EXTERN double accel[3];
 EXTERN double camera[9];
 EXTERN double maxbounds[3]; 
+EXTERN double minbounds[3]; 
+
+EXTERN double lightposn[40];
+EXTERN double lightcolor[40];
+
 
 EXTERN std::vector<Sphere*> balls;
 EXTERN std::vector<DistConstr*> constraints;
