@@ -20,6 +20,7 @@ class Sphere{
 		void setPos(glm::vec3 pos);
 		void setOldPos(glm::vec3 oldPosition);
 		void setVelocity(glm::vec3 vel);
+		void setColor(glm::vec4 col);
 		
 		glm::vec3 getPos();
 		glm::vec4 getColor();

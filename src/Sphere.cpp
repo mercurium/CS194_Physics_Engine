@@ -92,6 +92,9 @@ glm::vec4 Sphere::getColor(){
 	return color;
 }
 
+void Sphere::setColor(glm::vec4 col){
+	color = col;
+}
 
 double Sphere::getRadius(){
 	return radius;

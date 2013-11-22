@@ -26,8 +26,6 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
             ball.setPos(newPos);
         }
 
-
-
 		ball.setVelocity(oldVl);
 	}
 
@@ -146,15 +144,16 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 		
 		dist = glm::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
+		double distDiff = (radiiDist - dist)/(2*dist);
 
 		glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
-		   s1Pos.x + (s1Pos.x - s2Pos.x) * (radiiDist - dist)/ (2*dist),
-	 	   s1Pos.y + (s1Pos.y - s2Pos.y) * (radiiDist - dist)/ (2*dist),
-		   s1Pos.z + (s1Pos.z - s2Pos.z) * (radiiDist - dist)/ (2*dist));
+		   s1Pos.x + (s1Pos.x - s2Pos.x) * distDiff,
+	 	   s1Pos.y + (s1Pos.y - s2Pos.y) * distDiff,
+		   s1Pos.z + (s1Pos.z - s2Pos.z) * distDiff);
 		glm::vec3 s2NewPos = glm::vec3(
-		   s2Pos.x + (s2Pos.x - s1Pos.x) * (radiiDist - dist)/ (2*dist),
-		   s2Pos.y + (s2Pos.y - s1Pos.y) * (radiiDist - dist)/ (2*dist),
-		   s2Pos.z + (s2Pos.z - s1Pos.z) * (radiiDist - dist)/ (2*dist));
+		   s2Pos.x + (s2Pos.x - s1Pos.x) * distDiff,
+		   s2Pos.y + (s2Pos.y - s1Pos.y) * distDiff,
+		   s2Pos.z + (s2Pos.z - s1Pos.z) * distDiff);
 		s1->setPos(s1NewPos);
 		s2->setPos(s2NewPos);
 		glm::vec3 s1Vel = s1->getVelocity();
@@ -167,31 +166,6 @@ void resolveCollisions(std::vector<Intersection *> intersections){
 	}
 }
 
-
-
-//handled by Init.cpp. Prep for removal
-/*
-std::vector<DistConstr*> distanceConstrInit(std::vector<Sphere*> &balls){
-  std::vector<DistConstr*> constraints;
-
-  //naive O(n^2) comparisons
-  for(int i = 0; i < balls.size(); i++){
-    for (int j = i+1; j < balls.size(); j++){
-      Sphere* s1 = balls.at(i);
-      Sphere* s2 = balls.at(j);
-
-      double dist = glm::distance((*s1).getPos(), (*s2).getPos());
-
-      if(dist - (*s1).getRadius() - (*s2).getRadius() < .01){
-        constraints.push_back(new DistConstr(s1, s2, dist));
-      }
-    }
-  }
-
-  return constraints;
-}
-*/
-
 void handleDistanceConstr(std::vector<DistConstr*> &constraints){
   for (int i = 0; i < constraints.size(); i++)
   {
@@ -203,19 +177,19 @@ void handleDistanceConstr(std::vector<DistConstr*> &constraints){
     double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
     double constr_dist = (*constr).getDist();
 
-    double diff = actual_dist - constr_dist;
+    double diff = constr_dist - actual_dist;
 
     glm::vec3 s1Pos = (*s1).getPos();
     glm::vec3 s2Pos = (*s2).getPos();
 
     glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
-     s1Pos.x + (s1Pos.x - s2Pos.x) * (diff)/(2*actual_dist+.0000001), 
-     s1Pos.y + (s1Pos.y - s2Pos.y) * (diff)/(2*actual_dist+.0000001),
-     s1Pos.z + (s1Pos.z - s2Pos.z) * (diff)/(2*actual_dist+.0000001));
+     s1Pos.x + (s1Pos.x - s2Pos.x) * (diff)/(2*actual_dist), 
+     s1Pos.y + (s1Pos.y - s2Pos.y) * (diff)/(2*actual_dist),
+     s1Pos.z + (s1Pos.z - s2Pos.z) * (diff)/(2*actual_dist));
     glm::vec3 s2NewPos = glm::vec3(
-     s2Pos.x + (s2Pos.x - s1Pos.x) * (diff)/(2*actual_dist+.0000001),
-     s2Pos.y + (s2Pos.y - s1Pos.y) * (diff)/(2*actual_dist+.0000001),
-     s2Pos.z + (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist+.0000001));
+     s2Pos.x + (s2Pos.x - s1Pos.x) * (diff)/(2*actual_dist),
+     s2Pos.y + (s2Pos.y - s1Pos.y) * (diff)/(2*actual_dist),
+     s2Pos.z + (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist));
     
     (*s1).setPos(s1NewPos);
     (*s2).setPos(s2NewPos);

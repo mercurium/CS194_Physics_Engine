@@ -10,6 +10,7 @@ class Scene{
             int numBalls;
 			bool twoD;
 			std::vector<Sphere *> balls;
+			std::vector<DistConstr *> distConstr;
             int GRID_SIZE;
             virtual std::vector<Intersection *> getCollisions();
 
@@ -17,6 +18,7 @@ class Scene{
 			Scene();
 	        void UpdateScene(double time);
 			std::vector<Sphere *> makeTestScene();
+			std::vector <DistConstr *> makeTestDistConstr(std::vector <Sphere *> balls);
 			std::vector<Sphere *> getBalls();
 
 };
