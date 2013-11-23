@@ -9,14 +9,18 @@ class Scene{
 		private:
             int numBalls;
 			bool twoD;
-			std::vector<Sphere *> balls;
 			std::vector<DistConstr *> distConstr;
             int GRID_SIZE;
-            virtual std::vector<Intersection *> getCollisions();
+
+        protected:
+            std::vector<Sphere *> balls;
+
 
 		public:
 			Scene();
 			Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints);
+            void init(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints);
+            virtual std::vector<Intersection *> getCollisions();
 	        void UpdateScene(double time);
 			std::vector<Sphere *> makeTestScene();
 			std::vector <DistConstr *> makeTestDistConstr(std::vector <Sphere *> balls);

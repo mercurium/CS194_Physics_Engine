@@ -12,6 +12,7 @@
 #define MAINPROGRAM
 #include "Init.h"
 #include "Scene.h"
+#include "SceneOpt.h"
 #include "readfile.h"
 
 void mainloop();
@@ -33,7 +34,7 @@ int mouse_right_down_x;
 int mouse_right_down_y;
 double prev_time;
 char* keydict;
-Scene scene;
+SceneOpt scene;
 
 int main(int argc, char *argv[])
 {
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
         init();
 		printf("read is starting!\n");
 		printf("read was successful!\n");
-		scene = Scene(balls, constraints);
+		scene = SceneOpt(balls, constraints);
         glutMainLoop();
     }else{
         outputText();
@@ -134,7 +135,7 @@ void mainloop(){
 }
 
 void outputText(){
-	scene = Scene();
+	scene = SceneOpt();
     double step_size = 0.1; //settings.get("stepsize")
     double total_duration = 100; //settings.get("totalsimduration")
 
@@ -207,7 +208,7 @@ void keydown(unsigned char c, int x, int y){
 			balls = std::vector<Sphere *>();
 			constraints = std::vector<DistConstr *>();
 			readfile("config.txt");
-            scene = Scene(balls,constraints);
+            scene = SceneOpt(balls,constraints);
             break;
         case 'x':
             exit(0);

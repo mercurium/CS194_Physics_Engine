@@ -3,15 +3,30 @@
 
 
 Scene::Scene(){
+    /*
 	numBalls = 100;
 	twoD = false;
     GRID_SIZE = 100;
 	balls = makeTestScene();
+    */
 	//distConstr = makeTestDistConstr(balls);
+    std::vector<DistConstr *> distConstraints; //empty list
+    init( balls, distConstraints);
 }
 
 Scene::Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints){
+    init(ballList, constraints);
+    /*
     GRID_SIZE = 100;
+	balls = ballList;
+	distConstr = constraints;
+	numBalls = balls.size();
+    */
+}
+
+void Scene::init(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints){
+    GRID_SIZE = 100;
+    twoD = false;
 	balls = ballList;
 	distConstr = constraints;
 	numBalls = balls.size();

@@ -1,4 +1,5 @@
 // Readfile definitions 
+#pragma once
 #include "Sphere.h"
 #include <vector>
 #include "DistConstr.h"

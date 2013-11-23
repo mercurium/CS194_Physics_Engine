@@ -24,9 +24,11 @@ class SceneOpt : public Scene {
     public:
         SceneOpt();
         SceneOpt(std::vector<Sphere *> balls);
+        SceneOpt(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints);
         ~SceneOpt();
         void test();
-        std::vector<Intersection *> getCollisions();
+        virtual std::vector<Intersection *> getCollisions();
+        void UpdateScene(double time);
         void addSphere(Sphere * sph);
         bool contains(glm::vec3 pos);
     private:
