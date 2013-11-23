@@ -29,9 +29,10 @@ class SceneOpt : public Scene {
         void test();
         virtual std::vector<Intersection *> getCollisions();
         void UpdateScene(double time);
-        void addSphere(Sphere * sph);
         bool contains(glm::vec3 pos);
+
+        Spheremap * smap; 
     private:
-        Spheremap * map; 
+        void addSphere(Sphere * sph);
         void addIntersects(std::vector<Intersection *> &intersects, Sphere *sph, glm::vec3 checkPos);
 };

@@ -19,12 +19,12 @@ glm::vec3 getBucket(glm::vec3 p1){
 }
 
 SceneOpt::SceneOpt(){
-    map = new Spheremap;
+    smap = new Spheremap;
 }
 
 SceneOpt::SceneOpt(std::vector<Sphere *> balls){
     //std::map<glm::vec3 , std::vector<Sphere *>*, sameBucket>*  map;
-    map = new Spheremap;
+    smap = new Spheremap;
     for(Spherelist::iterator it = balls.begin(); it!=balls.end(); ++it){
         Sphere * sph = *it;
         addSphere(sph);
@@ -34,9 +34,8 @@ SceneOpt::SceneOpt(std::vector<Sphere *> balls){
 }
 
 SceneOpt::SceneOpt(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints){
-    printf("Init SceneOpt\n");
     init(ballList, constraints);
-    map = new Spheremap;
+    smap = new Spheremap;
     for(Spherelist::iterator it = ballList.begin(); it!=ballList.end(); ++it){
         Sphere * sph = *it;
         addSphere(sph);
@@ -44,43 +43,35 @@ SceneOpt::SceneOpt(std::vector<Sphere *> ballList, std::vector <DistConstr *> co
 }
 
 SceneOpt::~SceneOpt(){
-    //delete all buckets in map
-    delete map;
+    //TODO: free all buckets in map
+    delete smap;
 }
 
 void SceneOpt::addSphere(Sphere * sph){
         glm::vec3 pos = (sph->getPos());
-        printf("Sph: %.2f,%.2f,%.2f\n", pos[0],pos[1],pos[2]);
+        //printf("Sph: %.2f,%.2f,%.2f\n", pos[0],pos[1],pos[2]);
         glm::vec3 roundedPos = getBucket(sph->getPos());
         //printf("RoundPos: %.2f,%.2f,%.2f\n",roundedPos[0],roundedPos[1],roundedPos[2]);
-        Spheremap::iterator it = map->find(roundedPos);
+        Spheremap::iterator it = smap->find(roundedPos);
         //printf("It: %d\n",it);
         //Spherelist* bkt = ((*map)[roundedPos]);
         Spherelist * bkt;
-        if( it == (map->end())){ //if roundedPos not in map
-            printf("Adding new bucket: %.2f,%.2f,%.2f\n",roundedPos[0],roundedPos[1],roundedPos[2]);
+        if( it == (smap->end())){ //if roundedPos not in map
+            //printf("Adding new bucket: %.2f,%.2f,%.2f\n",roundedPos[0],roundedPos[1],roundedPos[2]);
             bkt = new Spherelist;
-            //map->insert( map->begin(), std::pair<glm::vec3, Spherelist*>(roundedPos,bkt));
-            ((*map)[roundedPos]) = bkt;
+            ((*smap)[roundedPos]) = bkt;
         }else{
             //printf("Bucket exists!\n");
-            bkt = (*map)[roundedPos];
+            bkt = (*smap)[roundedPos];
         }
         bkt->push_back(sph);
 
-        printf("Current bucket:. (MapSize: %d) \n", (int)(map->size()));
-        for(Spherelist::iterator it = bkt->begin(); it!=bkt->end(); ++it){
-            Sphere * sph = *it;
-            glm::vec3 pos = sph->getPos();
-            printf("\t(%.2f,%.2f,%.2f)", pos[0],pos[1],pos[2]);
-        }
-        printf("\n");
 }
 
 bool SceneOpt::contains(glm::vec3 pos){
         glm::vec3 roundedPos = getBucket(pos);
-        Spheremap::iterator it = map->find(roundedPos);
-        if( it == (map->end())){ //if roundedPos not in map
+        Spheremap::iterator it = smap->find(roundedPos);
+        if( it == (smap->end())){ //if roundedPos not in map
             return false;
         }
         return true;
@@ -93,7 +84,7 @@ void SceneOpt::addIntersects(std::vector<Intersection *> &intersects, Sphere *sp
         return;
     }  
     glm::vec3 roundedPos = getBucket(checkPos);
-    Spherelist * bkt = (*map)[roundedPos];
+    Spherelist * bkt = (*smap)[roundedPos];
 
     //printf("\t\tTesting intersects for (%.2f,%.2f,%.2f)\n",selfpos[0],selfpos[1],selfpos[2]); 
     //printf("\t\tChecking at (%.2f,%.2f,%.2f)\n",checkPos[0],checkPos[1],checkPos[2]); 
@@ -119,6 +110,8 @@ void SceneOpt::addIntersects(std::vector<Intersection *> &intersects, Sphere *sp
     }
 }
 
+//For some reason I have to copy this to SceneOpt or else the wrong getCollisions will be called.
+//(getCollisions in SceneOpt isn't overriding getCollisions for Scene)
 void SceneOpt::UpdateScene(double time){
     Physics::UpdateBallPositions((this->balls), time);
     Physics::UpdateBallBoundaries(this->balls);
@@ -135,54 +128,56 @@ void SceneOpt::UpdateScene(double time){
 }
 
 void SceneOpt::test(){
-    printf("hi\n");
+    printf("test(): (MapSize: %d) \n", (int)(smap->size()));
 }
 
 std::vector<Intersection *> SceneOpt::getCollisions(){
-    printf("Getting collisions (MapSize: %d)\n", (int) map->size());
     //Rehash balls that have moved
     std::vector< BadSphereTuple> badSpheres;
-    for( Spheremap::iterator iter = map->begin(); false; ++iter){//iter!=map->end();++iter){
+    for( Spheremap::iterator iter = smap->begin();iter!=smap->end();++iter){
         glm::vec3 key = iter->first;
-        printf("At hash: %.2f,%.2f,%.2f\n",key[0],key[1],key[2]);
-        //Spherelist* vals = iter->second;
-        //if( vals == NULL) continue;
-        printf("\t hi1\n");
-        /*
-        printf("\t size: %d\n", (int)(vals->size()));
+        //printf("At hash: %.2f,%.2f,%.2f\n",key[0],key[1],key[2]);
+        Spherelist* vals = iter->second;
         for(Spherelist::iterator it = vals->begin(); it!=vals->end(); ++it){
-            printf("\t hi2\n");
             Sphere * sph = *it;
             glm::vec3 pos = sph->getPos();
-            printf("\tSph: %.2f,%.2f,%.2f\n", pos[0],pos[1],pos[2]);
+            //printf("\tSph: %.2f,%.2f,%.2f\n", pos[0],pos[1],pos[2]);
             if( !vec3eq(getBucket(pos), key)){
                 //gather all bad spheres into a list
                 badSpheres.push_back(std::make_tuple( sph, vals, iter, it));
             }
         }
-        */
     }
-    printf("Moved Spheres: %d\n", (int)badSpheres.size());
+    //printf("Moved Spheres: %d\n", (int)badSpheres.size());
     //rehash bad spheres
     for(std::vector< BadSphereTuple>::iterator it = badSpheres.begin(); it!=badSpheres.end(); ++it){
         //rehash sph
         BadSphereTuple pair = *it;
         Sphere * sph = std::get<0>(pair);
         Spherelist * sphlist = std::get<1>(pair);
-        sphlist->erase( std::get<3>(pair));
+        for(Spherelist::iterator it = sphlist->begin(); it!=sphlist->end(); ++it){
+             Sphere * sphcheck = *it;           
+             if( sphcheck == sph){
+                sphlist->erase(it);
+                break;
+             }
+        }
+        
+        /* TODO: Delete empty buckets
         if( sphlist->size() == 0){
             //delete list
             delete sphlist;
-            map->erase( std::get<2>(pair));
+            smap->erase( std::get<2>(pair));
         }
+        */
         addSphere(sph);
     }
-    printf("Done rehashing\n");
+    //printf("Done rehashing\n");
 
     //Calculate intersections
     std::vector<Intersection *> intersects;
     //printf("Getting spheres\n");
-    for( Spheremap::iterator iter = map->begin(); iter!=map->end();++iter){
+    for( Spheremap::iterator iter = smap->begin(); iter!=smap->end();++iter){
         glm::vec3 key = iter->first;
         //printf("At hash: %.2f,%.2f,%.2f\n",key[0],key[1],key[2]);
         Spherelist* vals = iter->second;

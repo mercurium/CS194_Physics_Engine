@@ -34,7 +34,7 @@ int mouse_right_down_x;
 int mouse_right_down_y;
 double prev_time;
 char* keydict;
-SceneOpt scene;
+SceneOpt* scene;
 
 int main(int argc, char *argv[])
 {
@@ -47,7 +47,7 @@ int main(int argc, char *argv[])
         init();
 		printf("read is starting!\n");
 		printf("read was successful!\n");
-		scene = SceneOpt(balls, constraints);
+		scene = new SceneOpt(balls, constraints);
         glutMainLoop();
     }else{
         outputText();
@@ -121,8 +121,8 @@ void mainloop(){
 
     //Render Scene
 	//Scene::UpdateScene(*(&balls), elapsed);
-	scene.UpdateScene(elapsed);
-    r->draw(scene.getBalls());
+	scene->UpdateScene(elapsed);
+    r->draw(scene->getBalls());
     //r.drawtest();
     
     //Physics Update
@@ -135,19 +135,19 @@ void mainloop(){
 }
 
 void outputText(){
-	scene = SceneOpt();
+	scene = new SceneOpt();
     double step_size = 0.1; //settings.get("stepsize")
     double total_duration = 100; //settings.get("totalsimduration")
 
     for(double d = 0; d<total_duration; d+= step_size){
-		balls = scene.getBalls();
+		balls = scene->getBalls();
         printf("t=%.3f :", d);
         for( int i=0; i<balls.size(); i++){
             Sphere * s = balls[i];
             glm::vec3 pos = s->getPos();
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }
-        scene.UpdateScene(step_size);        
+        scene->UpdateScene(step_size);        
     }
 
 }
@@ -208,7 +208,7 @@ void keydown(unsigned char c, int x, int y){
 			balls = std::vector<Sphere *>();
 			constraints = std::vector<DistConstr *>();
 			readfile("config.txt");
-            scene = SceneOpt(balls,constraints);
+            scene = new SceneOpt(balls,constraints);
             break;
         case 'x':
             exit(0);
