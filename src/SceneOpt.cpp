@@ -4,7 +4,7 @@
 #define hashfun(p) (int)(p.x*1337+p.y*21337+p.z*57)
 #define vec3eq(p1,p2) ((p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z))
 
-float HASHGRID_SIZE = 3;
+float HASHGRID_SIZE = 1;
 
 std::size_t vec3Hash::operator()(const glm::vec3 p) const{
     return hashfun(p);
@@ -43,7 +43,11 @@ SceneOpt::SceneOpt(std::vector<Sphere *> ballList, std::vector <DistConstr *> co
 }
 
 SceneOpt::~SceneOpt(){
-    //TODO: free all buckets in map
+    //free all buckets in map
+    for( Spheremap::iterator iter = smap->begin();iter!=smap->end();++iter){
+        Spherelist* vals = iter->second;
+        delete vals;
+    }
     delete smap;
 }
 
