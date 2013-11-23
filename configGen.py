@@ -16,6 +16,7 @@ def writeConfig(filename):
         f.write(str(s)+"\n")
 
     println("numballs "+str(len(_balls)))
+    println("numcons "+str(len(_distcons)))
     println("numlights "+str(len(_lights)))
     for name in _vardict:
         v = _vardict[name]

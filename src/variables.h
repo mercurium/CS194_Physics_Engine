@@ -11,6 +11,7 @@
 #endif 
 
 EXTERN int numballs;
+EXTERN int numcons;
 EXTERN int numlights;
 EXTERN int height;
 EXTERN int width;
@@ -29,8 +30,8 @@ EXTERN double lightposn[40];
 EXTERN double lightcolor[40];
 
 
-EXTERN std::vector<Sphere*> balls;
-EXTERN std::vector<DistConstr*> constraints;
+EXTERN Sphere* balls;
+EXTERN DistConstr* constraints;
 
 /*
 EXTERN int numobjects ; 
