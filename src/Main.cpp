@@ -45,8 +45,6 @@ int main(int argc, char *argv[])
 		readfile("config.txt");
         initGLUT(argv, argc);
         init();
-		printf("read is starting!\n");
-		printf("read was successful!\n");
 		scene = new SceneOpt(balls, constraints);
         glutMainLoop();
     }else{
@@ -111,17 +109,23 @@ void initGLUT(char *argv[], int argc){
     glutIdleFunc(&idlefunc);
 }
 
+double elapsed = 0;
+double frame_len = .03;
 void mainloop(){
     double current_time = timestamp();
-    double elapsed = current_time-prev_time;
+    elapsed += current_time-prev_time;
     prev_time = current_time;
 
     glClearColor(0,0,0,0);
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
+    updateInputs(elapsed);
     //Render Scene
 	//Scene::UpdateScene(*(&balls), elapsed);
-	scene->UpdateScene(elapsed);
+	while (elapsed > frame_len){
+		scene->UpdateScene(frame_len);
+		elapsed -= frame_len;
+	}
     r->draw(scene->getBalls());
     //r.drawtest();
     
@@ -129,7 +133,6 @@ void mainloop(){
     //Physics.update(Scene)
 
     //User Input
-    updateInputs(elapsed);
     //blah
     glutSwapBuffers();
 }
