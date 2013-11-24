@@ -1,7 +1,6 @@
 #include "Scene.h"
 
-
-
+/*
 Scene::Scene(){
 	numBalls = 100;
 	twoD = false;
@@ -9,15 +8,17 @@ Scene::Scene(){
 	balls = makeTestScene();
 	//distConstr = makeTestDistConstr(balls);
 }
+*/
 
-Scene::Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints){
+Scene::Scene(Sphere* ballList, DistConstr* constraints, int balls_size, int constraints_size){
     GRID_SIZE = 100;
 	balls = ballList;
 	distConstr = constraints;
-	numBalls = balls.size();
+	numBalls = balls_size;
+	numConstr = constraints_size;
 }
 
-
+/*
 std::vector <Sphere *> Scene::makeTestScene(){
 	std::vector <Sphere *> ballList;
 	double x,y,z;
@@ -46,29 +47,27 @@ std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> ball
        }
        return distConstr;
 }
-
-
-
+*/
 
 void Scene::UpdateScene(double time){
-    Physics::UpdateBallPositions((this->balls), time);
-    Physics::UpdateBallBoundaries(this->balls);
+    Physics::UpdateBallPositions((this->balls), this->numBalls, time);
+    Physics::UpdateBallBoundaries(this->balls, this->numBalls);
     //while (intersections.size()  != 0){
     std::vector <Intersection *> intersections;
-	for(int i = 0; i < 5; i++){
 
+	for(int i = 0; i < 5; i++){
         intersections = getCollisions();
-        Physics::resolveCollisions((intersections));
+        Physics::resolveCollisions(intersections);
 		//Physics::handleDistanceConstr(this->distConstr);
     	Physics::UpdateBallBoundaries(this->balls);
     }
-
 }
 
-std::vector <Sphere *> Scene::getBalls(){
+Sphere* Scene::getBalls(){
 	return this->balls;
 }
 
+/*
 std::vector<Intersection *> Scene::getCollisions(){
    
 	std::vector<Intersection *> intersects;
@@ -110,7 +109,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 				}		
 			}
     }
-    /*
+  
 	std::vector<Intersection *> intersects;
 	for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
 		for(int j = 0; j < i; j++){
@@ -120,8 +119,48 @@ std::vector<Intersection *> Scene::getCollisions(){
 				intersects.push_back(new Intersection(balls.at(i),balls.at(j)));
 			}
 		}
-	}*/
+	}
     return intersects;
 }
+*/
 
-  
+Intersection* Scene::getCollisions(){
+	Intersection* intersects;
+	Sphere** list_of_balls = new Sphere*[GRID_SIZE * GRID_SIZE];
+
+	for(int i = 0; i < this->numBalls; i++){
+		Sphere *s = balls[i];
+		int x = s->getPos().x / (100/GRID_SIZE);
+		x = std::min(std::max(x,0),GRID_SIZE-1);
+		int z = s->getPos().z / (100/GRID_SIZE);
+		z = std::min(std::max(z,0),GRID_SIZE-1);
+		list_of_balls[x * GRID_SIZE + z].push_back(s);
+	}
+
+	for (int i = 0; i < GRID_SIZE; i++){
+		for(int ii = 0; ii <= 1; ii++){
+			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
+
+			for (int j = 0; j < GRID_SIZE; j++){
+					for (int jj = 0; jj <= 1; jj++){
+						if (jj+j < 0 || jj+j >= GRID_SIZE){ continue; }
+
+						int p1 = GRID_SIZE * i + j, p2 = GRID_SIZE * (i+ii) + j + jj;
+
+						for(int b1 = 0; b1 < list_of_balls[p1].size(); b1++){
+							for(int b2 = 0; b2 < list_of_balls[p2].size(); b2++){
+								if (p1 == p2 && b1 <= b2){ continue; }
+								
+								double dist = glm::distance((*list_of_balls[p1].at(b1)).getPos(), (*list_of_balls[p2].at(b2)).getPos());
+								double radiiDist = (*list_of_balls[p1].at(b1)).getRadius() + (*list_of_balls[p2].at(b2)).getRadius();
+								if (dist < radiiDist-.001){ // .001 to avoid rounding error
+									intersects.push_back(new Intersection(list_of_balls[p1].at(b1), list_of_balls[p2].at(b2)));
+								}
+							}
+						}
+					}
+				}		
+			}
+    }
+    return intersects;
+}

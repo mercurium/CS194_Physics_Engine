@@ -4,12 +4,12 @@
 int LIMIT = 100;
 int GRID_SIZE = 100;
 
-namespace  Physics{
+namespace Physics{
 
-void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
+void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	/*  Update each ball to the new location  */
-	for (int i = 0; i < balls.size(); i++){
-		Sphere &ball = (*balls.at(i));
+	for (int i = 0; i < num_balls; i++){
+		Sphere ball = balls[i];
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
@@ -30,11 +30,10 @@ void UpdateBallPositions(std::vector<Sphere *> &balls, double t){
 
 }
 
-void UpdateBallBoundaries(std::vector<Sphere *> &balls){
-
+void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	/*  Update each ball to the new location  */
-	for (int i = 0; i < balls.size(); i++){
-		Sphere &ball = (*balls.at(i));
+	for (int i = 0; i < num_balls; i++){
+		Sphere ball = balls[i];
 		glm::vec3 oldVl = ball.getVelocity();
 		glm::vec3 newPos = ball.getPos();
 
@@ -68,12 +67,10 @@ void UpdateBallBoundaries(std::vector<Sphere *> &balls){
 	
 	ball.setPos(newPos);
 	ball.setVelocity(oldVl);
-
 	}
-
 }
 
-
+/*
 std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 	std::vector<Intersection *> intersects;
 	std::vector <Sphere *> list_of_balls[GRID_SIZE * GRID_SIZE];
@@ -114,7 +111,7 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 			}
 	}
 
-	/* This is the non grided version
+	This is the non grided version
 	for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
 		for(int j = 0; j < i; j++){
 			double dist = glm::distance((*balls.at(i)).getPos(), (*balls.at(j)).getPos());
@@ -123,13 +120,12 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 				intersects.push_back(new Intersection(balls.at(i),balls.at(j), dist, radiiDist));
 			}
 		}
-	} */
+	}
 	return intersects;
 }
+*/
 
-
-
-void resolveCollisions(std::vector<Intersection *> intersections){
+void resolveCollisions(Intersection* intersections){
 	double dist, radiiDist;
 	while(intersections.size() != 0)
 	{

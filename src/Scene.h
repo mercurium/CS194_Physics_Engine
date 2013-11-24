@@ -1,5 +1,4 @@
 #pragma once
-#include <vector>
 #include "Intersection.h"
 #include "Sphere.h"
 #include "DistConstr.h"
@@ -7,19 +6,21 @@
 
 class Scene{
 		private:
-            int numBalls;
+			int numBalls;
+			int numConstr;
 			bool twoD;
-			std::vector<Sphere *> balls;
-			std::vector<DistConstr *> distConstr;
-            int GRID_SIZE;
-            virtual std::vector<Intersection *> getCollisions();
+			int GRID_SIZE;
+
+			Sphere* balls;
+			DistConstr* distConstr;
+			virtual Intersection* getCollisions();
 
 		public:
 			Scene();
-			Scene(std::vector<Sphere *> ballList, std::vector <DistConstr *> constraints);
-	        void UpdateScene(double time);
-			std::vector<Sphere *> makeTestScene();
-			std::vector <DistConstr *> makeTestDistConstr(std::vector <Sphere *> balls);
-			std::vector<Sphere *> getBalls();
+			Scene(Sphere* ballList, DistConstr* constraints, int ball_size, int constraints_size);
+			void UpdateScene(double time);
+			//std::vector<Sphere *> makeTestScene();
+			//std::vector <DistConstr *> makeTestDistConstr(std::vector <Sphere *> balls);
+			Sphere* getBalls();
 
 };

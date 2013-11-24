@@ -1,6 +1,5 @@
 // Readfile definitions 
 #include "Sphere.h"
-#include <vector>
 #include "DistConstr.h"
 #include "variables.h"
 

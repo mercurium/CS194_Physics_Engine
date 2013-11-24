@@ -46,7 +46,7 @@ int main(int argc, char *argv[])
         init();
 		printf("read is starting!\n");
 		printf("read was successful!\n");
-		scene = Scene(balls, constraints);
+		scene = Scene(balls, constraints, numballs, numcons);
         glutMainLoop();
     }else{
         outputText();

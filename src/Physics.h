@@ -8,8 +8,8 @@
 namespace Physics{
         std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);
         void resolveCollisions(std::vector <Intersection *> intersections);
-        void UpdateBallPositions(std::vector <Sphere *> &balls, double t);
-        void UpdateBallBoundaries(std::vector <Sphere *> &balls);
+        void UpdateBallPositions(Sphere* balls, int num_balls, double t);
+        void UpdateBallBoundaries(Sphere* balls, int num_balls);
 		void handleDistanceConstr(std::vector<DistConstr*> &constraints);
 		void setLimit(int n);
 
