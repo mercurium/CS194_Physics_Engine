@@ -32,7 +32,7 @@ void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
     numlights = 0;
 }
 
-void Render::draw(std::vector<Sphere*> spheres){
+void Render::draw(Sphere* spheres){
 
     loadCamMatrix( camCenter, camUp, camView);
 
@@ -55,7 +55,7 @@ void Render::draw(std::vector<Sphere*> spheres){
     GLfloat x = 300;
     glUniform1fv(shader->shininesscol, 1, &x);
     
-    for(int i=0; i< spheres.size() ;i++){
+    for(int i=0; i < numballs ;i++){
         Sphere* sph = spheres[i];
         draw(*sph);
     }

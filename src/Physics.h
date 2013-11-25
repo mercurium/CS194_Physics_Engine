@@ -10,7 +10,7 @@ namespace Physics{
         void resolveCollisions(std::vector <Intersection *> intersections);
         void UpdateBallPositions(Sphere* balls, int num_balls, double t);
         void UpdateBallBoundaries(Sphere* balls, int num_balls);
-		void handleDistanceConstr(std::vector<DistConstr*> &constraints);
+		void handleDistanceConstr(DistConstr* constraints, int constr_size);
 		void setLimit(int n);
 
 }

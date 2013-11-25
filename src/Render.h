@@ -17,7 +17,7 @@ class Render {
         Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
         void setLights(int num, float * pos, float * col );
         virtual ~Render ();
-        void draw(std::vector<Sphere*> spheres);
+        void draw(Sphere* spheres);
         void drawtest();
         void rotateCamUD(double deg);
         void rotateCamLR(double deg);

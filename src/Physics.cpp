@@ -160,10 +160,10 @@ void resolveCollisions(Intersection* intersections){
 	}
 }
 
-void handleDistanceConstr(std::vector<DistConstr*> &constraints){
-  for (int i = 0; i < constraints.size(); i++)
+void handleDistanceConstr(DistConstr* constraints, int constr_size){
+  for (int i = 0; i < constr_size; i++)
   {
-    DistConstr* constr = constraints.at(i);
+    DistConstr* constr = constraints[i];
 
     Sphere *s1 = (*constr).getBall(1);
     Sphere *s2 = (*constr).getBall(2);
