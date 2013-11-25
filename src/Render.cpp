@@ -56,8 +56,8 @@ void Render::draw(Sphere* spheres){
     glUniform1fv(shader->shininesscol, 1, &x);
     
     for(int i=0; i < numballs ;i++){
-        Sphere* sph = spheres[i];
-        draw(*sph);
+        Sphere sph = spheres[i];
+        draw(sph);
     }
 }
 

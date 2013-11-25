@@ -125,13 +125,15 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 }
 */
 
-void resolveCollisions(Intersection* intersections){
+void resolveCollisions(Intersection** intersections, int num_collisions){
 	double dist, radiiDist;
-	while(intersections.size() != 0)
+
+	for(int k = 0; k < num_collisions; k++)
+	//while(num_collisions != 0)
 	{
-		Intersection * iptr = intersections.back();
+		Intersection* iptr = intersections[k];
 		Intersection i = *iptr;
-		intersections.pop_back();
+		//intersections.pop_back();
 		Sphere* s1 = i.getS1(), *s2 = i.getS2();
 		glm::vec3 s1Pos = s1->getPos();
 		glm::vec3 s2Pos = s2->getPos();
@@ -156,20 +158,24 @@ void resolveCollisions(Intersection* intersections){
 		s2Vel.y *= .9;
 		s1->setVelocity(s2Vel);
 		s2->setVelocity(s1Vel);
+		
 		delete iptr;
+		//delete i;
 	}
+
+	delete intersections;
 }
 
 void handleDistanceConstr(DistConstr* constraints, int constr_size){
   for (int i = 0; i < constr_size; i++)
   {
-    DistConstr* constr = constraints[i];
+    DistConstr constr = constraints[i];
 
-    Sphere *s1 = (*constr).getBall(1);
-    Sphere *s2 = (*constr).getBall(2);
+    Sphere *s1 = (constr).getBall(1);
+    Sphere *s2 = (constr).getBall(2);
 
     double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
-    double constr_dist = (*constr).getDist();
+    double constr_dist = (constr).getDist();
 
     double diff = constr_dist - actual_dist;
 

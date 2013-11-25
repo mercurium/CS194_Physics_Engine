@@ -10,7 +10,6 @@
 #include "shaders.h"
 
 #define MAINPROGRAM
-#include "Init.h"
 #include "Scene.h"
 #include "readfile.h"
 
@@ -41,7 +40,7 @@ int main(int argc, char *argv[])
     bool outputGL = true;
 
     if(outputGL){
-		readfile("config.txt");
+		Read::readfile("config.txt");
         initGLUT(argv, argc);
         init();
 		printf("read is starting!\n");
@@ -134,16 +133,16 @@ void mainloop(){
 }
 
 void outputText(){
-	scene = Scene();
+	//scene = Scene();
     double step_size = 0.1; //settings.get("stepsize")
     double total_duration = 100; //settings.get("totalsimduration")
 
     for(double d = 0; d<total_duration; d+= step_size){
 		balls = scene.getBalls();
         printf("t=%.3f :", d);
-        for( int i=0; i<balls.size(); i++){
-            Sphere * s = balls[i];
-            glm::vec3 pos = s->getPos();
+        for(int i = 0; i < numballs; i++){
+            Sphere s = balls[i];
+            glm::vec3 pos = s.getPos();
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }
         scene.UpdateScene(step_size);        
@@ -204,10 +203,21 @@ void keydown(unsigned char c, int x, int y){
     keydict[c]=1;
     switch(c){
         case 'r':
-			balls = std::vector<Sphere *>();
-			constraints = std::vector<DistConstr *>();
-			readfile("config.txt");
-            scene = Scene(balls,constraints);
+            for(int i = 0; i < numballs; i++)
+            {
+                balls[i].~Sphere();
+            }
+
+            for (int i = 0; i < numcons; i++)
+            {
+                constraints[i].~DistConstr();
+            }
+
+            ::operator delete (balls);
+            ::operator delete (constraints);
+			
+			Read::readfile("config.txt");
+            scene = Scene(balls, constraints, numballs, numcons);
             break;
         case 'x':
             exit(0);

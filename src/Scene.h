@@ -8,12 +8,14 @@ class Scene{
 		private:
 			int numBalls;
 			int numConstr;
+			int numCollisions;
 			bool twoD;
 			int GRID_SIZE;
+			int GRID_COL_SIZE;
 
 			Sphere* balls;
 			DistConstr* distConstr;
-			virtual Intersection* getCollisions();
+			virtual Intersection** getCollisions();
 
 		public:
 			Scene();

@@ -6,8 +6,8 @@
 #include "variables.h"
 
 namespace Physics{
-        std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);
-        void resolveCollisions(std::vector <Intersection *> intersections);
+        //std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls);
+        void resolveCollisions(Intersection** intersections, int num_collisions);
         void UpdateBallPositions(Sphere* balls, int num_balls, double t);
         void UpdateBallBoundaries(Sphere* balls, int num_balls);
 		void handleDistanceConstr(DistConstr* constraints, int constr_size);
