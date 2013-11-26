@@ -52,13 +52,17 @@ std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> ball
 
 void Scene::UpdateScene(double time){
     Physics::UpdateBallPositions((this->balls), this->numBalls, time);
+    //printf("%s\n", "Updated ball positions.");
     Physics::UpdateBallBoundaries(this->balls, this->numBalls);
+    //printf("%s\n", "Updated ball boundaries.");
     //while (intersections.size()  != 0){
-    Intersection** intersections;
-
-	for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 5; i++){
+    	Intersection** intersections;
+		//printf("%s\n", "Getting collisions!");
         intersections = getCollisions();
+        printf("%s\n", "Resolving collisions!");
         Physics::resolveCollisions(intersections, this->numCollisions);
+        printf("%s\n", "Resolved collisions.");
 		//Physics::handleDistanceConstr(this->distConstr);
     	Physics::UpdateBallBoundaries(this->balls, this->numBalls);
     }
