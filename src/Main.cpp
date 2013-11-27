@@ -43,8 +43,6 @@ int main(int argc, char *argv[])
 		Read::readfile("config.txt");
         initGLUT(argv, argc);
         init();
-		printf("read is starting!\n");
-		printf("read was successful!\n");
 		scene = Scene(balls, constraints, numballs, numcons);
         glutMainLoop();
     }else{

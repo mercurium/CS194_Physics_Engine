@@ -2,14 +2,14 @@
 #include <stdio.h>
 
 int LIMIT = 100;
-int GRID_SIZE = 100;
+int GRID_SIZE = 10;
 
 namespace Physics{
 
 void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	/*  Update each ball to the new location  */
 	for (int i = 0; i < num_balls; i++){
-		Sphere ball = balls[i];
+		Sphere &ball = balls[i];
 		glm::vec3 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
 		glm::vec3 oldVl = ball.getVelocity();
@@ -33,7 +33,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	/*  Update each ball to the new location  */
 	for (int i = 0; i < num_balls; i++){
-		Sphere ball = balls[i];
+		Sphere &ball = balls[i];
 		glm::vec3 oldVl = ball.getVelocity();
 		glm::vec3 newPos = ball.getPos();
 
@@ -128,11 +128,13 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 void resolveCollisions(Intersection** intersections, int num_collisions){
 	double dist, radiiDist;
 
+	
 	for(int k = 0; k < num_collisions; k++)
 	//while(num_collisions != 0)
 	{
 		Intersection* iptr = intersections[k];
 		Intersection i = *iptr;
+
 		//intersections.pop_back();
 		Sphere* s1 = i.getS1(), *s2 = i.getS2();
 		glm::vec3 s1Pos = s1->getPos();
@@ -160,10 +162,9 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		s2->setVelocity(s1Vel);
 		
 		delete iptr;
-		//delete i;
 	}
 
-	delete intersections;
+//	delete intersections;
 }
 
 void handleDistanceConstr(DistConstr* constraints, int constr_size){
