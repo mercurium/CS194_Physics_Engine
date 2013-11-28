@@ -1,10 +1,21 @@
 #include "SceneOpt.h"
 #include <stdio.h>
-#define flr(x) (float)( ((int)(x/HASHGRID_SIZE))*HASHGRID_SIZE)
-#define hashfun(p) (int)(p.x*1337+p.y*21337+p.z*57)
+#include <xmmintrin.h>
+#define HASHGRID_SIZE 1.0f
+//#define flr(x) (float)( ((int)(x/HASHGRID_SIZE))*HASHGRID_SIZE)
+//#define hashfun(p) (int)(p.x*1337+p.y*21337+p.z*57)
 #define vec3eq(p1,p2) ((p1.x==p2.x) && (p1.y==p2.y) && (p1.z==p2.z))
 
-float HASHGRID_SIZE = 1;
+//float HASHGRID_SIZE = 1;
+
+float[] __GRIDSIZE_V = {HASHGRID_SIZE,HASHGRID_SIZE,HASHGRID_SIZE,HASHGRID_SIZE}
+float[] __HASH_V = {1337.0, 21337.0, 57.0, 0};
+float[] __FOUR = {0,0,0,4};
+__m128 GRIDSIZE_V = _mm_loadu_ps(__GRIDSIZE_V);
+__m128 HASH_V = _mm_loadu_ps(__HASH_V);
+__m128 FOUR_V = _mm_loadu_ps(__FOUR);
+#define hashfun4(p) _mm_cvtt_ss2si(_mm_hadd_ps(_mm_hadd_ps(_mm_mul_ps(HASH_V, _mm_loadu_ps(&p)))))
+#define vec4eq(p1,p2) _mm_comieq_ss(_mm_hadd_ps(_mm_hadd_ps(_mm_cmpeq_ps(_mm_loadu_ps(&p1),_mm_loadu_ps(&p2)))))
 
 std::size_t vec3Hash::operator()(const glm::vec3 p) const{
     return hashfun(p);
@@ -15,7 +26,11 @@ std::size_t vec3Equal::operator()(const glm::vec3 p1, const glm::vec3 p2) const{
 }
 
 glm::vec3 getBucket(glm::vec3 p1){
-    return glm::vec3(flr(p1.x), flr(p1.y), flr(p1.z));
+    glm::vec4 v4(p1[0],p1[1],p1[2],0);
+    __m128 v = _mm_mul_ps(GRIDSIZE_V, _mm_loadu_ps(&v4));
+    __m64 r1 = _mm_cvtps_pi32(v);
+    __m64 r2 = _mm_cvtps_pi32(_mm_shuffle_ps(_MM_SHUFFLE(0,0,2,3)));
+    //return glm::vec3(flr(p1.x), flr(p1.y), flr(p1.z));
 }
 
 SceneOpt::SceneOpt(){
@@ -103,6 +118,7 @@ void SceneOpt::addIntersects(std::vector<Intersection *> &intersects, Sphere *sp
 
         //printf("\t\t\tTest: (%.2f,%.2f,%.2f) X (%.2f,%.2f,%.2f)\n", selfpos[0],selfpos[1],selfpos[2],otherpos[0],otherpos[1],otherpos[2]);
 
+        //TODO: SSE this dist check
         double dist = glm::distance(selfpos, otherpos);
         double radiiDist = sph->getRadius() + other->getRadius();
         if (dist < radiiDist-.001){ // .001 to avoid rounding error
