@@ -25,11 +25,27 @@ std::size_t vec3Equal::operator()(const glm::vec3 p1, const glm::vec3 p2) const{
     return vec3eq(p1,p2);
 }
 
-glm::vec3 getBucket(glm::vec3 p1){
+inline __m128 loadVec3(const glm::vec3 v){
+    __m128 v0 = _mm_load_ss(&v[0]);
+    __m128 v1 = _mm_load_ss(&v[1]);
+    __m128 v2 = _mm_load_ss(&v[2]);
+    return _mm_shuffle_ps(_mm_movelh_ps(v0,v1),v2,_MM_SHUFFLE(2,0,2,0));
+}
+
+inline float sseDist(const glm::vec3 v1, const glm::vec3 v2){
+    __m128 _v1 = loadVec3(v1);
+    __m128 _v2 = loadVec3(v2);
+    __m128 v = _mm_sub_ps(v1,v2);
+    return _mm_cvtss_f32(_mm_sqrt_ss(_mm_dp_ps(v,v,0x71)));
+}
+
+inline glm::vec3 getBucket(glm::vec3 p1){
     glm::vec4 v4(p1[0],p1[1],p1[2],0);
     __m128 v = _mm_mul_ps(GRIDSIZE_V, _mm_loadu_ps(&v4));
-    __m64 r1 = _mm_cvtps_pi32(v);
-    __m64 r2 = _mm_cvtps_pi32(_mm_shuffle_ps(_MM_SHUFFLE(0,0,2,3)));
+    __m128 rounded = _mm_round_ps(v, _MM_FROUND_TO_ZERO|_MM_FROUND_NO_EXC);
+    v = _mm_div_ps(rounded, GRIDSIZE_V);
+    _mm_storeu_ps(v, &v4);
+    return glm::vec3(v4[0],v4[1],v4[2]);
     //return glm::vec3(flr(p1.x), flr(p1.y), flr(p1.z));
 }
 
