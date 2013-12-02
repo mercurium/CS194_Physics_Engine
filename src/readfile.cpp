@@ -75,7 +75,7 @@ namespace Read{
 					else if (cmd == "accel"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							for(i = 0; i < 3; i++){ accel[i] = values[i];}
+							accel = detail::fvec4SIMD(values[0], values[1], values[2], 0.0f);
 						}
 					}
 					else if (cmd == "camera") {

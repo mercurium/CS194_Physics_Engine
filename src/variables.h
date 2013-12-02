@@ -1,6 +1,8 @@
 #include "DistConstr.h"
 #include "Sphere.h"
 
+#include <glm/gtx/simd_vec4.hpp>
+
 // This is the basic include file for the global variables in the program.  
 // Since all files need access to it, we define EXTERN as either blank or 
 // extern, depending on if included in the main program or not.  
@@ -21,7 +23,7 @@ EXTERN double sensitivity;
 EXTERN bool is2D;
 EXTERN bool shading;
 
-EXTERN double accel[3];
+EXTERN detail::fvec4SIMD accel;
 EXTERN double camera[9];
 EXTERN double maxbounds[3]; 
 EXTERN double minbounds[3]; 

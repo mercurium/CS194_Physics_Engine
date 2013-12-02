@@ -12,24 +12,21 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		glm::vec3 oldPos = ball.getPos();
+		glm::detail::fvec4SIMD oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
-		glm::vec3 oldVl = ball.getVelocity();
-        oldVl.x += t*accel[0];
-        oldVl.y += t*accel[1];
-        oldVl.z += t*accel[2];
+		glm::detail::fvec4SIMD oldVl = ball.getVelocity();
+		
+		oldVl += t*accel;
 
-
-        if( glm::dot(oldVl,oldVl)< t){
-            oldVl = glm::vec3(0,0,0);
-        }else{
-            glm::vec3 newPos = glm::vec3(oldPos.x + oldVl.x*t, oldPos.y + oldVl.y*t, oldPos.z + oldVl.z*t);
-            ball.setPos(newPos);
-        }
+		if(glm::dot(oldVl,oldVl) < t){
+			oldVl = glm::detail::fvec4SIMD(0, 0, 0, 0);
+		} else{
+			glm::detail::fvec4SIMD newPos = oldPos + t*oldVl;
+			ball.setPos(newPos);
+		}
 
 		ball.setVelocity(oldVl);
 	}
-
 }
 
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
@@ -37,8 +34,8 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		glm::vec3 oldVl = ball.getVelocity();
-		glm::vec3 newPos = ball.getPos();
+		glm::detail::fvec4SIMD oldVl = ball.getVelocity();
+		glm::detail::fvec4SIMD newPos = ball.getPos();
 
 	   /*Checking for Walls */
 		if (newPos.x > maxbounds[0]){
@@ -140,27 +137,25 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 
 		//intersections.pop_back();
 		Sphere* s1 = i.getS1(), *s2 = i.getS2();
-		glm::vec3 s1Pos = s1->getPos();
-		glm::vec3 s2Pos = s2->getPos();
+		glm::detail::fvec4SIMD s1Pos = s1->getPos();
+		glm::detail::fvec4SIMD s2Pos = s2->getPos();
 		
-		dist = glm::distance(s1Pos,s2Pos);
+		dist = glm::detail::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
 
-		glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
-		   s1Pos.x + (s1Pos.x - s2Pos.x) * distDiff,
-	 	   s1Pos.y + (s1Pos.y - s2Pos.y) * distDiff,
-		   s1Pos.z + (s1Pos.z - s2Pos.z) * distDiff);
-		glm::vec3 s2NewPos = glm::vec3(
-		   s2Pos.x + (s2Pos.x - s1Pos.x) * distDiff,
-		   s2Pos.y + (s2Pos.y - s1Pos.y) * distDiff,
-		   s2Pos.z + (s2Pos.z - s1Pos.z) * distDiff);
+		glm::detail::fvec4SIMD s1NewPos = s1Pos + (s1Pos - s2Pos) * distDiff;
+		glm::detail::fvec4SIMD s2NewPos = s2Pos + (s2Pos - s1Pos) * distDiff;
+		
 		s1->setPos(s1NewPos);
 		s2->setPos(s2NewPos);
-		glm::vec3 s1Vel = s1->getVelocity();
-		glm::vec3 s2Vel = s2->getVelocity();
+
+		glm::detail::fvec4SIMD s1Vel = s1->getVelocity();
+		glm::detail::fvec4SIMD s2Vel = s2->getVelocity();
+
 		s1Vel.y *= .9;
 		s2Vel.y *= .9;
+
 		s1->setVelocity(s2Vel);
 		s2->setVelocity(s1Vel);
 		
@@ -171,35 +166,28 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 }
 
 void handleDistanceConstr(DistConstr* constraints, int constr_size){
-  #pragma omp parallel for
-  for (int i = 0; i < constr_size; i++)
-  {
-    DistConstr constr = constraints[i];
+	#pragma omp parallel for
+	for (int i = 0; i < constr_size; i++)
+	{
+		DistConstr constr = constraints[i];
 
-    Sphere *s1 = (constr).getBall(1);
-    Sphere *s2 = (constr).getBall(2);
+		Sphere *s1 = (constr).getBall(1);
+		Sphere *s2 = (constr).getBall(2);
 
-    double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
-    double constr_dist = (constr).getDist();
+		double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
+		double constr_dist = (constr).getDist();
 
-    double diff = constr_dist - actual_dist;
+		double diff = constr_dist - actual_dist;
 
-    glm::vec3 s1Pos = (*s1).getPos();
-    glm::vec3 s2Pos = (*s2).getPos();
+		glm::detail::fvec4SIMD s1Pos = (*s1).getPos();
+		glm::detail::fvec4SIMD s2Pos = (*s2).getPos();
 
-    glm::vec3 s1NewPos = glm::vec3( //Get rid of divide by 0 errors!
-     s1Pos.x + (s1Pos.x - s2Pos.x) * (diff)/(2*actual_dist), 
-     s1Pos.y + (s1Pos.y - s2Pos.y) * (diff)/(2*actual_dist),
-     s1Pos.z + (s1Pos.z - s2Pos.z) * (diff)/(2*actual_dist));
-    glm::vec3 s2NewPos = glm::vec3(
-     s2Pos.x + (s2Pos.x - s1Pos.x) * (diff)/(2*actual_dist),
-     s2Pos.y + (s2Pos.y - s1Pos.y) * (diff)/(2*actual_dist),
-     s2Pos.z + (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist));
-    
-    (*s1).setPos(s1NewPos);
-    (*s2).setPos(s2NewPos);
-  }
-
+		glm::detail::fvec4SIMD s1NewPos = s1Pos + (s1Pos - s2Pos) * diff/(2*actual_dist);
+		glm::detail::fvec4SIMD s2NewPos = s2Pos + (s2Pos - s1Pos) * (diff)/(2*actual_dist);
+		
+		(*s1).setPos(s1NewPos);
+		(*s2).setPos(s2NewPos);
+  	}
 }
 
 void setLimit(int n){

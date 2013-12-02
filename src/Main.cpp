@@ -3,6 +3,7 @@
 #include <ctime>
 
 #include <glm/glm.hpp>
+#include <glm/gtx/simd_vec4.hpp>
 #include <GL/glew.h>
 
 #include "Render.h"
