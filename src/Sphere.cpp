@@ -4,7 +4,7 @@
 
 Sphere::Sphere(glm::detail::fvec4SIMD pos, glm::detail::fvec4SIMD vel){
 	position = pos;
-	oldPos = glm::detail::fvec4SIMD(pos.x, pos.y, pos.z, 0.0f);
+	oldPos = pos;
 	velocity = vel;
 
 	radius = 1;
@@ -75,16 +75,15 @@ void Sphere::setVelocity(glm::detail::fvec4SIMD vel){
 	velocity = vel;
 }
 
-
 void Sphere::setOldPos(glm::detail::fvec4SIMD oldPosition){
 	oldPos = oldPosition;
 }
 
-glm::vec3 Sphere::getPos(){
+glm::detail::fvec4SIMD Sphere::getPos(){
 	return position;
 }
 
-glm::vec3 Sphere::getVelocity(){
+glm::detail::fvec4SIMD Sphere::getVelocity(){
 	return velocity;
 }
 
@@ -101,15 +100,10 @@ double Sphere::getRadius(){
 }
 
 
-glm::vec3 Sphere::getOldPos(){
+glm::detail::fvec4SIMD Sphere::getOldPos(){
 	return oldPos;
 }
 
 void Sphere::print(){
 	printf("The coordinates are (%f,%f,%f) of radius %f\n",position.x,position.y,position.z,radius); 
-}
-
-
-bool Sphere::operator == (const Sphere& s) const {
-	return position == s.position;
 }

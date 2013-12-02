@@ -9,7 +9,6 @@ class Sphere{
     glm::vec4 color;
 
 	double radius;
-	double mass;
 	
 	public:
 		Sphere(glm::detail::fvec4SIMD pos, glm::detail::fvec4SIMD vel);
@@ -30,6 +29,4 @@ class Sphere{
 		
 		double getRadius();
 		void print();
-
-		bool operator == (const Sphere& s) const;
 };
