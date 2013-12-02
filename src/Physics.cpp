@@ -1,5 +1,6 @@
 #include "Physics.h"
 #include <stdio.h>
+#include <omp.h>
 
 int LIMIT = 100;
 int GRID_SIZE = 10;
@@ -8,6 +9,7 @@ namespace Physics{
 
 void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	/*  Update each ball to the new location  */
+	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
 		glm::vec3 oldPos = ball.getPos();
@@ -32,6 +34,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	/*  Update each ball to the new location  */
+	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
 		glm::vec3 oldVl = ball.getVelocity();
@@ -65,8 +68,8 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 			oldVl.z = -oldVl.z;
 		}
 	
-	ball.setPos(newPos);
-	ball.setVelocity(oldVl);
+		ball.setPos(newPos);
+		ball.setVelocity(oldVl);
 	}
 }
 
@@ -128,7 +131,7 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 void resolveCollisions(Intersection** intersections, int num_collisions){
 	double dist, radiiDist;
 
-	
+	#pragma omp parallel for
 	for(int k = 0; k < num_collisions; k++)
 	//while(num_collisions != 0)
 	{
@@ -168,6 +171,7 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 }
 
 void handleDistanceConstr(DistConstr* constraints, int constr_size){
+  #pragma omp parallel for
   for (int i = 0; i < constr_size; i++)
   {
     DistConstr constr = constraints[i];

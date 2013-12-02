@@ -1,4 +1,5 @@
 #include "Scene.h"
+#include <omp.h>
 
 
 Scene::Scene(){
@@ -135,6 +136,7 @@ Intersection** Scene::getCollisions(){
 
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
 
+	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
@@ -151,6 +153,7 @@ Intersection** Scene::getCollisions(){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
+	#pragma omp parallel for
 	for (int i = 0; i < GRID_SIZE; i++){
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
