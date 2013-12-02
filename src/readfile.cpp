@@ -75,7 +75,7 @@ namespace Read{
 					else if (cmd == "accel"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							accel = detail::fvec4SIMD(values[0], values[1], values[2], 0.0f);
+							accel = glm::detail::fvec4SIMD(values[0], values[1], values[2], 0.0f);
 						}
 					}
 					else if (cmd == "camera") {
@@ -117,7 +117,7 @@ namespace Read{
 							validinput = readvals(s, 6, values) ; // Position/color for lts.
 							if (validinput) {
 								::new(&balls[numB]) Sphere(values[0],values[1],values[2],is2D);
-								(balls[numB]).setVelocity(glm::vec3(values[3],values[4],values[5]));
+								(balls[numB]).setVelocity(glm::detail::fvec4SIMD(values[3],values[4],values[5], 0.0f));
 								++numB;
 							}
 						}

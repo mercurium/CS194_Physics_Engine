@@ -1,6 +1,7 @@
 #include "Scene.h"
 #include <omp.h>
 
+#define GLM_SIMD_ENABLE_XYZW_UNION true
 
 Scene::Scene(){
 	numBalls = 100;
@@ -140,11 +141,13 @@ Intersection** Scene::getCollisions(){
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
+		glm::detail::fvec4SIMD pos = s->getPos();
+		glm::vec4 posVec4 = glm::vec4_cast(pos);
 		//column* col_ptr = NULL;
 
-		int x = s->getPos().x / (100/GRID_SIZE);
+		int x = posVec4.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
-		int z = s->getPos().z / (100/GRID_SIZE);
+		int z = posVec4.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 		
 		int size = list_of_balls[x*GRID_SIZE+z].size;
@@ -168,7 +171,7 @@ Intersection** Scene::getCollisions(){
 						for(int b2 = 0; b2 < list_of_balls[p2].size; b2++){
 							if (p1 == p2 && b1 <= b2){ continue; }
 							
-							double dist = glm::detail::fvec4SIMD::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
+							double dist = glm::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
 							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
 								intersects[numCollisions++] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);

@@ -23,7 +23,7 @@ EXTERN double sensitivity;
 EXTERN bool is2D;
 EXTERN bool shading;
 
-EXTERN detail::fvec4SIMD accel;
+EXTERN glm::detail::fvec4SIMD accel;
 EXTERN double camera[9];
 EXTERN double maxbounds[3]; 
 EXTERN double minbounds[3]; 

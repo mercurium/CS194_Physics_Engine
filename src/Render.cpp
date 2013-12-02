@@ -100,7 +100,7 @@ void Render::drawtest(){
 }
 
 void Render::draw(Sphere& sph){
-    glm::detail::fvec4SIMD center = sph.getPos();
+    glm::vec4 center = glm::vec4_cast(sph.getPos());
     double rad = sph.getRadius();
 
     //Push translation by center

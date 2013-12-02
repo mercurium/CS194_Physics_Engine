@@ -18,7 +18,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 		
 		oldVl += t*accel;
 
-		if(glm::detail::fvec4SIMD::dot(oldVl,oldVl) < t){
+		if(glm::dot(oldVl,oldVl) < t){
 			oldVl = glm::detail::fvec4SIMD(0, 0, 0, 0);
 		} else{
 			glm::detail::fvec4SIMD newPos = oldPos + t*oldVl;
@@ -34,8 +34,8 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		glm::detail::fvec4SIMD oldVl = ball.getVelocity();
-		glm::detail::fvec4SIMD newPos = ball.getPos();
+		glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
+		glm::vec4 newPos = glm::vec4_cast(ball.getPos());
 
 	   /*Checking for Walls */
 		if (newPos.x > maxbounds[0]){
@@ -64,9 +64,9 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 			newPos.z = 2 * minbounds[2] - newPos.z;
 			oldVl.z = -oldVl.z;
 		}
-	
-		ball.setPos(newPos);
-		ball.setVelocity(oldVl);
+
+		ball.setPos(glm::detail::fvec4SIMD(newPos));
+		ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
 	}
 }
 
@@ -140,7 +140,7 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		glm::detail::fvec4SIMD s1Pos = s1->getPos();
 		glm::detail::fvec4SIMD s2Pos = s2->getPos();
 		
-		dist = glm::detail::fvec4SIMD::distance(s1Pos,s2Pos);
+		dist = glm::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
 
@@ -153,8 +153,8 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		glm::detail::fvec4SIMD s1Vel = s1->getVelocity();
 		glm::detail::fvec4SIMD s2Vel = s2->getVelocity();
 
-		s1Vel.y *= .9;
-		s2Vel.y *= .9;
+		s1Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s1Vel.y *= .9;
+		s2Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s2Vel.y *= .9;
 
 		s1->setVelocity(s2Vel);
 		s2->setVelocity(s1Vel);
@@ -174,7 +174,7 @@ void handleDistanceConstr(DistConstr* constraints, int constr_size){
 		Sphere *s1 = (constr).getBall(1);
 		Sphere *s2 = (constr).getBall(2);
 
-		double actual_dist = glm::detail::fvec4SIMD::distance((*s1).getPos(), (*s2).getPos());
+		double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
 		double constr_dist = (constr).getDist();
 
 		double diff = constr_dist - actual_dist;
