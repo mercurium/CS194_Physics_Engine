@@ -34,10 +34,10 @@ void Render::init (glm::vec3 center, glm::vec3 view, glm::vec3 up){
 
 void Render::draw(Sphere* spheres){
 
-    loadCamMatrix( camCenter, camUp, camView);
+    loadCamMatrix(camCenter, camUp, camView);
 
     glUniform1i(shader->enablelighting, shading); //enable lighting in shader
-    if( numlights>0){
+    if(numlights > 0){
         glUniform1i(shader->numused, numlights);
         glUniform4fv(shader->lightpos, numlights, lightpos);
         glUniform4fv(shader->lightcol, numlights, lightcol);
@@ -97,16 +97,15 @@ void Render::drawtest(){
     Sphere sph2(0,0,13);
     draw(sph2);
     printf("Drawing 5\n");
-
 }
 
 void Render::draw(Sphere& sph){
-    glm::vec3 center = sph.getPos();
+    glm::detail::fvec4SIMD center = sph.getPos();
     double rad = sph.getRadius();
 
     //Push translation by center
     glPushMatrix();
-    glTranslatef(center[0],center[1],center[2]);
+    glTranslatef(center.x, center.y, center.z);
 
     //load color
     glm::vec4 color = sph.getColor();
@@ -114,7 +113,7 @@ void Render::draw(Sphere& sph){
     glUniform4fv(shader->diffusecol, 1, &color[0]);
 
     //Draw sphere
-    glutSolidSphere( rad,10,10); 
+    glutSolidSphere(rad, 10, 10); 
 
     //Pop translation matrix
     glPopMatrix();

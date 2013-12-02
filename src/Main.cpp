@@ -68,7 +68,6 @@ void init(){
         keydict[i]=0;
     }
 
-
     glEnable(GL_DEPTH_TEST);
     GLenum err = glewInit();
     if( err != GLEW_OK){
@@ -91,7 +90,6 @@ void init(){
     r->shader->specularcol = glGetUniformLocation(shaderprogram,"specular") ;       
     r->shader->emissioncol = glGetUniformLocation(shaderprogram,"emission") ;       
     r->shader->shininesscol = glGetUniformLocation(shaderprogram,"shininess") ;    
-
 }
 
 void initGLUT(char *argv[], int argc){

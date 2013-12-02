@@ -18,7 +18,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 		
 		oldVl += t*accel;
 
-		if(glm::dot(oldVl,oldVl) < t){
+		if(glm::detail::fvec4SIMD::dot(oldVl,oldVl) < t){
 			oldVl = glm::detail::fvec4SIMD(0, 0, 0, 0);
 		} else{
 			glm::detail::fvec4SIMD newPos = oldPos + t*oldVl;
@@ -140,7 +140,7 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		glm::detail::fvec4SIMD s1Pos = s1->getPos();
 		glm::detail::fvec4SIMD s2Pos = s2->getPos();
 		
-		dist = glm::detail::distance(s1Pos,s2Pos);
+		dist = glm::detail::fvec4SIMD::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
 
@@ -174,7 +174,7 @@ void handleDistanceConstr(DistConstr* constraints, int constr_size){
 		Sphere *s1 = (constr).getBall(1);
 		Sphere *s2 = (constr).getBall(2);
 
-		double actual_dist = glm::distance((*s1).getPos(), (*s2).getPos());
+		double actual_dist = glm::detail::fvec4SIMD::distance((*s1).getPos(), (*s2).getPos());
 		double constr_dist = (constr).getDist();
 
 		double diff = constr_dist - actual_dist;
