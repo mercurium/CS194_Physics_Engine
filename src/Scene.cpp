@@ -181,8 +181,20 @@ Intersection** Scene::getCollisions(){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
+    //new intersects array for each thread
+    //printf("a %d\n", omp_get_num_threads());
+    //fflush(stdout);
+    int nthreads = omp_get_max_threads();//omp_get_num_threads();
+    int thr_num_col[nthreads];
+	#pragma omp parallel for
+	for(int i = 0; i < (nthreads); i++){
+        thr_num_col[i] = 0;
+    }
+    Intersection* thr_intersects[nthreads * (numBalls*20)];
+
 	#pragma omp parallel for
 	for (int i = 0; i < GRID_SIZE; i++){
+        int tid = omp_get_thread_num();
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
 
@@ -199,7 +211,11 @@ Intersection** Scene::getCollisions(){
 							double dist = glm::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
 							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
-								intersects[numCollisions++] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
+								//intersects[numCollisions++] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
+                                thr_intersects[(tid)*nthreads+thr_num_col[tid]] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
+
+                                thr_num_col[tid]++;
+                                numCollisions++;
 							}
 						}
 					}
@@ -208,6 +224,32 @@ Intersection** Scene::getCollisions(){
 		}
     }
 
+    //printf("startidx: ");
+    //fflush(stdout);
+    //scan across thr_num_collisions
+    int start_idx[nthreads];
+    start_idx[0] = 0;
+    for(int i=1; i<nthreads; i++){
+        start_idx[i] = start_idx[i-1]+thr_num_col[i-1];
+        //printf("%d ", start_idx[i]);
+    }
+    //printf("\n");
+    //fflush(stdout);
+    
+    //reduce intersection lists into a single array
+    int ncol = 0;
+    #pragma omp parallel for
+    for(int i=0; i<nthreads; i++){
+        int tid = omp_get_thread_num();
+        int num_col = thr_num_col[tid];
+        for(int j=0; j< num_col; j++){
+            intersects[ start_idx[tid]+j] = thr_intersects[tid*nthreads+j]; 
+            #pragma omp critical
+            {
+                ncol++;
+            }
+        }
+    }
     for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
        delete list_of_balls[i].col;
     }
