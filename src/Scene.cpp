@@ -136,7 +136,7 @@ Intersection** Scene::getCollisions(){
         col_size[i] = 0;
     }
 
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
 		glm::detail::fvec4SIMD pos = s->getPos();
@@ -162,7 +162,7 @@ Intersection** Scene::getCollisions(){
        list_of_balls[i].size = 0;
     }
 
-	#pragma omp parallel for
+	//#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
@@ -237,26 +237,17 @@ Intersection** Scene::getCollisions(){
     //fflush(stdout);
     
     //reduce intersection lists into a single array
-    //int ncol = 0;
     #pragma omp parallel for
     for(int i=0; i<nthreads; i++){
         int tid = omp_get_thread_num();
         int num_col = thr_num_col[tid];
         for(int j=0; j< num_col; j++){
             intersects[ start_idx[tid]+j] = thr_intersects[tid*nthreads+j]; 
-            /*
-            #pragma omp critical
-            {
-                ncol++;
-            }
-            */
         }
     }
-    /* Runtime Error: Double Free
     for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
        delete list_of_balls[i].col;
     }
-    */
 
     return intersects;
 }
