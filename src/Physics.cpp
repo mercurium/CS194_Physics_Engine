@@ -1,6 +1,6 @@
 #include "Physics.h"
 #include <stdio.h>
-#include "pmmintrins.h"
+#include "pmmintrin.h"
 #include <omp.h>
 
 int LIMIT = 100;
@@ -13,16 +13,16 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		glm::detail::fvec4SIMD oldPos = ball.getPos();
+		simdVec4 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
-		glm::detail::fvec4SIMD oldVl = ball.getVelocity();
+		simdVec4 oldVl = ball.getVelocity();
 		
 		oldVl += t*accel;
 
 		if(glm::dot(oldVl,oldVl) < t){
 			oldVl = glm::detail::fvec4SIMD(0, 0, 0, 0);
 		} else{
-			glm::detail::fvec4SIMD newPos = oldPos + t*oldVl;
+			simdVec4 newPos = oldPos + t*oldVl;
 			ball.setPos(newPos);
 		}
 
@@ -31,20 +31,32 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 }
 
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
+	const __m128 two_mul = _mm_set1_ps(2);
+	const __m128 empty_vec = _mm_set_ps(0, 0, 0, 0);
+
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
 		glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
-		glm::vec4 newPos = glm::vec4_cast(ball.getPos());
+		
+		//glm::vec4 newPos = glm::vec4_cast(ball.getPos());
 
 		__m128 gt_mask = _mm_cmpgt_ps(ball.getPos().Data, maxbounds);
 		__m128 lt_mask = _mm_cmplt_ps(ball.getPos().Data, minbounds);
 
+		__m128 gt_offset = _mm_sub_ps(_mm_mul_ps(two_mul, maxbounds), ball.getPos().Data);
+		__m128 lt_offset = _mm_sub_ps(_mm_mul_ps(two_mul, minbounds), ball.getPos().Data);
+		__m128 lt_offset_y = 
+		__m128 gt_lt_mask = _mm_or_ps(gt_mask, lt_mask);
+		__m128 
+
+		ball.setPos(glm::detail::fvec4SIMD(_mm_and_ps()))
+
 		//2*(maxbounds-ball.getPos().Data) = offset
 		//newPos=oldPos(offset & gt_mask)
 		
-	   /*Checking for Walls */
+		/*Checking for Walls */
 		if (newPos.x > maxbounds[0]){
 			newPos.x = 2 * maxbounds[0] - newPos.x;
 			oldVl.x = -oldVl.x;
@@ -144,21 +156,21 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 
 		//intersections.pop_back();
 		Sphere* s1 = i.getS1(), *s2 = i.getS2();
-		glm::detail::fvec4SIMD s1Pos = s1->getPos();
-		glm::detail::fvec4SIMD s2Pos = s2->getPos();
+		simdVec4 s1Pos = s1->getPos();
+		simdVec4 s2Pos = s2->getPos();
 		
 		dist = glm::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
 
-		glm::detail::fvec4SIMD s1NewPos = s1Pos + (s1Pos - s2Pos) * distDiff;
-		glm::detail::fvec4SIMD s2NewPos = s2Pos + (s2Pos - s1Pos) * distDiff;
+		simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * distDiff;
+		simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * distDiff;
 		
 		s1->setPos(s1NewPos);
 		s2->setPos(s2NewPos);
 
-		glm::detail::fvec4SIMD s1Vel = s1->getVelocity();
-		glm::detail::fvec4SIMD s2Vel = s2->getVelocity();
+		simdVec4 s1Vel = s1->getVelocity();
+		simdVec4 s2Vel = s2->getVelocity();
 
 		s1Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s1Vel.y *= .9;
 		s2Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s2Vel.y *= .9;
@@ -186,11 +198,11 @@ void handleDistanceConstr(DistConstr* constraints, int constr_size){
 
 		double diff = constr_dist - actual_dist;
 
-		glm::detail::fvec4SIMD s1Pos = (*s1).getPos();
-		glm::detail::fvec4SIMD s2Pos = (*s2).getPos();
+		simdVec4 s1Pos = (*s1).getPos();
+		simdVec4 s2Pos = (*s2).getPos();
 
-		glm::detail::fvec4SIMD s1NewPos = s1Pos + (s1Pos - s2Pos) * diff/(2*actual_dist);
-		glm::detail::fvec4SIMD s2NewPos = s2Pos + (s2Pos - s1Pos) * (diff)/(2*actual_dist);
+		simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * diff/(2*actual_dist);
+		simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * (diff)/(2*actual_dist);
 		
 		(*s1).setPos(s1NewPos);
 		(*s2).setPos(s2NewPos);

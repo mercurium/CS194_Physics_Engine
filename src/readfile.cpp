@@ -1,6 +1,6 @@
 #include "readfile.h"
 
-#include "pmmintrins.h"
+#include "pmmintrin.h"
 
 using namespace std;
 

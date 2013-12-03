@@ -1,8 +1,6 @@
 #include "Scene.h"
 #include <omp.h>
 
-#define GLM_SIMD_ENABLE_XYZW_UNION true
-
 Scene::Scene(){
 	numBalls = 100;
 	twoD = false;
