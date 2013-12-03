@@ -216,7 +216,7 @@ Intersection** Scene::getCollisions(){
                                 thr_intersects[(tid)*nthreads+thr_num_col[tid]] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
 
                                 thr_num_col[tid]++;
-                                numCollisions++;
+                                //numCollisions++;
 							}
 						}
 					}
@@ -228,12 +228,13 @@ Intersection** Scene::getCollisions(){
     //printf("startidx: ");
     //fflush(stdout);
     //scan across thr_num_collisions
-    int start_idx[nthreads];
+    int start_idx[nthreads+1];
     start_idx[0] = 0;
-    for(int i=1; i<nthreads; i++){
+    for(int i=1; i<nthreads+1; i++){
         start_idx[i] = start_idx[i-1]+thr_num_col[i-1];
         //printf("%d ", start_idx[i]);
     }
+    numCollisions = start_idx[nthreads];
     //printf("\n");
     //fflush(stdout);
     
