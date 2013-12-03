@@ -5,9 +5,9 @@ SRCDIR = src
 BINDIR = bin
 
 #Compiler flags
-CFLAGS=-O2 -fopenmp -std=c++11
+CFLAGS=-O2 -fopenmp
 IFLAGS=-Ilib
-LDFLAGS=-lGLEW -lglut -lGLU -lGL -lX11
+LDFLAGS=-lGLEW -lglut -lGLU -lGL
 
 #SOURCES = $(shell find $(SRCDIR) -name '*.cpp') #Old find that returns everything in src directory
 SOURCES = $(shell find $(SRCDIR) -type f \( -iname '*.cpp' ! -iname 'Main.cpp' ! -iname 'Test.cpp' \)  )
