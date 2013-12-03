@@ -139,7 +139,8 @@ void outputText(){
         printf("t=%.3f :", d);
         for(int i = 0; i < numballs; i++){
             Sphere s = balls[i];
-            glm::vec3 pos = s.getPos();
+            glm::vec4 pos = glm::vec4_cast(s.getPos());
+
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }
         scene.UpdateScene(step_size);        
