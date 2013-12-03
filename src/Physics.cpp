@@ -1,6 +1,6 @@
 #include "Physics.h"
 #include <stdio.h>
-#include "pmmintrin.h"
+#include "mmintrin.h"
 #include <omp.h>
 
 int LIMIT = 100;
@@ -13,16 +13,16 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		simdVec4 oldPos = ball.getPos();
+		glm::simdVec4 oldPos = ball.getPos();
 		ball.setOldPos(oldPos);
-		simdVec4 oldVl = ball.getVelocity();
+		glm::simdVec4 oldVl = ball.getVelocity();
 		
 		oldVl += t*accel;
 
 		if(glm::dot(oldVl,oldVl) < t){
 			oldVl = glm::detail::fvec4SIMD(0, 0, 0, 0);
 		} else{
-			simdVec4 newPos = oldPos + t*oldVl;
+			glm::simdVec4 newPos = oldPos + t*oldVl;
 			ball.setPos(newPos);
 		}
 
@@ -33,18 +33,18 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	const __m128 two_scalar = _mm_set1_ps(2);
 	const __m128 one_scalar = _mm_set1_ps(1);
-	const __m128 zero_scalar = _mm_set1_ps(0);
+	//const __m128 zero_scalar = _mm_set1_ps(0);
 	const __m128 y_min_mask = _mm_set_ps(0x0, 0xffffffff, 0x0, 0x0);
-	const __m128 y_min_vel_damp = _mm_set_ps(.8, .5, .8, 0);
+	const __m128 y_min_vel_damp = _mm_set_ps(.8, -.5, .8, 0);
 	
-	double bool_lt_mask[4];
+	float bool_lt_mask[4];
 
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
-		glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
-		
+
+		//glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
 		//glm::vec4 newPos = glm::vec4_cast(ball.getPos());
 
 		__m128 gt_mask = _mm_cmpgt_ps(ball.getPos().Data, maxbounds);
@@ -55,16 +55,17 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 
 		__m128 gt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(ball.getPos().Data, maxbounds));
 		__m128 lt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(minbounds, ball.getPos().Data));
-		__m128 vel_mul = _mm_add_ps(zero_scalar, _mm_sub_ps(_mm_andnot_ps(lt_gt_mask, one_scalar), _mm_and_ps(lt_gt_mask, one_scalar)));
+		__m128 vel_mul = _mm_sub_ps(_mm_andnot_ps(lt_gt_mask, one_scalar), _mm_and_ps(lt_gt_mask, one_scalar));
 
-		if(bool_lt_mask[2] < minbound_y){
-			__m128 tmp_pos = _mm_add_ps(_mm_sub_ps(ball.getPos.Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset));
+		if(bool_lt_mask[1] == 0xffffffff){
+			printf("%s\n", "*");
+			__m128 tmp_pos = _mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset));
 			__m128 tmp_pos_y = _mm_set1_ps(minbound_y);
 
-			ball.setPos(glm::detail::fvec4SIMD(_mm_and_ps(_mm_and_ps(y_min_mask, tmp_pos_y), _mm_andnot_ps(y_min_mask, tmp_pos)));
+			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_and_ps(y_min_mask, tmp_pos_y), _mm_andnot_ps(y_min_mask, tmp_pos))));
 			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(y_min_vel_damp, _mm_mul_ps(ball.getVelocity().Data, vel_mul))));
 		} else{
-			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos.Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
+			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
 			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
 		}
 
@@ -106,7 +107,7 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 		// ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
 	}
 
-	delete *bool_lt_mask;
+	//delete bool_lt_mask;
 }
 
 /*
@@ -176,21 +177,21 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 
 		//intersections.pop_back();
 		Sphere* s1 = i.getS1(), *s2 = i.getS2();
-		simdVec4 s1Pos = s1->getPos();
-		simdVec4 s2Pos = s2->getPos();
+		glm::simdVec4 s1Pos = s1->getPos();
+		glm::simdVec4 s2Pos = s2->getPos();
 		
 		dist = glm::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
 
-		simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * distDiff;
-		simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * distDiff;
+		glm::simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * distDiff;
+		glm::simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * distDiff;
 		
 		s1->setPos(s1NewPos);
 		s2->setPos(s2NewPos);
 
-		simdVec4 s1Vel = s1->getVelocity();
-		simdVec4 s2Vel = s2->getVelocity();
+		glm::simdVec4 s1Vel = s1->getVelocity();
+		glm::simdVec4 s2Vel = s2->getVelocity();
 
 		s1Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s1Vel.y *= .9;
 		s2Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s2Vel.y *= .9;
@@ -218,11 +219,11 @@ void handleDistanceConstr(DistConstr* constraints, int constr_size){
 
 		double diff = constr_dist - actual_dist;
 
-		simdVec4 s1Pos = (*s1).getPos();
-		simdVec4 s2Pos = (*s2).getPos();
+		glm::simdVec4 s1Pos = (*s1).getPos();
+		glm::simdVec4 s2Pos = (*s2).getPos();
 
-		simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * diff/(2*actual_dist);
-		simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * (diff)/(2*actual_dist);
+		glm::simdVec4 s1NewPos = s1Pos + (s1Pos - s2Pos) * diff/(2*actual_dist);
+		glm::simdVec4 s2NewPos = s2Pos + (s2Pos - s1Pos) * (diff)/(2*actual_dist);
 		
 		(*s1).setPos(s1NewPos);
 		(*s2).setPos(s2NewPos);

@@ -3,7 +3,7 @@
 
 #include <glm/gtx/simd_vec4.hpp>
 
-#include "pmmintrin.h"
+#include "mmintrin.h"
 
 // This is the basic include file for the global variables in the program.  
 // Since all files need access to it, we define EXTERN as either blank or 
