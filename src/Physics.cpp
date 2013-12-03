@@ -1,5 +1,6 @@
 #include "Physics.h"
 #include <stdio.h>
+#include "pmmintrins.h"
 #include <omp.h>
 
 int LIMIT = 100;
@@ -37,6 +38,12 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 		glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
 		glm::vec4 newPos = glm::vec4_cast(ball.getPos());
 
+		__m128 gt_mask = _mm_cmpgt_ps(ball.getPos().Data, maxbounds);
+		__m128 lt_mask = _mm_cmplt_ps(ball.getPos().Data, minbounds);
+
+		//2*(maxbounds-ball.getPos().Data) = offset
+		//newPos=oldPos(offset & gt_mask)
+		
 	   /*Checking for Walls */
 		if (newPos.x > maxbounds[0]){
 			newPos.x = 2 * maxbounds[0] - newPos.x;

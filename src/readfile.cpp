@@ -1,5 +1,7 @@
 #include "readfile.h"
 
+#include "pmmintrins.h"
+
 using namespace std;
 
 namespace Read{
@@ -89,13 +91,13 @@ namespace Read{
 					else if (cmd == "minbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							for(i =0; i < 3; i++){minbounds[i] = values[i];}
+							minbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f); 
 						}
 					}
 					else if (cmd == "maxbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							for(i =0; i < 3; i++){ maxbounds[i] = values[i];}
+							maxbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f);
 						}
 					}
 					else if (cmd == "2d"){
