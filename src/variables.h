@@ -29,6 +29,8 @@ EXTERN glm::detail::fvec4SIMD accel;
 EXTERN double camera[9];
 EXTERN __m128 maxbounds;
 EXTERN __m128 minbounds;
+EXTERN double maxbounds_array[3];
+EXTERN double minbounds_array[3];
 EXTERN double minbound_y;
 //EXTERN double maxbounds[3]; 
 //EXTERN double minbounds[3]; 

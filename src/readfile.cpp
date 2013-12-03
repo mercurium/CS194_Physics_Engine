@@ -91,14 +91,22 @@ namespace Read{
 					else if (cmd == "minbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							minbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f);
+							for (int i = 0; i < 3; ++i)
+							{
+								minbounds_array[i] = values[i];
+							}
+							minbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
 							minbound_y = values[1]; 
 						}
 					}
 					else if (cmd == "maxbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							maxbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f);
+							for (int i = 0; i < 3; ++i)
+							{
+								maxbounds_array[i] = values[i];
+							}
+							maxbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
 						}
 					}
 					else if (cmd == "2d"){
