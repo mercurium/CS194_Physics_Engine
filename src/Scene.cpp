@@ -129,13 +129,16 @@ Intersection** Scene::getCollisions(){
 
 	struct column{
 		Sphere** col; //upper bound
-		int size = 0;
+		int size;
 	};
 
     int col_size[GRID_SIZE*GRID_SIZE];
+	#pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
         col_size[i] = 0;
     }
+
+	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
 		glm::detail::fvec4SIMD pos = s->getPos();
@@ -149,13 +152,16 @@ Intersection** Scene::getCollisions(){
 		col_size[x*GRID_SIZE+z]++;
 	}
 
-	Intersection* intersects[numBalls * 30]; //upperbound
+	Intersection** intersects = new Intersection*[numBalls * 30]; //upperbound
 	numCollisions = 0;
 
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
+
+	#pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
     //printf("Allocating arr size: %d\n", col_size[i]);
        list_of_balls[i].col = new Sphere*[col_size[i]]; 
+       list_of_balls[i].size = 0;
     }
 
 	#pragma omp parallel for
