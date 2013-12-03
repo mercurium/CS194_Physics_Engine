@@ -1,14 +1,14 @@
 from configGen import *
 import random
 
-n = 50
+n = 75
 accel(0,-9.8,0)
 maxbounds(n,n,n)
 minbounds(0,0,0)
 
 b1 = ball(0,0,0,1,1,1)
 b2 = ball(1,1,1,1,1,1)
-for i in range(0,1300):
+for i in range(0,4300):
     ball(random.randint(0,n),random.randint(0,n),random.randint(0,n),random.randint(0,10),0,0)
 
 distcon(b1,b2,20)

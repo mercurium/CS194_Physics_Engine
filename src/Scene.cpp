@@ -124,6 +124,9 @@ std::vector<Intersection *> Scene::getCollisions(){
 */
 
 Intersection** Scene::getCollisions(){
+	//Intersection** intersects2 = new Intersection*[numBalls * 30]; //upperbound
+    //numCollisions = 0;
+    //return intersects2;
 	const int colsize = GRID_COL_SIZE;
 
 	struct column{
@@ -137,7 +140,7 @@ Intersection** Scene::getCollisions(){
         col_size[i] = 0;
     }
 
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
 		glm::detail::fvec4SIMD pos = s->getPos();
@@ -148,6 +151,7 @@ Intersection** Scene::getCollisions(){
 		int z = posVec4.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 
+        #pragma omp critical
 		col_size[x*GRID_SIZE+z]++;
 	}
 
@@ -163,7 +167,7 @@ Intersection** Scene::getCollisions(){
        list_of_balls[i].size = 0;
     }
 
-	//#pragma omp parallel for
+	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
@@ -176,24 +180,15 @@ Intersection** Scene::getCollisions(){
 		int z = posVec4.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 		
-		int size = list_of_balls[x*GRID_SIZE+z].size;
 
+        #pragma omp critical
+        {
+		int size = list_of_balls[x*GRID_SIZE+z].size;
 		list_of_balls[x*GRID_SIZE+z].col[size] = s;
 		list_of_balls[x*GRID_SIZE+z].size++;
+        }
 	}
 
-    //new intersects array for each thread
-    //printf("a %d\n", omp_get_num_threads());
-    //fflush(stdout);
-    /*
-    int nthreads = omp_get_max_threads();//omp_get_num_threads();
-    int thr_num_col[nthreads];
-	#pragma omp parallel for
-	for(int i = 0; i < (nthreads); i++){
-        thr_num_col[i] = 0;
-    }
-    Intersection* thr_intersects[nthreads * (numBalls*20)];
-    */
 
 	#pragma omp parallel for //shared(thr_intersects, thr_num_col, list_of_balls)
 	for (int i = 0; i < GRID_SIZE; i++){
@@ -214,6 +209,7 @@ Intersection** Scene::getCollisions(){
 							double dist = glm::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
 							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
+                                #pragma omp critical
 								intersects[numCollisions++] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
                                 //thr_intersects[(tid)*nthreads+thr_num_col[tid]] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
 
@@ -260,6 +256,7 @@ Intersection** Scene::getCollisions(){
     for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
        delete list_of_balls[i].col;
     }
+
 
     return intersects;
 }
