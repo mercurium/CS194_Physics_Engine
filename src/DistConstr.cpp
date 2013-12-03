@@ -25,11 +25,3 @@ Sphere* DistConstr::getBall(int i){
 double DistConstr::getDist(){
 	return distance;
 }
-
-bool DistConstr::contains(Sphere* a){
-	return (*s1 == *a) || (*s2 == *a);
-}
-
-bool DistConstr::contains(Sphere* a, Sphere* b){
-	return (*s1 == *a && *s2 == *b) || (*s2 == *a && *s1 == *b);
-}

@@ -13,6 +13,4 @@ class DistConstr{
         virtual ~DistConstr();
         Sphere* getBall(int i);
         double getDist();
-        bool contains(Sphere* a);
-        bool contains(Sphere* a, Sphere* b);
 };
