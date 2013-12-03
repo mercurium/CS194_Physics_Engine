@@ -33,8 +33,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	const __m128 two_scalar = _mm_set1_ps(2);
 	const __m128 one_scalar = _mm_set1_ps(1);
-	const __m128 y_min_mask = _mm_set_ps(0x0, 0xffffffff, 0x0, 0x0);
-	const __m128 y_min_vel_damp = _mm_set_ps(.8, -.5, .8, 0);
+	const __m128 y_min_vel_damp = _mm_set_ps(0.8f, 0.5f, 0.8f, 0.0f);
 	
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
@@ -51,17 +50,18 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 		__m128 lt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(minbounds, ball.getPos().Data));
 		__m128 vel_mul = _mm_sub_ps(_mm_andnot_ps(lt_gt_mask, one_scalar), _mm_and_ps(lt_gt_mask, one_scalar));
 
-		ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
-
+		__m128 tmp_pos = _mm_add_ps(ball.getPos().Data, _mm_and_ps(lt_mask, lt_offset));
 		//2*(minbounds-ball.getPos().Data) = lt_offset
 		//newPos+=oldPos(lt_offset & lt_mask)
 
-		ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
-
+		tmp_pos = _mm_sub_ps(tmp_pos, _mm_and_ps(gt_mask, gt_offset));
 		//2*(newPos - maxbounds) = gt_offset
 		//newPos-=oldPos(gt_offset & gt_mask)
 
-		if(y_true){			
+		ball.setPos(glm::detail::fvec4SIMD(tmp_pos));		
+		ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
+
+		if(y_true){
 			glm::vec4 vecPos = glm::vec4_cast(ball.getPos());
 			vecPos.y = minbound_y;
 			ball.setPos(glm::detail::fvec4SIMD(vecPos));
@@ -70,41 +70,41 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 			__m128 tmp_vel = _mm_mul_ps(_mm_loadu_ps(&vecVel[0]), y_min_vel_damp);
 			_mm_storeu_ps(&vecVel[0], tmp_vel);
 			ball.setVelocity(glm::detail::fvec4SIMD(vecVel));
-		} 
+		}
 		
-		//glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
-		//glm::vec4 vecPos = glm::vec4_cast(ball.getPos());
+		//serial version
+		/*glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
+		glm::vec4 newPos = glm::vec4_cast(ball.getPos());
 
-		/*Checking for Walls */
-		// if (newPos.x > maxbounds[0]){
-		// 	newPos.x = 2 * maxbounds[0] - newPos.x;
-		// 	oldVl.x = -oldVl.x;
-		// }
-		// if (newPos.y > maxbounds[1]){
-		// 	newPos.y = 2 * maxbounds[1] - newPos.y;
-		// 	oldVl.y = -oldVl.y;
-		// }
-		// if (newPos.z > maxbounds[2]){
-		// 	newPos.z = 2 * maxbounds[2] - newPos.z;
-		// 	oldVl.z = -oldVl.z;
-		// }
-		// if (newPos.x < minbounds[0]){
-		// 	newPos.x = 2 * minbounds[0] - newPos.x;
-		// 	oldVl.x = -oldVl.x;
-		// }
-		// if (newPos.y < minbounds[1]){
-		// 	newPos.y = minbounds[1];
-		// 	oldVl.y = -oldVl.y/2.0;
-		// 	oldVl.x = oldVl.x * .8;
-		// 	oldVl.z = oldVl.z * .8;
-		// }
-		// if (newPos.z < minbounds[2]){
-		// 	newPos.z = 2 * minbounds[2] - newPos.z;
-		// 	oldVl.z = -oldVl.z;
-		// }
+		if (newPos.x > maxbounds_array[0]){
+			newPos.x = 2 * maxbounds_array[0] - newPos.x;
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y > maxbounds_array[1]){
+			newPos.y = 2 * maxbounds_array[1] - newPos.y;
+			oldVl.y = -oldVl.y;
+		}
+		if (newPos.z > maxbounds_array[2]){
+			newPos.z = 2 * maxbounds_array[2] - newPos.z;
+			oldVl.z = -oldVl.z;
+		}
+		if (newPos.x < minbounds_array[0]){
+			newPos.x = 2 * minbounds_array[0] - newPos.x;
+			oldVl.x = -oldVl.x;
+		}
+		if (newPos.y < minbounds_array[1]){
+			newPos.y = minbounds_array[1];
+			oldVl.y = -oldVl.y/2.0;
+			oldVl.x = oldVl.x * .8;
+			oldVl.z = oldVl.z * .8;
+		}
+		if (newPos.z < minbounds_array[2]){
+			newPos.z = 2 * minbounds_array[2] - newPos.z;
+			oldVl.z = -oldVl.z;
+		}
 
-		// ball.setPos(glm::detail::fvec4SIMD(newPos));
-		// ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
+		ball.setPos(glm::detail::fvec4SIMD(newPos));
+		ball.setVelocity(glm::detail::fvec4SIMD(oldVl));*/
 	}
 }
 
@@ -191,8 +191,8 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		glm::simdVec4 s1Vel = s1->getVelocity();
 		glm::simdVec4 s2Vel = s2->getVelocity();
 
-		s1Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s1Vel.y *= .9;
-		s2Vel *= glm::detail::fvec4SIMD(0, 0.9, 0, 0); //s2Vel.y *= .9;
+		s1Vel *= glm::detail::fvec4SIMD(0.0, 0.0, 0.9, 0.0); //s1Vel.y *= .9;
+		s2Vel *= glm::detail::fvec4SIMD(0.0, 0.0, 0.9, 0.0); //s2Vel.y *= .9;
 
 		s1->setVelocity(s2Vel);
 		s2->setVelocity(s1Vel);

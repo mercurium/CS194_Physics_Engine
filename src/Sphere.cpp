@@ -34,9 +34,9 @@ Sphere::Sphere(double x, double y, double z){
 Sphere::Sphere(double x, double y, double z, bool twoD){
 	position = glm::detail::fvec4SIMD(x, y, z, 0.0f);
 	if (!twoD)
-		velocity = glm::detail::fvec4SIMD(1+x/15., 4+y/13.,3+z/11., 0.0f);
+		velocity = glm::detail::fvec4SIMD(0.0f, 1+x/15., 4+y/13.,3+z/11.);
 	else
-		velocity = glm::detail::fvec4SIMD(1+x/15., 4+y/13., 0, 0.0f);
+		velocity = glm::detail::fvec4SIMD(0.0f, 1+x/15., 4+y/13., 0);
 
 	radius = 1;
 
@@ -44,7 +44,7 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
     float g = (std::rand()%255)/255.0f;
     float b = (std::rand()%255)/255.0f;
     glm::vec4 color = glm::vec4(red,g,b,1);
-	glm::detail::fvec4SIMD oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
+	glm::detail::fvec4SIMD oldPos = glm::detail::fvec4SIMD(0.0f, x, y, z);
 	helper = new Helper(color, oldPos);
 }
 
@@ -134,5 +134,3 @@ glm::detail::fvec4SIMD Helper::getOldPos(){
 glm::vec4 Helper::getColor(){
 	return color;
 }
-
-
