@@ -140,6 +140,13 @@ Intersection** Scene::getCollisions(){
         col_size[i] = 0;
     }
 
+    int max_thr = omp_get_max_threads();
+    int col_size_thr[max_thr*GRID_SIZE*GRID_SIZE];
+    #pragma omp parallel for
+	for(int i = 0; i < (max_thr*GRID_SIZE*GRID_SIZE); i++){
+        col_size_thr[i] = 0;
+    }
+
 	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
@@ -151,9 +158,18 @@ Intersection** Scene::getCollisions(){
 		int z = posVec4.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 
-        #pragma omp critical
-		col_size[x*GRID_SIZE+z]++;
+        //#pragma omp critical
+		//col_size[x*GRID_SIZE+z]++;
+        int tid = omp_get_thread_num();
+        col_size_thr[max_thr*tid+x*GRID_SIZE+z]++;
 	}
+    
+    #pragma omp parallel for
+    for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
+        for(int j=0; j<max_thr;j++){
+            col_size[i] += col_size_thr[max_thr*j+i];
+        }
+    }
 
 	Intersection** intersects = new Intersection*[numBalls * 30]; //upperbound
 	numCollisions = 0;
@@ -181,18 +197,15 @@ Intersection** Scene::getCollisions(){
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 		
 
-        #pragma omp critical
-        {
+        //critical
 		int size = list_of_balls[x*GRID_SIZE+z].size;
 		list_of_balls[x*GRID_SIZE+z].col[size] = s;
 		list_of_balls[x*GRID_SIZE+z].size++;
-        }
 	}
 
 
 	#pragma omp parallel for //shared(thr_intersects, thr_num_col, list_of_balls)
 	for (int i = 0; i < GRID_SIZE; i++){
-        int tid = omp_get_thread_num();
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
 
