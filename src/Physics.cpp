@@ -31,8 +31,13 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 }
 
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
-	const __m128 two_mul = _mm_set1_ps(2);
-	const __m128 empty_vec = _mm_set_ps(0, 0, 0, 0);
+	const __m128 two_scalar = _mm_set1_ps(2);
+	const __m128 one_scalar = _mm_set1_ps(1);
+	const __m128 zero_scalar = _mm_set1_ps(0);
+	const __m128 y_min_mask = _mm_set_ps(0x0, 0xffffffff, 0x0, 0x0);
+	const __m128 y_min_vel_damp = _mm_set_ps(.8, .5, .8, 0);
+	
+	double bool_lt_mask[4];
 
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
@@ -44,49 +49,64 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 
 		__m128 gt_mask = _mm_cmpgt_ps(ball.getPos().Data, maxbounds);
 		__m128 lt_mask = _mm_cmplt_ps(ball.getPos().Data, minbounds);
+		__m128 lt_gt_mask = _mm_or_ps(lt_mask, gt_mask);
 
-		__m128 gt_offset = _mm_sub_ps(_mm_mul_ps(two_mul, maxbounds), ball.getPos().Data);
-		__m128 lt_offset = _mm_sub_ps(_mm_mul_ps(two_mul, minbounds), ball.getPos().Data);
-		__m128 lt_offset_y = 
-		__m128 gt_lt_mask = _mm_or_ps(gt_mask, lt_mask);
-		__m128 
+		_mm_storeu_ps(&bool_lt_mask[0], lt_mask);
 
-		ball.setPos(glm::detail::fvec4SIMD(_mm_and_ps()))
+		__m128 gt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(ball.getPos().Data, maxbounds));
+		__m128 lt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(minbounds, ball.getPos().Data));
+		__m128 vel_mul = _mm_add_ps(zero_scalar, _mm_sub_ps(_mm_andnot_ps(lt_gt_mask, one_scalar), _mm_and_ps(lt_gt_mask, one_scalar)));
 
-		//2*(maxbounds-ball.getPos().Data) = offset
-		//newPos=oldPos(offset & gt_mask)
-		
+		if(bool_lt_mask[2] < minbound_y){
+			__m128 tmp_pos = _mm_add_ps(_mm_sub_ps(ball.getPos.Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset));
+			__m128 tmp_pos_y = _mm_set1_ps(minbound_y);
+
+			ball.setPos(glm::detail::fvec4SIMD(_mm_and_ps(_mm_and_ps(y_min_mask, tmp_pos_y), _mm_andnot_ps(y_min_mask, tmp_pos)));
+			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(y_min_vel_damp, _mm_mul_ps(ball.getVelocity().Data, vel_mul))));
+		} else{
+			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos.Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
+			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
+		}
+
+		//2*(minbounds-ball.getPos().Data) = lt_offset
+		//newPos+=oldPos(lt_offset & lt_mask)
+
+		//2*(newPos - maxbounds) = gt_offset
+		//newPos-=oldPos(gt_offset & gt_mask)
+
 		/*Checking for Walls */
-		if (newPos.x > maxbounds[0]){
-			newPos.x = 2 * maxbounds[0] - newPos.x;
-			oldVl.x = -oldVl.x;
-		}
-		if (newPos.y > maxbounds[1]){
-			newPos.y = 2 * maxbounds[1] - newPos.y;
-			oldVl.y = -oldVl.y;
-		}
-		if (newPos.z > maxbounds[2]){
-			newPos.z = 2 * maxbounds[2] - newPos.z;
-			oldVl.z = -oldVl.z;
-		}
-		if (newPos.x < minbounds[0]){
-			newPos.x = 2 * minbounds[0] - newPos.x;
-			oldVl.x = -oldVl.x;
-		}
-		if (newPos.y < minbounds[1]){
-			newPos.y = minbounds[1];
-			oldVl.y = -oldVl.y/2.0;
-			oldVl.x = oldVl.x * .8;
-			oldVl.z = oldVl.z * .8;
-		}
-		if (newPos.z < minbounds[2]){
-			newPos.z = 2 * minbounds[2] - newPos.z;
-			oldVl.z = -oldVl.z;
-		}
+		// if (newPos.x > maxbounds[0]){
+		// 	newPos.x = 2 * maxbounds[0] - newPos.x;
+		// 	oldVl.x = -oldVl.x;
+		// }
+		// if (newPos.y > maxbounds[1]){
+		// 	newPos.y = 2 * maxbounds[1] - newPos.y;
+		// 	oldVl.y = -oldVl.y;
+		// }
+		// if (newPos.z > maxbounds[2]){
+		// 	newPos.z = 2 * maxbounds[2] - newPos.z;
+		// 	oldVl.z = -oldVl.z;
+		// }
+		// if (newPos.x < minbounds[0]){
+		// 	newPos.x = 2 * minbounds[0] - newPos.x;
+		// 	oldVl.x = -oldVl.x;
+		// }
+		// if (newPos.y < minbounds[1]){
+		// 	newPos.y = minbounds[1];
+		// 	oldVl.y = -oldVl.y/2.0;
+		// 	oldVl.x = oldVl.x * .8;
+		// 	oldVl.z = oldVl.z * .8;
+		// }
+		// if (newPos.z < minbounds[2]){
+		// 	newPos.z = 2 * minbounds[2] - newPos.z;
+		// 	oldVl.z = -oldVl.z;
+		// }
 
-		ball.setPos(glm::detail::fvec4SIMD(newPos));
-		ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
+		// ball.setPos(glm::detail::fvec4SIMD(newPos));
+		// ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
 	}
+
+	delete *bool_lt_mask;
 }
 
 /*

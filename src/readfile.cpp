@@ -91,7 +91,8 @@ namespace Read{
 					else if (cmd == "minbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							minbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f); 
+							minbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f);
+							minbound_y = values[1]; 
 						}
 					}
 					else if (cmd == "maxbounds"){
