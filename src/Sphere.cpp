@@ -105,5 +105,6 @@ glm::detail::fvec4SIMD Sphere::getOldPos(){
 }
 
 void Sphere::print(){
-	printf("The coordinates are (%f,%f,%f) of radius %f\n",position.x,position.y,position.z,radius); 
+	glm::vec4 posVec4 = glm::vec4_cast(position);
+	printf("The coordinates are (%f,%f,%f) of radius %f\n", posVec4.x, posVec4.y, posVec4.z, radius); 
 }
