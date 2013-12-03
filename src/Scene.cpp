@@ -131,20 +131,17 @@ Intersection** Scene::getCollisions(){
 	};
 
     int col_size[GRID_SIZE*GRID_SIZE];
-	#pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
         col_size[i] = 0;
     }
 
-	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
-		glm::detail::fvec4SIMD pos = s->getPos();
-		glm::vec4 posVec4 = glm::vec4_cast(pos);
+        glm::vec3 pos = s->getPos();
 
-		int x = posVec4.x / (100/GRID_SIZE);
+		int x = pos.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
-		int z = posVec4.z / (100/GRID_SIZE);
+		int z = pos.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 
 		col_size[x*GRID_SIZE+z]++;
@@ -155,24 +152,21 @@ Intersection** Scene::getCollisions(){
 
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
 
-	#pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
     //printf("Allocating arr size: %d\n", col_size[i]);
        list_of_balls[i].col = new Sphere*[col_size[i]]; 
        list_of_balls[i].size = 0;
     }
 
-	#pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
-		glm::detail::fvec4SIMD pos = s->getPos();
-		glm::vec4 posVec4 = glm::vec4_cast(pos);
+        glm::vec3 pos = s->getPos();
 		//column* col_ptr = NULL;
 
-		int x = posVec4.x / (100/GRID_SIZE);
+		int x = pos.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
-		int z = posVec4.z / (100/GRID_SIZE);
+		int z = pos.z / (100/GRID_SIZE);
 		z = std::min(std::max(z,0), GRID_SIZE-1);
 		
 		int size = list_of_balls[x*GRID_SIZE+z].size;
@@ -181,7 +175,6 @@ Intersection** Scene::getCollisions(){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
-	#pragma omp parallel for
 	for (int i = 0; i < GRID_SIZE; i++){
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }

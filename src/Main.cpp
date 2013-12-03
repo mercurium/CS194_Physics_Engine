@@ -39,14 +39,15 @@ int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
     bool outputGL = true;
+	Read::readfile("config.txt");
 
     if(outputGL){
-		Read::readfile("config.txt");
         initGLUT(argv, argc);
         init();
 		scene = Scene(balls, constraints, numballs, numcons);
         glutMainLoop();
     }else{
+    	scene = Scene(balls, constraints, numballs, numcons);
         outputText();
     }
 
@@ -139,7 +140,7 @@ void outputText(){
         printf("t=%.3f :", d);
         for(int i = 0; i < numballs; i++){
             Sphere s = balls[i];
-            glm::vec4 pos = glm::vec4_cast(s.getPos());
+            glm::vec3 pos = s.getPos();
 
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }

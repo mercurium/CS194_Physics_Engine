@@ -3,7 +3,6 @@
 
 #include <glm/gtx/simd_vec4.hpp>
 
-#include "pmmintrin.h"
 
 // This is the basic include file for the global variables in the program.  
 // Since all files need access to it, we define EXTERN as either blank or 
@@ -25,10 +24,10 @@ EXTERN double sensitivity;
 EXTERN bool is2D;
 EXTERN bool shading;
 
-EXTERN glm::detail::fvec4SIMD accel;
+EXTERN double accel[3];
 EXTERN double camera[9];
-EXTERN __m128 maxbounds;
-EXTERN __m128 minbounds;
+EXTERN double maxbounds[3];
+EXTERN double minbounds[3];
 //EXTERN double maxbounds[3]; 
 //EXTERN double minbounds[3]; 
 

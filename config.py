@@ -7,7 +7,7 @@ minbounds(0,0,0)
 
 b1 = ball(0,0,0,1,1,1)
 b2 = ball(1,1,1,1,1,1)
-for i in range(0,10):
+for i in range(0,10000):
     ball(random.randint(0,100),random.randint(0,100),random.randint(0,100),0,0,0)
 
 distcon(b1,b2,20)

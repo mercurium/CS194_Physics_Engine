@@ -1,6 +1,5 @@
 #include "readfile.h"
 
-#include "pmmintrin.h"
 
 using namespace std;
 
@@ -77,7 +76,7 @@ namespace Read{
 					else if (cmd == "accel"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							accel = glm::detail::fvec4SIMD(values[0], values[1], values[2], 0.0f);
+                            for (i = 0; i < 3; i++) {accel[i] = values[i];}
 						}
 					}
 					else if (cmd == "camera") {
@@ -91,13 +90,13 @@ namespace Read{
 					else if (cmd == "minbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							minbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f); 
+                            for (i = 0; i < 3; i++) {minbounds[i] = values[i];}
 						}
 					}
 					else if (cmd == "maxbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							maxbounds = _mm_set_ps(values[0], values[1], values[2], 0.0f);
+                            for (i=0; i < 3; i++) {maxbounds[i] = values[i];}
 						}
 					}
 					else if (cmd == "2d"){
@@ -119,7 +118,7 @@ namespace Read{
 							validinput = readvals(s, 6, values) ; // Position/color for lts.
 							if (validinput) {
 								::new(&balls[numB]) Sphere(values[0],values[1],values[2],is2D);
-								(balls[numB]).setVelocity(glm::detail::fvec4SIMD(values[3],values[4],values[5], 0.0f));
+								(balls[numB]).setVelocity(glm::vec3(values[3],values[4],values[5]));
 								++numB;
 							}
 						}

@@ -1,30 +1,29 @@
 #pragma once
 #include <glm/glm.hpp>
-#include <glm/gtx/simd_vec4.hpp>
 
 class Sphere{
-	glm::detail::fvec4SIMD position;
-	glm::detail::fvec4SIMD oldPos;
-	glm::detail::fvec4SIMD velocity;
+	glm::vec3 position;
+	glm::vec3 oldPos;
+	glm::vec3 velocity;
     glm::vec4 color;
 
 	double radius;
 	
 	public:
-		Sphere(glm::detail::fvec4SIMD pos, glm::detail::fvec4SIMD vel);
+		Sphere(glm::vec3 pos, glm::vec3 vel);
 		Sphere(double x, double y, double z);
 		Sphere(double x, double y, double z, bool twoD);
 		Sphere(double x, double y, double z, double r);
 		virtual ~Sphere(); 
 		
-		void setPos(glm::detail::fvec4SIMD pos);
-		void setOldPos(glm::detail::fvec4SIMD oldPosition);
-		void setVelocity(glm::detail::fvec4SIMD vel);
+		void setPos(glm::vec3 pos);
+		void setOldPos(glm::vec3 oldPosition);
+		void setVelocity(glm::vec3 vel);
 		void setColor(glm::vec4 col);
 		
-		glm::detail::fvec4SIMD getPos();
-		glm::detail::fvec4SIMD getOldPos();
-		glm::detail::fvec4SIMD getVelocity();
+		glm::vec3 getPos();
+		glm::vec3 getOldPos();
+		glm::vec3 getVelocity();
 		glm::vec4 getColor();
 		
 		double getRadius();
