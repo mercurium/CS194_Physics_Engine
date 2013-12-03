@@ -38,7 +38,7 @@ Scene scene;
 int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
-    bool outputGL = true;
+    bool outputGL = false;
 	Read::readfile("config.txt");
 
     if(outputGL){
@@ -135,8 +135,9 @@ void outputText(){
     double step_size = 0.1; //settings.get("stepsize")
     double total_duration = 100; //settings.get("totalsimduration")
 
+    double current_time = timestamp();
     for(double d = 0; d<total_duration; d+= step_size){
-		balls = scene.getBalls();
+/*		balls = scene.getBalls();
         printf("t=%.3f :", d);
         for(int i = 0; i < numballs; i++){
             Sphere s = balls[i];
@@ -144,8 +145,19 @@ void outputText(){
 
             printf("(%.3f,%.3f,%.3f)",pos[0],pos[1],pos[2]);
         }
-        scene.UpdateScene(step_size);        
+*/       scene.UpdateScene(step_size);        
     }
+    double elapsed = timestamp() - current_time;
+    balls = scene.getBalls();
+    double mew = 0;
+    for (int i = 0; i < numballs; i++) {
+        Sphere s = balls[i];
+        glm::vec3 pos = s.getPos();
+        if (mew < pos[0]) mew = pos[0];
+    }
+    printf("largest ... x value: %.3f\n", mew);
+    printf("elapsed time: %f\n", elapsed);
+
 
 }
 
