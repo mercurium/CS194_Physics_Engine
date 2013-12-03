@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <cstdlib>
 #include <ctime>
+#include <omp.h>
 
 #include <glm/glm.hpp>
 #include <glm/gtx/simd_vec4.hpp>
@@ -40,6 +41,7 @@ int main(int argc, char *argv[])
     printf("Starting Simulator!\n");
     bool outputGL = false;
 	Read::readfile("config.txt");
+    omp_set_num_threads(8);
 
     if(outputGL){
         initGLUT(argv, argc);
@@ -133,7 +135,7 @@ void mainloop(){
 void outputText(){
 	//scene = Scene();
     double step_size = 0.1; //settings.get("stepsize")
-    double total_duration = 100; //settings.get("totalsimduration")
+    double total_duration = 5; //settings.get("totalsimduration")
 
     double current_time = timestamp();
     for(double d = 0; d<total_duration; d+= step_size){

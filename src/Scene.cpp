@@ -53,7 +53,7 @@ std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> ball
 void Scene::UpdateScene(double time){
     Physics::UpdateBallPositions((this->balls), this->numBalls, time);
     Physics::UpdateBallBoundaries(this->balls, this->numBalls);
-    for(int i = 0; i < 5; i++){
+    for(int i = 0; i < 2; i++){
     	Intersection** intersections;
         intersections = getCollisions();
         Physics::resolveCollisions(intersections, this->numCollisions);
@@ -123,6 +123,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 */
 
 Intersection** Scene::getCollisions(){
+
 	const int colsize = GRID_COL_SIZE;
 
 	struct column{
@@ -131,6 +132,7 @@ Intersection** Scene::getCollisions(){
 	};
 
     int col_size[GRID_SIZE*GRID_SIZE];
+    #pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
         col_size[i] = 0;
     }
@@ -152,12 +154,14 @@ Intersection** Scene::getCollisions(){
 
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
 
+    #pragma omp parallel for
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
     //printf("Allocating arr size: %d\n", col_size[i]);
        list_of_balls[i].col = new Sphere*[col_size[i]]; 
        list_of_balls[i].size = 0;
     }
 
+    #pragma omp parallel for
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
@@ -175,7 +179,10 @@ Intersection** Scene::getCollisions(){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
+    #pragma omp parallel for
 	for (int i = 0; i < GRID_SIZE; i++){
+        //printf("thr: %d\n", omp_get_num_threads());
+        //fflush(stdout);
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
 
@@ -192,7 +199,8 @@ Intersection** Scene::getCollisions(){
 							double dist = glm::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
 							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
-								intersects[numCollisions++] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
+								intersects[numCollisions] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
+                                numCollisions++;
 							}
 						}
 					}

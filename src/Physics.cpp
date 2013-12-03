@@ -9,6 +9,7 @@ namespace Physics{
 
 void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 	/*  Update each ball to the new location  */
+    #pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
         glm::vec3 oldPos = ball.getPos();
@@ -33,6 +34,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 
 	/*  Update each ball to the new location  */
+    #pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
 		glm::vec3 oldVl = ball.getVelocity();
