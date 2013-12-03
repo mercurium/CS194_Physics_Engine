@@ -2,22 +2,22 @@
 #include <cstdlib>
 #include <ctime>
 
+
 Sphere::Sphere(glm::detail::fvec4SIMD pos, glm::detail::fvec4SIMD vel){
 	position = pos;
-	oldPos = pos;
 	velocity = vel;
-
 	radius = 1;
 
     float r = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
     float b = (std::rand()%255)/255.0f;
-    color = glm::vec4(r, g, b, 1);
+    glm::vec4 color = glm::vec4(r,g,b,1);
+	glm::detail::fvec4SIMD oldPos = pos;
+	helper = new Helper(color, oldPos);
 }
 
 Sphere::Sphere(double x, double y, double z){
 	position = glm::detail::fvec4SIMD(x, y, z, 0.0f);
-	oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
 	velocity = glm::detail::fvec4SIMD(1+x/150., .4+y/130.,.3+z/110., 0.0f);
 
 	radius = 1;
@@ -25,13 +25,14 @@ Sphere::Sphere(double x, double y, double z){
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
     float b = (std::rand()%255)/255.0f;
-    color = glm::vec4(red,g,b,1);
+    glm::vec4 color = glm::vec4(red,g,b,1);
+	glm::detail::fvec4SIMD oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
+	helper = new Helper(color, oldPos);
 }
 
 
 Sphere::Sphere(double x, double y, double z, bool twoD){
 	position = glm::detail::fvec4SIMD(x, y, z, 0.0f);
-	oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
 	if (!twoD)
 		velocity = glm::detail::fvec4SIMD(1+x/15., 4+y/13.,3+z/11., 0.0f);
 	else
@@ -42,13 +43,14 @@ Sphere::Sphere(double x, double y, double z, bool twoD){
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
     float b = (std::rand()%255)/255.0f;
-    color = glm::vec4(red,g,b,1);
+    glm::vec4 color = glm::vec4(red,g,b,1);
+	glm::detail::fvec4SIMD oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
+	helper = new Helper(color, oldPos);
 }
 
 
 Sphere::Sphere(double x, double y, double z, double r){
 	position = glm::detail::fvec4SIMD(x, y, z, 0.0f);
-	oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
 	velocity = glm::detail::fvec4SIMD(1.0, 1.0, 1.0, 0.0f);
 
 	radius = r;
@@ -56,7 +58,9 @@ Sphere::Sphere(double x, double y, double z, double r){
     float red = (std::rand()%255)/255.0f;
     float g = (std::rand()%255)/255.0f;
     float b = (std::rand()%255)/255.0f;
-    color = glm::vec4(red,g,b,1);
+    glm::vec4 color = glm::vec4(red,g,b,1);
+	glm::detail::fvec4SIMD oldPos = glm::detail::fvec4SIMD(x, y, z, 0.0f);
+	helper = new Helper(color, oldPos);
 }
 
 Sphere::~Sphere (){
@@ -76,7 +80,7 @@ void Sphere::setVelocity(glm::detail::fvec4SIMD vel){
 }
 
 void Sphere::setOldPos(glm::detail::fvec4SIMD oldPosition){
-	oldPos = oldPosition;
+	helper->setOldPos(oldPosition);
 }
 
 glm::detail::fvec4SIMD Sphere::getPos(){
@@ -88,11 +92,11 @@ glm::detail::fvec4SIMD Sphere::getVelocity(){
 }
 
 glm::vec4 Sphere::getColor(){
-	return color;
+	return helper->getColor();
 }
 
 void Sphere::setColor(glm::vec4 col){
-	color = col;
+	helper->setColor(col);
 }
 
 double Sphere::getRadius(){
@@ -101,10 +105,34 @@ double Sphere::getRadius(){
 
 
 glm::detail::fvec4SIMD Sphere::getOldPos(){
-	return oldPos;
+	return helper->getOldPos();
 }
 
 void Sphere::print(){
 	glm::vec4 posVec4 = glm::vec4_cast(position);
 	printf("The coordinates are (%f,%f,%f) of radius %f\n", posVec4.x, posVec4.y, posVec4.z, radius); 
 }
+
+
+Helper::Helper(glm::vec4 colors, glm::detail::fvec4SIMD oldPosition){
+	color = colors;
+	oldPos = oldPosition;
+}
+
+void Helper::setOldPos(glm::detail::fvec4SIMD pos){
+	oldPos = pos;
+}
+
+void Helper::setColor(glm::vec4 col){
+	color = col;
+}
+
+glm::detail::fvec4SIMD Helper::getOldPos(){
+	return oldPos;
+}
+
+glm::vec4 Helper::getColor(){
+	return color;
+}
+
+

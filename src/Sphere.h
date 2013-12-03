@@ -2,13 +2,28 @@
 #include <glm/glm.hpp>
 #include <glm/gtx/simd_vec4.hpp>
 
+class Helper{
+	glm::vec4 color;
+	glm::detail::fvec4SIMD oldPos;
+
+	public:
+		Helper(glm::vec4 colors, glm::detail::fvec4SIMD oldPosition); 
+		void setOldPos(glm::detail::fvec4SIMD oldPosition);
+		void setColor(glm::vec4 col);
+		
+		glm::detail::fvec4SIMD getOldPos();
+		glm::vec4 getColor();
+		
+
+
+
+};
 class Sphere{
 	glm::detail::fvec4SIMD position;
-	glm::detail::fvec4SIMD oldPos;
 	glm::detail::fvec4SIMD velocity;
-    glm::vec4 color;
 
 	double radius;
+	Helper * helper;
 	
 	public:
 		Sphere(glm::detail::fvec4SIMD pos, glm::detail::fvec4SIMD vel);
@@ -30,3 +45,4 @@ class Sphere{
 		double getRadius();
 		void print();
 };
+
