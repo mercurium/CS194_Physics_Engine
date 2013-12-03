@@ -33,47 +33,47 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	const __m128 two_scalar = _mm_set1_ps(2);
 	const __m128 one_scalar = _mm_set1_ps(1);
-	//const __m128 zero_scalar = _mm_set1_ps(0);
 	const __m128 y_min_mask = _mm_set_ps(0x0, 0xffffffff, 0x0, 0x0);
 	const __m128 y_min_vel_damp = _mm_set_ps(.8, -.5, .8, 0);
 	
-	float bool_lt_mask[4];
-
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
 	for (int i = 0; i < num_balls; i++){
 		Sphere &ball = balls[i];
 
-		//glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
-		//glm::vec4 newPos = glm::vec4_cast(ball.getPos());
+		bool y_true = glm::vec4_cast(ball.getPos()).y < minbound_y;
 
 		__m128 gt_mask = _mm_cmpgt_ps(ball.getPos().Data, maxbounds);
 		__m128 lt_mask = _mm_cmplt_ps(ball.getPos().Data, minbounds);
 		__m128 lt_gt_mask = _mm_or_ps(lt_mask, gt_mask);
 
-		_mm_storeu_ps(&bool_lt_mask[0], lt_mask);
-
 		__m128 gt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(ball.getPos().Data, maxbounds));
 		__m128 lt_offset = _mm_mul_ps(two_scalar, _mm_sub_ps(minbounds, ball.getPos().Data));
 		__m128 vel_mul = _mm_sub_ps(_mm_andnot_ps(lt_gt_mask, one_scalar), _mm_and_ps(lt_gt_mask, one_scalar));
 
-		if(bool_lt_mask[1] == 0xffffffff){
-			printf("%s\n", "*");
-			__m128 tmp_pos = _mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset));
-			__m128 tmp_pos_y = _mm_set1_ps(minbound_y);
-
-			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_and_ps(y_min_mask, tmp_pos_y), _mm_andnot_ps(y_min_mask, tmp_pos))));
-			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(y_min_vel_damp, _mm_mul_ps(ball.getVelocity().Data, vel_mul))));
-		} else{
-			ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
-			ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
-		}
+		ball.setPos(glm::detail::fvec4SIMD(_mm_add_ps(_mm_sub_ps(ball.getPos().Data, _mm_and_ps(gt_mask, gt_offset)), _mm_and_ps(lt_mask, lt_offset))));
 
 		//2*(minbounds-ball.getPos().Data) = lt_offset
 		//newPos+=oldPos(lt_offset & lt_mask)
 
+		ball.setVelocity(glm::detail::fvec4SIMD(_mm_mul_ps(ball.getVelocity().Data, vel_mul)));
+
 		//2*(newPos - maxbounds) = gt_offset
 		//newPos-=oldPos(gt_offset & gt_mask)
+
+		if(y_true){			
+			glm::vec4 vecPos = glm::vec4_cast(ball.getPos());
+			vecPos.y = minbound_y;
+			ball.setPos(glm::detail::fvec4SIMD(vecPos));
+
+			glm::vec4 vecVel = glm::vec4_cast(ball.getVelocity());
+			__m128 tmp_vel = _mm_mul_ps(_mm_loadu_ps(&vecVel[0]), y_min_vel_damp);
+			_mm_storeu_ps(&vecVel[0], tmp_vel);
+			ball.setVelocity(glm::detail::fvec4SIMD(vecVel));
+		} 
+		
+		//glm::vec4 oldVl = glm::vec4_cast(ball.getVelocity());
+		//glm::vec4 vecPos = glm::vec4_cast(ball.getPos());
 
 		/*Checking for Walls */
 		// if (newPos.x > maxbounds[0]){
@@ -106,8 +106,6 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 		// ball.setPos(glm::detail::fvec4SIMD(newPos));
 		// ball.setVelocity(glm::detail::fvec4SIMD(oldVl));
 	}
-
-	//delete bool_lt_mask;
 }
 
 /*
