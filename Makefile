@@ -18,6 +18,9 @@ all: $(OBJS) $(BINDIR)/Main.o
 	mkdir -p bin
 	$(CC) $(CFLAGS) $^ -o $(BINDIR)/phys_eng $(IFLAGS) $(LDFLAGS)
 
+config:
+	python config.py
+
 test: $(OBJS) $(BINDIR)/Test.o
 	mkdir -p bin
 	python config.py

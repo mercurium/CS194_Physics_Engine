@@ -3,19 +3,20 @@
 #include "Sphere.h"
 #include "DistConstr.h"
 #include "Physics.h"
+#define NTHR 8
 
 class Scene{
 		private:
 			int numBalls;
 			int numConstr;
-			int numCollisions;
+			int numCollisions[NTHR]; //one for each thread
 			bool twoD;
 			int GRID_SIZE;
 			int GRID_COL_SIZE;
 
 			Sphere* balls;
 			DistConstr* distConstr;
-			virtual Intersection** getCollisions();
+			virtual Intersection** getCollisions(int tid);
 
 		public:
 			Scene();
