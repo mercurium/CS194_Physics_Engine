@@ -216,6 +216,5 @@ Intersection** Scene::getCollisions(int tid){
     for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
        delete list_of_balls[i].col;
     }
-
     return intersects;
 }

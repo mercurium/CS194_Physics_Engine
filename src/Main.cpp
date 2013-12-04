@@ -52,9 +52,6 @@ int main(int argc, char *argv[])
     	scene = Scene(balls, constraints, numballs, numcons);
         outputText();
     }
-
-
-
     return 0;
 }
 
