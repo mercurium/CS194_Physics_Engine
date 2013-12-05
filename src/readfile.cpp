@@ -75,7 +75,7 @@ namespace Read{
 					else if (cmd == "accel"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-							accel = glm::detail::fvec4SIMD(0.0f, values[0], values[1], values[2]);
+							accel = glm::detail::fvec4SIMD(values[0], values[1], values[2], 0.0f);
 						}
 					}
 					else if (cmd == "camera") {
@@ -93,7 +93,7 @@ namespace Read{
 							{
 								minbounds_array[i] = values[i];
 							}
-							minbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
+							minbounds = _mm_setr_ps(0.0f, values[2], values[1], values[0]);
 							minbound_y = values[1]; 
 						}
 					}
@@ -104,7 +104,7 @@ namespace Read{
 							{
 								maxbounds_array[i] = values[i];
 							}
-							maxbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
+							maxbounds = _mm_setr_ps(0.0f, values[2], values[1], values[0]);
 						}
 					}
 					else if (cmd == "2d"){

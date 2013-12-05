@@ -13,11 +13,8 @@ class Helper{
 		
 		glm::simdVec4 getOldPos();
 		glm::vec4 getColor();
-		
-
-
-
 };
+
 class Sphere{
 	glm::simdVec4 position;
 	glm::simdVec4 velocity;

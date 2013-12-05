@@ -32,7 +32,7 @@ void UpdateBallPositions(Sphere* balls, int num_balls, double t){
 void UpdateBallBoundaries(Sphere* balls, int num_balls){
 	const __m128 two_scalar = _mm_set1_ps(2);
 	const __m128 one_scalar = _mm_set1_ps(1);
-	const __m128 y_min_vel_damp = _mm_set_ps(0.8f, 0.5f, 0.8f, 0.0f);
+	glm::simdVec4 y_min_vel_damp = glm::simdVec4(0.8f, 0.5f, 0.8f, 0.0f);
 	
 	/*  Update each ball to the new location  */
 	#pragma omp parallel for
@@ -65,10 +65,9 @@ void UpdateBallBoundaries(Sphere* balls, int num_balls){
 			vecPos.y = minbound_y;
 			ball.setPos(glm::detail::fvec4SIMD(vecPos));
 
-			glm::vec4 vecVel = glm::vec4_cast(ball.getVelocity());
-			__m128 tmp_vel = _mm_mul_ps(_mm_loadu_ps(&vecVel[0]), y_min_vel_damp);
-			_mm_storeu_ps(&vecVel[0], tmp_vel);
-			ball.setVelocity(glm::detail::fvec4SIMD(vecVel));
+			glm::simdVec4 tmp_vel = ball.getVelocity();
+			tmp_vel *= y_min_vel_damp;
+			ball.setVelocity(tmp_vel);
 		}
 	}
 }
