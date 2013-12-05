@@ -65,6 +65,7 @@ void Scene::UpdateScene(double time){
             delete intersections[tid];
         }
     	Physics::UpdateBallBoundaries(this->balls, this->numBalls);
+        Physics::handleDistanceConstr(this->distConstr, this->numConstr);
     }
 }
 

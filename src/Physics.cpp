@@ -131,6 +131,7 @@ std::vector<Intersection *> getCollisions(std::vector <Sphere *> &balls){
 void resolveCollisions(Intersection** intersections, int num_collisions){
 	double dist, radiiDist;
 
+    #pragma omp parallel for
 	for(int k = 0; k < num_collisions; k++)
 	//while(num_collisions != 0)
 	{
@@ -174,6 +175,8 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 }
 
 void handleDistanceConstr(DistConstr* constraints, int constr_size){
+
+    #pragma omp parallel for
 	for (int i = 0; i < constr_size; i++)
 	{
 		DistConstr constr = constraints[i];

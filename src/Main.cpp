@@ -41,7 +41,7 @@ int main(int argc, char *argv[])
     printf("Starting Simulator!\n");
     bool outputGL = false;
 	Read::readfile("config.txt");
-    omp_set_num_threads(1);
+    omp_set_num_threads(8);
 
     if(outputGL){
         initGLUT(argv, argc);
