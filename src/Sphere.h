@@ -1,11 +1,24 @@
 #pragma once
 #include <glm/glm.hpp>
 
+class Helper{
+    glm::vec4 color;
+    glm::vec3 oldPos;
+
+    public:
+        Helper(glm::vec4 colors, glm::vec3 oldPosition); 
+        void setOldPos(glm::vec3 oldPosition);
+        void setColor(glm::vec4 col);
+        glm::vec3 getOldPos();
+        glm::vec4 getColor();
+};
+
 class Sphere{
 	glm::vec3 position;
-	glm::vec3 oldPos;
+	//glm::vec3 oldPos;
 	glm::vec3 velocity;
-    glm::vec4 color;
+    //glm::vec4 color;
+    Helper * helper;
 
 	double radius;
 	
