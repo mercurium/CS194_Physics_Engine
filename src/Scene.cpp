@@ -132,8 +132,6 @@ std::vector<Intersection *> Scene::getCollisions(){
 
 Intersection** Scene::getCollisions(int tid){
 
-	const int colsize = GRID_COL_SIZE;
-
 	struct column{
 		Sphere** col; //upper bound
 		int size;
@@ -187,20 +185,22 @@ Intersection** Scene::getCollisions(int tid){
     //#pragma omp parallel for
 	for (int i = tid*(GRID_SIZE/NTHR); i < (tid+1)*(GRID_SIZE/NTHR); i++){
 		for(int ii = 0; ii <= 1; ii++){
-			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
+			if (i+ii == GRID_SIZE){ continue; }
 
 			for (int j = 0; j < GRID_SIZE; j++){
 				for (int jj = 0; jj <= 1; jj++){
-					if (jj+j < 0 || jj+j >= GRID_SIZE){ continue; }
+					if (jj+j == GRID_SIZE){ continue; }
 
 					int p1 = GRID_SIZE * i + j, p2 = GRID_SIZE * (i+ii) + j + jj;
 
 					for(int b1 = 0; b1 < list_of_balls[p1].size; b1++){
+						//double r1 = (*list_of_balls[p1].col[b1]).getRadius();
+						glm::vec3 spot1 = (*list_of_balls[p1].col[b1]).getPos();
 						for(int b2 = 0; b2 < list_of_balls[p2].size; b2++){
-							if (p1 == p2 && b1 <= b2){ continue; }
+							if (p1 == p2 && b1 <= b2){ break; }
 							
-							double dist = glm::distance((*list_of_balls[p1].col[b1]).getPos(), (*list_of_balls[p2].col[b2]).getPos());
-							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
+							double dist = glm::distance(spot1, (*list_of_balls[p2].col[b2]).getPos());
+							double radiiDist = 2;//r1 + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
 								intersects[numColl] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
                                 numColl++;

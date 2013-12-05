@@ -146,15 +146,18 @@ void resolveCollisions(Intersection** intersections, int num_collisions){
 		dist = glm::distance(s1Pos,s2Pos);
 		radiiDist = s1->getRadius() + s2->getRadius();
 		double distDiff = (radiiDist - dist)/(2*dist);
+		double dX = (s1Pos.x - s2Pos.x) * distDiff;
+		double dY = (s1Pos.y - s2Pos.y) * distDiff;
+		double dZ = (s1Pos.z - s2Pos.z) * distDiff;
 
         glm::vec3 s1NewPos = glm::vec3(
-                s1Pos.x + (s1Pos.x - s2Pos.x) * distDiff,
-                s1Pos.y + (s1Pos.y - s2Pos.y) * distDiff,
-                s1Pos.z + (s1Pos.z - s2Pos.z) * distDiff);
+                s1Pos.x + dX,
+                s1Pos.y + dY,
+                s1Pos.z + dZ);
 		glm::vec3 s2NewPos = glm::vec3(
-                s2Pos.x + (s2Pos.x - s1Pos.x) * distDiff,
-                s2Pos.y + (s2Pos.y - s1Pos.y) * distDiff,
-                s2Pos.z + (s2Pos.z - s1Pos.z) * distDiff);
+                s2Pos.x - dX,
+                s2Pos.y - dY,
+                s2Pos.z - dZ);
 
 		s1->setPos(s1NewPos);
 		s2->setPos(s2NewPos);
@@ -192,14 +195,21 @@ void handleDistanceConstr(DistConstr* constraints, int constr_size){
         glm::vec3 s1Pos = (*s1).getPos();
         glm::vec3 s2Pos = (*s2).getPos();
 
-        glm::vec3 s1NewPos = glm::vec3( 
-                s1Pos.x + (s1Pos.x - s2Pos.x) * (diff)/(2*actual_dist),
-                s1Pos.y + (s1Pos.y - s2Pos.y) * (diff)/(2*actual_dist),
-                s1Pos.z + (s1Pos.z - s2Pos.z) * (diff)/(2*actual_dist));
-		glm::vec3 s2NewPos = glm::vec3( 
-                s2Pos.x + (s2Pos.x - s1Pos.x) * (diff)/(2*actual_dist),
-                s2Pos.y + (s2Pos.y - s1Pos.y) * (diff)/(2*actual_dist),
-                s2Pos.z + (s2Pos.z - s1Pos.z) * (diff)/(2*actual_dist));
+		double distDiff = diff/(2*actual_dist);
+		double dX = (s1Pos.x - s2Pos.x) * distDiff;
+		double dY = (s1Pos.y - s2Pos.y) * distDiff;
+		double dZ = (s1Pos.z - s2Pos.z) * distDiff;
+
+
+
+        glm::vec3 s1NewPos = glm::vec3(
+                s1Pos.x + dX,
+                s1Pos.y + dY,
+                s1Pos.z + dZ);
+		glm::vec3 s2NewPos = glm::vec3(
+                s2Pos.x - dX,
+                s2Pos.y - dY,
+                s2Pos.z - dZ);
 		
 
 		(*s1).setPos(s1NewPos);
