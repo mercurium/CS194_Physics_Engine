@@ -151,7 +151,7 @@ void outputText(){
     double mew = 0;
     for (int i = 0; i < numballs; i++) {
         Sphere s = balls[i];
-        glm::vec3 pos = s.getPos();
+        glm::vec4 pos = glm::vec4_cast(s.getPos());
         if (mew < pos[0]) mew = pos[0];
     }
     printf("largest ... x value: %.3f\n", mew);

@@ -145,7 +145,7 @@ Intersection** Scene::getCollisions(int tid){
 
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
-		glm::vec3 pos = s->getPos();
+		glm::vec4 pos = glm::vec4_cast(s->getPos());
 
 		int x = pos.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
@@ -161,7 +161,6 @@ Intersection** Scene::getCollisions(int tid){
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
 
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
-	//printf("Allocating arr size: %d\n", col_size[i]);
 	   list_of_balls[i].col = new Sphere*[col_size[i]]; 
 	   list_of_balls[i].size = 0;
 	}
@@ -169,8 +168,7 @@ Intersection** Scene::getCollisions(int tid){
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
-		glm::vec3 pos = s->getPos();
-		//column* col_ptr = NULL;
+		glm::vec4 pos = glm::vec4_cast(s->getPos());
 
 		int x = pos.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
