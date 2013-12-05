@@ -1,31 +1,48 @@
 #pragma once
 #include <glm/glm.hpp>
+#include <glm/gtx/simd_vec4.hpp>
 
+class Helper{
+	glm::vec4 color;
+	glm::simdVec4 oldPos;
+
+	public:
+		Helper(glm::vec4 colors, glm::simdVec4 oldPosition); 
+		void setOldPos(glm::simdVec4 oldPosition);
+		void setColor(glm::vec4 col);
+		
+		glm::simdVec4 getOldPos();
+		glm::vec4 getColor();
+		
+
+
+
+};
 class Sphere{
-	glm::vec3 position;
-	glm::vec3 oldPos;
-	glm::vec3 velocity;
-    glm::vec4 color;
+	glm::simdVec4 position;
+	glm::simdVec4 velocity;
 
 	double radius;
+	Helper * helper;
 	
 	public:
-		Sphere(glm::vec3 pos, glm::vec3 vel);
+		Sphere(glm::simdVec4 pos, glm::simdVec4 vel);
 		Sphere(double x, double y, double z);
 		Sphere(double x, double y, double z, bool twoD);
 		Sphere(double x, double y, double z, double r);
 		virtual ~Sphere(); 
 		
-		void setPos(glm::vec3 pos);
-		void setOldPos(glm::vec3 oldPosition);
-		void setVelocity(glm::vec3 vel);
+		void setPos(glm::simdVec4 pos);
+		void setOldPos(glm::simdVec4 oldPosition);
+		void setVelocity(glm::simdVec4 vel);
 		void setColor(glm::vec4 col);
 		
-		glm::vec3 getPos();
-		glm::vec3 getOldPos();
-		glm::vec3 getVelocity();
+		glm::simdVec4 getPos();
+		glm::simdVec4 getOldPos();
+		glm::simdVec4 getVelocity();
 		glm::vec4 getColor();
 		
 		double getRadius();
 		void print();
 };
+

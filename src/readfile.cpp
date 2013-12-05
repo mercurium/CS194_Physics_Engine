@@ -1,11 +1,10 @@
 #include "readfile.h"
 
+#include "mmintrin.h"
 
 using namespace std;
 
 namespace Read{
-	// The function below applies the appropriate transform to a 4-vector
-
 	// Function to read the input data values
 	// Use is optional, but should be very helpful in parsing.  
 	bool readvals(stringstream &s, const int numvals, GLfloat * values) {
@@ -76,7 +75,7 @@ namespace Read{
 					else if (cmd == "accel"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-                            for (i = 0; i < 3; i++) {accel[i] = values[i];}
+							accel = glm::detail::fvec4SIMD(0.0f, values[0], values[1], values[2]);
 						}
 					}
 					else if (cmd == "camera") {
@@ -90,13 +89,22 @@ namespace Read{
 					else if (cmd == "minbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-                            for (i = 0; i < 3; i++) {minbounds[i] = values[i];}
+							for (int i = 0; i < 3; ++i)
+							{
+								minbounds_array[i] = values[i];
+							}
+							minbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
+							minbound_y = values[1]; 
 						}
 					}
 					else if (cmd == "maxbounds"){
 						validinput = readvals(s, 3, values);
 						if (validinput) {
-                            for (i=0; i < 3; i++) {maxbounds[i] = values[i];}
+							for (int i = 0; i < 3; ++i)
+							{
+								maxbounds_array[i] = values[i];
+							}
+							maxbounds = _mm_set_ps(0.0f, values[0], values[1], values[2]);
 						}
 					}
 					else if (cmd == "2d"){
@@ -117,8 +125,8 @@ namespace Read{
 						else {
 							validinput = readvals(s, 6, values) ; // Position/color for lts.
 							if (validinput) {
-								::new(&balls[numB]) Sphere(values[0],values[1],values[2],is2D);
-								(balls[numB]).setVelocity(glm::vec3(values[3],values[4],values[5]));
+								::new(&balls[numB]) Sphere(values[0], values[1], values[2], is2D);
+								(balls[numB]).setVelocity(glm::detail::fvec4SIMD(0.0f, values[3], values[4], values[5]));
 								++numB;
 							}
 						}

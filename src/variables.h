@@ -3,6 +3,7 @@
 
 #include <glm/gtx/simd_vec4.hpp>
 
+#include "mmintrin.h"
 
 // This is the basic include file for the global variables in the program.  
 // Since all files need access to it, we define EXTERN as either blank or 
@@ -24,30 +25,16 @@ EXTERN double sensitivity;
 EXTERN bool is2D;
 EXTERN bool shading;
 
-EXTERN double accel[3];
+EXTERN glm::simdVec4 accel;
 EXTERN double camera[9];
-EXTERN double maxbounds[3];
-EXTERN double minbounds[3];
-//EXTERN double maxbounds[3]; 
-//EXTERN double minbounds[3]; 
+EXTERN __m128 maxbounds;
+EXTERN __m128 minbounds;
+EXTERN double minbound_y;
+EXTERN double maxbounds_array[3];
+EXTERN double minbounds_array[3];
 
 EXTERN double lightposn[40];
 EXTERN double lightcolor[40];
 
-
 EXTERN Sphere* balls;
 EXTERN DistConstr* constraints;
-
-/*
-EXTERN int numobjects ; 
-EXTERN struct object {
-  shape type ; 
-  GLfloat size ;
-  GLfloat ambient[4] ; 
-  GLfloat diffuse[4] ; 
-  GLfloat specular[4] ;
-  GLfloat emission[4] ; 
-  GLfloat shininess ;
-  mat4 transform ; 
-} objects[maxobjects] ;
-*/

@@ -12,38 +12,38 @@ void pr(glm::vec3& v);
  * Represents a camera and list of light
  */
 class Render {
-    public:
-        Render ();
-        Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
-        void setLights(int num, float * pos, float * col );
-        virtual ~Render ();
-        void draw(Sphere* spheres);
-        void drawtest();
-        void rotateCamUD(double deg);
-        void rotateCamLR(double deg);
-        void rotateCamRoll(double deg);
-        void translCam(glm::vec3& dist);
-        void translCamFB(double dist);
-        void translCamUD(double dist);
-        void translCamLR(double dist);
-        glm::mat4 getPerspective(float fovy);
+	public:
+		Render ();
+		Render (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
+		void setLights(int num, float * pos, float * col );
+		virtual ~Render ();
+		void draw(Sphere* spheres);
+		void drawtest();
+		void rotateCamUD(double deg);
+		void rotateCamLR(double deg);
+		void rotateCamRoll(double deg);
+		void translCam(glm::vec3& dist);
+		void translCamFB(double dist);
+		void translCamUD(double dist);
+		void translCamLR(double dist);
+		glm::mat4 getPerspective(float fovy);
 
-        Shader * shader;
+		Shader * shader;
 
-    private:
-        void init (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
-        void draw(Sphere& sph);
-        glm::vec3 camCenter;
-        glm::vec3 camView;
-        glm::vec3 camUp;
-        double zN;
-        double zF;
-        double fov;
-        int numlights;
-        float * lightpos;
-        float * lightcol;
+	private:
+		void init (glm::vec3 center, glm::vec3 view, glm::vec3 eye);
+		void draw(Sphere& sph);
+		glm::vec3 camCenter;
+		glm::vec3 camView;
+		glm::vec3 camUp;
+		double zN;
+		double zF;
+		double fov;
+		int numlights;
+		float * lightpos;
+		float * lightcol;
 
-        //std::vector<double *> *lightpos;//Array of size 3-vectors (x,y,z)
-        //std::vector<double *> *lightcol;//Array of size 3-vectors (r,g,b)
-        
+		//std::vector<double *> *lightpos;//Array of size 3-vectors (x,y,z)
+		//std::vector<double *> *lightcol;//Array of size 3-vectors (r,g,b)
+		
 };

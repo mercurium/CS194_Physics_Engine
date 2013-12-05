@@ -4,14 +4,14 @@
 Scene::Scene(){
 	numBalls = 100;
 	twoD = false;
-    GRID_SIZE = 10;
+	GRID_SIZE = 10;
 	//balls = makeTestScene();
 	//distConstr = makeTestDistConstr(balls);
 }
 
 
 Scene::Scene(Sphere* ballList, DistConstr* constraints, int balls_size, int constraints_size){
-    GRID_SIZE = 100;
+	GRID_SIZE = 100;
 	balls = ballList;
 	distConstr = constraints;
 	numBalls = balls_size;
@@ -37,35 +37,35 @@ std::vector <Sphere *> Scene::makeTestScene(){
 }
 
 std::vector <DistConstr *> Scene::makeTestDistConstr(std::vector <Sphere *> balls){
-       std::vector <DistConstr *> distConstr;
-       for(int n = 0; n < balls.size() /4; n++){
-               for(int i = 1; i < 4; i++){
-                       for (int j = 0; j < i; j++){
-                               distConstr.push_back(new DistConstr(balls.at(4*n+i),balls.at(4*n+j),2.01));
+	   std::vector <DistConstr *> distConstr;
+	   for(int n = 0; n < balls.size() /4; n++){
+			   for(int i = 1; i < 4; i++){
+					   for (int j = 0; j < i; j++){
+							   distConstr.push_back(new DistConstr(balls.at(4*n+i),balls.at(4*n+j),2.01));
 							   balls.at(4*n+j)->setColor(balls.at(4*n+i)->getColor());
-                       }
-               }
-       }
-       return distConstr;
+					   }
+			   }
+	   }
+	   return distConstr;
 }
 */
 
 void Scene::UpdateScene(double time){
-    Physics::UpdateBallPositions((this->balls), this->numBalls, time);
-    Physics::UpdateBallBoundaries(this->balls, this->numBalls);
-    for(int i = 0; i < 5; i++){
-        Intersection** intersections[NTHR];
-        #pragma omp parallel for
-        for(int tid=0; tid<NTHR; tid++){
-            intersections[tid] = getCollisions(tid);
-        }
-        #pragma omp parallel for
-        for(int tid=0; tid<NTHR; tid++){
-            Physics::resolveCollisions(intersections[tid], this->numCollisions[tid]);
-            delete intersections[tid];
-        }
-    	Physics::UpdateBallBoundaries(this->balls, this->numBalls);
-    }
+	Physics::UpdateBallPositions((this->balls), this->numBalls, time);
+	Physics::UpdateBallBoundaries(this->balls, this->numBalls);
+	for(int i = 0; i < 5; i++){
+		Intersection** intersections[NTHR];
+		#pragma omp parallel for
+		for(int tid=0; tid<NTHR; tid++){
+			intersections[tid] = getCollisions(tid);
+		}
+		#pragma omp parallel for
+		for(int tid=0; tid<NTHR; tid++){
+			Physics::resolveCollisions(intersections[tid], this->numCollisions[tid]);
+			delete intersections[tid];
+		}
+		Physics::UpdateBallBoundaries(this->balls, this->numBalls);
+	}
 }
 
 Sphere* Scene::getBalls(){
@@ -113,7 +113,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 					}
 				}		
 			}
-    }
+	}
   
 	std::vector<Intersection *> intersects;
 	for(int i = 1; i < balls.size(); i++){ //First compute all the intersections that happen
@@ -125,7 +125,7 @@ std::vector<Intersection *> Scene::getCollisions(){
 			}
 		}
 	}
-    return intersects;
+	return intersects;
 }
 */
 
@@ -138,14 +138,14 @@ Intersection** Scene::getCollisions(int tid){
 		int size;
 	};
 
-    int col_size[GRID_SIZE*GRID_SIZE];
+	int col_size[GRID_SIZE*GRID_SIZE];
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
-        col_size[i] = 0;
-    }
+		col_size[i] = 0;
+	}
 
 	for(int i = 0; i < this->numBalls; i++){
 		Sphere *s = &balls[i];
-        glm::vec3 pos = s->getPos();
+		glm::vec3 pos = s->getPos();
 
 		int x = pos.x / (100/GRID_SIZE);
 		x = std::min(std::max(x,0), GRID_SIZE-1);
@@ -161,15 +161,15 @@ Intersection** Scene::getCollisions(int tid){
 	column list_of_balls[GRID_SIZE * GRID_SIZE];
 
 	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
-    //printf("Allocating arr size: %d\n", col_size[i]);
-       list_of_balls[i].col = new Sphere*[col_size[i]]; 
-       list_of_balls[i].size = 0;
-    }
+	//printf("Allocating arr size: %d\n", col_size[i]);
+	   list_of_balls[i].col = new Sphere*[col_size[i]]; 
+	   list_of_balls[i].size = 0;
+	}
 
 	for(int i = 0; i < this->numBalls; i++){
 	
 		Sphere *s = &balls[i];
-        glm::vec3 pos = s->getPos();
+		glm::vec3 pos = s->getPos();
 		//column* col_ptr = NULL;
 
 		int x = pos.x / (100/GRID_SIZE);
@@ -183,7 +183,7 @@ Intersection** Scene::getCollisions(int tid){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
-    //#pragma omp parallel for
+	//#pragma omp parallel for
 	for (int i = tid*(GRID_SIZE/NTHR); i < (tid+1)*(GRID_SIZE/NTHR); i++){
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii < 0 || i+ii >= GRID_SIZE){ continue; }
@@ -202,19 +202,19 @@ Intersection** Scene::getCollisions(int tid){
 							double radiiDist = (*list_of_balls[p1].col[b1]).getRadius() + (*list_of_balls[p2].col[b2]).getRadius();
 							if (dist < radiiDist-.001){ // .001 to avoid rounding error
 								intersects[numColl] = new Intersection(list_of_balls[p1].col[b1], list_of_balls[p2].col[b2]);
-                                numColl++;
+								numColl++;
 							}
 						}
 					}
 				}
 			}
 		}
-    }
+	}
 
-    numCollisions[tid] = numColl;
+	numCollisions[tid] = numColl;
 
-    for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
-       delete list_of_balls[i].col;
-    }
-    return intersects;
+	for(int i = 0; i < (GRID_SIZE*GRID_SIZE); i++){
+	   delete list_of_balls[i].col;
+	}
+	return intersects;
 }
