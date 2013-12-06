@@ -182,8 +182,10 @@ Intersection** Scene::getCollisions(int tid){
 		list_of_balls[x*GRID_SIZE+z].size++;
 	}
 
-    //#pragma omp parallel for
-	for (int i = tid*(GRID_SIZE/NTHR); i < (tid+1)*(GRID_SIZE/NTHR); i++){
+    #pragma omp parallel for
+	//for (int i = tid*(GRID_SIZE/NTHR); i < (tid+1)*(GRID_SIZE/NTHR); i++){
+    //Stripe threads across grid for load balancing
+    for (int i = tid; i < (GRID_SIZE); i+=NTHR){
 		for(int ii = 0; ii <= 1; ii++){
 			if (i+ii == GRID_SIZE){ continue; }
 
