@@ -58,6 +58,7 @@ void Scene::UpdateScene(double time){
         intersections = getCollisions();
         Physics::resolveCollisions(intersections, this->numCollisions);
     	Physics::UpdateBallBoundaries(this->balls, this->numBalls);
+        Physics::handleDistanceConstr(this->distConstr, this->numConstr);
     }
 }
 

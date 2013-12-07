@@ -38,7 +38,7 @@ Scene scene;
 int main(int argc, char *argv[])
 {
     printf("Starting Simulator!\n");
-    bool outputGL = false;
+    bool outputGL = true;
 	Read::readfile("config.txt");
 
     if(outputGL){
